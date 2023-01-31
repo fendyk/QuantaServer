@@ -18,8 +18,8 @@ public class QuantaServer extends JavaPlugin implements PluginMessageListener {
 
     @Override
     public void onEnable() {
-        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
-        this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
+        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "quanta:main");
+        this.getServer().getMessenger().registerIncomingPluginChannel(this, "quanta:main", this);
     }
 
     @Override
@@ -32,11 +32,12 @@ public class QuantaServer extends JavaPlugin implements PluginMessageListener {
     @Override
     public void onPluginMessageReceived(String channel, Player player, byte[] message) {
         System.out.println("Something happeneed!S");
-        if (!channel.equals("BungeeCord")) {
+        if (!channel.equals("quanta:main")) {
             return;
         }
         ByteArrayDataInput in = ByteStreams.newDataInput(message);
         String subchannel = in.readUTF();
+        System.out.println(subchannel);
         if (subchannel.equals("Subchannel")) {
             // Use the code sample in the 'Response' sections below to read
             // the data.
@@ -44,8 +45,6 @@ public class QuantaServer extends JavaPlugin implements PluginMessageListener {
             String second = in.readUTF();
             System.out.println(second);
         }
-        System.out.println(subchannel);
-        System.out.println(subchannel);
 
     }
 }
