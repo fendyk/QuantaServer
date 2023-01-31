@@ -2,3 +2,4 @@ main: com.fendyk.QuantaServer
 name: QuantaServer
 version: 1.4.1
 api-version: 1.19
+depend: [CommandAPI]

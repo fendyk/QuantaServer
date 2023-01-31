@@ -5,20 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradlew" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradlew.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/QuantaServer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/Api.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/ChannelAPI.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/Log.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/EconomyCommands.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/events/ProxyPlayerAuthenticatedEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/redis/AuthenticationListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/redis/UserListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/QuantaServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/QuantaServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,6 +57,13 @@
         </projects_view>
       </state>
     </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -143,6 +147,15 @@
       <updated>1675028239701</updated>
       <workItem from="1675028240751" duration="2351000" />
       <workItem from="1675030794133" duration="158000" />
+      <workItem from="1675101638877" duration="2406000" />
+      <workItem from="1675194627377" duration="6055000" />
+      <workItem from="1675249186862" duration="616000" />
+      <workItem from="1675380411821" duration="51000" />
+      <workItem from="1675380493370" duration="3302000" />
+      <workItem from="1675429963691" duration="1591000" />
+      <workItem from="1675431979338" duration="1780000" />
+      <workItem from="1675459092567" duration="3280000" />
+      <workItem from="1675515872887" duration="9172000" />
     </task>
     <servers />
   </component>
