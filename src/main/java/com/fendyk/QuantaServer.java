@@ -24,12 +24,11 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 import java.util.Map;
 import java.util.UUID;
 
-public class QuantaServer extends JavaPlugin implements PluginMessageListener, Listener {
+public class QuantaServer extends JavaPlugin implements Listener {
 
     Api api;
     ChannelAPI channelAPI;
     private Gson gson = new Gson();
-    private Map<UUID, String> users;
     Toml toml;
     RedisClient redisClient;
     StatefulRedisConnection<String, String> redisConnection;
@@ -39,9 +38,6 @@ public class QuantaServer extends JavaPlugin implements PluginMessageListener, L
 
     @Override
     public void onEnable() {
-        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "quanta:main");
-        this.getServer().getMessenger().registerIncomingPluginChannel(this, "quanta:main", this);
-
         toml = new Toml("config", "plugins/QuantaServer");
         toml.setDefault("isInDebugMode", false);
         String apiUrl = toml.getOrSetDefault("apiUrl", "<your apiUrl here");
@@ -83,62 +79,11 @@ public class QuantaServer extends JavaPlugin implements PluginMessageListener, L
 
     @Override
     public void onDisable() {
-        //make sure to unregister the registered channels in case of a reload
-        this.getServer().getMessenger().unregisterOutgoingPluginChannel(this);
-        this.getServer().getMessenger().unregisterIncomingPluginChannel(this);
     }
 
     @EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-
-
-    }
-
-    @Override
-    public void onPluginMessageReceived(String channel, Player player, byte[] message) {
-        if (!channel.equals("quanta:main")) {
-            return;
-        }
-        ByteArrayDataInput in = ByteStreams.newDataInput(message);
-        String channelMessage = in.readUTF();
-        System.out.println(channelMessage);
-
-        JsonObject json = JsonParser.parseString(channelMessage).getAsJsonObject();
-
-        if(!json.has("event")) {
-            System.out.println("Event name not found, make sure it's set!");
-            return;
-        }
-        else if(!json.has("data")) {
-            System.out.println("Data not found. Make sure it's set!");
-            return;
-        }
-
-        String eventName = json.getAsString();
-
-        // Events are described here. Adding more requires
-        // an update on the proxy as well.
-        switch (eventName) {
-            /**
-             * Proxy -> Fired when player is authenticated and
-             * has user data included
-             */
-            case "proxy:player:authenticated":
-                Bukkit.getPluginManager().callEvent(new ProxyPlayerAuthenticatedEvent());
-                break;
-            /**
-             * Proxy -> Fired when balance is requested or requires
-             * an update
-             */
-            case "proxy:player:balance":
-                // Fill in code when player is authenticated
-                break;
-            default:
-                System.out.println("Event name not recognized");
-                break;
-        }
-
     }
 
 }
