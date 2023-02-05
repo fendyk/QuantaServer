@@ -29,7 +29,7 @@ public class EconomyCommands {
                             Player player = (Player) args[0];
                             Double amount = (Double) args[1];
                             redisAPI.depositBalance(player.getUniqueId(), new BigDecimal(amount));
-                            player.sendMessage("Your have deposited " + amount + " to " + player);
+                            player.sendMessage("Your have deposited " + amount + " to " + player.getName());
                         })
                 )
                 .withSubcommand(new CommandAPICommand("withdraw")
@@ -41,7 +41,7 @@ public class EconomyCommands {
                             Player player = (Player) args[0];
                             Double amount = (Double) args[1];
                             redisAPI.withdrawBalance(player.getUniqueId(), new BigDecimal(amount));
-                            player.sendMessage("Your have withdrawn " + amount + " from " + player);
+                            player.sendMessage("Your have withdrawn " + amount + " from " + player.getName());
                         })
                 )
                 .register();

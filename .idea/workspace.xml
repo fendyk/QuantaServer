@@ -4,14 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="remove: old messaging channels">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/RedisAPI.java" afterDir="false" />
+    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="feat: new commands added">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/ChannelAPI.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/QuantaServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/QuantaServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/RedisAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/RedisAPI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/EconomyCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/EconomyCommands.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/redis/AuthenticationListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/redis/AuthenticationListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/redis/UserListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/redis/UserListener.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -152,7 +148,7 @@
       <workItem from="1675431979338" duration="1780000" />
       <workItem from="1675459092567" duration="3280000" />
       <workItem from="1675515872887" duration="10460000" />
-      <workItem from="1675552261947" duration="3350000" />
+      <workItem from="1675552261947" duration="3786000" />
     </task>
     <task id="LOCAL-00001" summary="feat: redis">
       <created>1675545393878</created>
@@ -168,7 +164,14 @@
       <option name="project" value="LOCAL" />
       <updated>1675545604168</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="feat: new commands added">
+      <created>1675555629850</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1675555629850</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -188,6 +191,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="feat: redis" />
     <MESSAGE value="remove: old messaging channels" />
-    <option name="LAST_COMMIT_MESSAGE" value="remove: old messaging channels" />
+    <MESSAGE value="feat: new commands added" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: new commands added" />
   </component>
 </project>

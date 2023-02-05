@@ -85,12 +85,11 @@ public class RedisAPI {
         BigDecimal oldAmount = jPlayer.get("quanta").getAsBigDecimal();
         BigDecimal newAmount = oldAmount.subtract(amount);
 
-        if(newAmount.compareTo(BigDecimal.ZERO) < 0) {
+        if(oldAmount.compareTo(amount) < 0) {
             return;
         }
 
-        oldAmount.add(amount);
-        jPlayer.addProperty("quanta", oldAmount);
+        jPlayer.addProperty("quanta", newAmount);
 
         setMinecraftUser(player, jPlayer);
     }
