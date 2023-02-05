@@ -13,8 +13,6 @@ public class UserListener implements RedisPubSubListener<String, String> {
 
     @Override
     public void message(String pattern, String channel, String message) {
-        Bukkit.getLogger().info("UserListener: Pattern");
-        Bukkit.getLogger().info(channel + ", " + message);
     }
 
     @Override

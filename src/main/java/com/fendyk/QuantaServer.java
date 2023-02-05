@@ -1,11 +1,8 @@
 package com.fendyk;
 
 import com.fendyk.commands.EconomyCommands;
-import com.fendyk.events.ProxyPlayerAuthenticatedEvent;
 import com.fendyk.listeners.redis.AuthenticationListener;
 import com.fendyk.listeners.redis.UserListener;
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteStreams;
 import com.google.gson.*;
 import de.leonhard.storage.Toml;
 import io.lettuce.core.RedisClient;
@@ -19,15 +16,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.messaging.PluginMessageListener;
-
-import java.util.Map;
-import java.util.UUID;
 
 public class QuantaServer extends JavaPlugin implements Listener {
 
     Api api;
-    ChannelAPI channelAPI;
+    RedisAPI redisAPI;
     private Gson gson = new Gson();
     Toml toml;
     RedisClient redisClient;
@@ -36,6 +29,10 @@ public class QuantaServer extends JavaPlugin implements Listener {
     RedisCommands<String, String> redisSyncCommands;
     RedisPubSubCommands<String, String> redisPubSubSyncCommands;
 
+    public RedisCommands<String, String> getRedisSyncCommands() {
+        return redisSyncCommands;
+    }
+
     @Override
     public void onEnable() {
         toml = new Toml("config", "plugins/QuantaServer");
@@ -43,11 +40,11 @@ public class QuantaServer extends JavaPlugin implements Listener {
         String apiUrl = toml.getOrSetDefault("apiUrl", "<your apiUrl here");
         String redisUrl = toml.getOrSetDefault("redisUrl", "redis://password@localhost:6379/0");
 
-        channelAPI = new ChannelAPI(this);
+        redisAPI = new RedisAPI(this);
         api = new Api(apiUrl, toml);
 
         // Commands
-        new EconomyCommands(channelAPI);
+        new EconomyCommands(redisAPI);
 
         // Listeners
         getServer().getPluginManager().registerEvents(this, this);

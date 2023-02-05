@@ -13,8 +13,6 @@ public class AuthenticationListener implements RedisPubSubListener<String, Strin
 
     @Override
     public void message(String pattern, String channel, String message) {
-        Bukkit.getLogger().info("Authentication: Pattern");
-        Bukkit.getLogger().info(channel + ", " + message);
     }
 
     @Override
