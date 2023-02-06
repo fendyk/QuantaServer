@@ -8,6 +8,7 @@ import com.google.gson.JsonParser;
 import org.bukkit.Bukkit;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.UUID;
 
 public class RedisAPI {
@@ -25,7 +26,7 @@ public class RedisAPI {
         JsonObject jPlayer = getMinecraftUser(player);
 
         BigDecimal oldAmount = jPlayer.get("quanta").getAsBigDecimal();
-        BigDecimal newAmount = oldAmount.add(amount);
+        BigDecimal newAmount = oldAmount.add(amount).setScale(2, RoundingMode.HALF_EVEN);
         jPlayer.addProperty("quanta", newAmount);
 
         Bukkit.getLogger().info(amount.toString());
@@ -35,7 +36,6 @@ public class RedisAPI {
         setMinecraftUser(player, jPlayer);
 
         // Fire event that specific player needs to be updated into the database
-
     }
 
     /**
@@ -83,7 +83,7 @@ public class RedisAPI {
     public void withdrawBalance(UUID player, BigDecimal amount) {
         JsonObject jPlayer = getMinecraftUser(player);
         BigDecimal oldAmount = jPlayer.get("quanta").getAsBigDecimal();
-        BigDecimal newAmount = oldAmount.subtract(amount);
+        BigDecimal newAmount = oldAmount.subtract(amount).setScale(2, RoundingMode.HALF_EVEN);
 
         if(oldAmount.compareTo(amount) < 0) {
             return;

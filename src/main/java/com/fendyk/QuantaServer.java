@@ -1,8 +1,10 @@
 package com.fendyk;
 
 import com.fendyk.commands.EconomyCommands;
+import com.fendyk.configs.EarningsConfig;
 import com.fendyk.listeners.redis.AuthenticationListener;
 import com.fendyk.listeners.redis.UserListener;
+import com.fendyk.listeners.redis.minecraft.EntityDeathListener;
 import com.google.gson.*;
 import de.leonhard.storage.Toml;
 import io.lettuce.core.RedisClient;
@@ -22,6 +24,8 @@ public class QuantaServer extends JavaPlugin implements Listener {
     Api api;
     RedisAPI redisAPI;
     private Gson gson = new Gson();
+
+    EarningsConfig earningsConfig;
     Toml toml;
     RedisClient redisClient;
     StatefulRedisConnection<String, String> redisConnection;
@@ -32,13 +36,18 @@ public class QuantaServer extends JavaPlugin implements Listener {
     public RedisCommands<String, String> getRedisSyncCommands() {
         return redisSyncCommands;
     }
+    public EarningsConfig getEarningsConfig() {return earningsConfig;}
+    public RedisAPI getRedisAPI() {return redisAPI;}
 
     @Override
     public void onEnable() {
         toml = new Toml("config", "plugins/QuantaServer");
         toml.setDefault("isInDebugMode", false);
-        String apiUrl = toml.getOrSetDefault("apiUrl", "<your apiUrl here");
+        String apiUrl = toml.getOrSetDefault("apiUrl", "<your apiUrl here>");
         String redisUrl = toml.getOrSetDefault("redisUrl", "redis://password@localhost:6379/0");
+
+        // Configs
+        earningsConfig = new EarningsConfig();
 
         redisAPI = new RedisAPI(this);
         api = new Api(apiUrl, toml);
@@ -48,6 +57,7 @@ public class QuantaServer extends JavaPlugin implements Listener {
 
         // Listeners
         getServer().getPluginManager().registerEvents(this, this);
+        getServer().getPluginManager().registerEvents(new EntityDeathListener(this), this);
 
         redisClient = RedisClient.create(redisUrl);
         redisConnection = redisClient.connect();
@@ -70,7 +80,6 @@ public class QuantaServer extends JavaPlugin implements Listener {
         else {
             Bukkit.getLogger().info(Log.Success("Redis connection success!"));
         }
-
 
     }
 
