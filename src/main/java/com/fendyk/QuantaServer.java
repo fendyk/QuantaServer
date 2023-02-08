@@ -1,6 +1,7 @@
 package com.fendyk;
 
 import com.fendyk.commands.EconomyCommands;
+import com.fendyk.commands.LandCommands;
 import com.fendyk.configs.EarningsConfig;
 import com.fendyk.listeners.redis.AuthenticationListener;
 import com.fendyk.listeners.redis.UserListener;
@@ -21,8 +22,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class QuantaServer extends JavaPlugin implements Listener {
 
-    Api api;
-    RedisAPI redisAPI;
+    API api;
     private Gson gson = new Gson();
 
     EarningsConfig earningsConfig;
@@ -37,7 +37,7 @@ public class QuantaServer extends JavaPlugin implements Listener {
         return redisSyncCommands;
     }
     public EarningsConfig getEarningsConfig() {return earningsConfig;}
-    public RedisAPI getRedisAPI() {return redisAPI;}
+    public API getApi() {return api;}
 
     @Override
     public void onEnable() {
@@ -49,11 +49,11 @@ public class QuantaServer extends JavaPlugin implements Listener {
         // Configs
         earningsConfig = new EarningsConfig();
 
-        redisAPI = new RedisAPI(this);
-        api = new Api(apiUrl, toml);
+        api = new API(this, toml) ;
 
         // Commands
-        new EconomyCommands(redisAPI);
+        new EconomyCommands(api);
+        new LandCommands(api);
 
         // Listeners
         getServer().getPluginManager().registerEvents(this, this);

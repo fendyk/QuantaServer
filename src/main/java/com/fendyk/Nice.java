@@ -1,6 +1,5 @@
 package com.fendyk;
 
-import com.fendyk.Log;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import okhttp3.*;
@@ -12,7 +11,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 
-public class Api {
+public class Nice {
 
     static OkHttpClient client =  new OkHttpClient();
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
@@ -21,38 +20,12 @@ public class Api {
 
     boolean isInDebugMode;
 
-    public Api(String apiUrl, Toml config) {
+    public Nice(String apiUrl, Toml config) {
         this.url = apiUrl;
         this.config = config;
 
         if(config != null) {
             isInDebugMode = config.getBoolean("isInDebugMode");
-        }
-    }
-
-    /**
-     * Fetches from api
-     * @param request
-     * @param name
-     * @return
-     */
-    @Nullable
-    private JsonObject fetchFromApi(Request request, String name) {
-        try (Response response = client.newCall(request).execute()) {
-            String json = response.body().string();
-            if(isInDebugMode) Bukkit.getLogger().info(json);
-
-            if(response.code() == 204) {
-                Bukkit.getLogger().info(Log.Info("Response empty (204) at:" + name));
-                return null;
-            }
-            else if(response.code() != 200) {
-                Bukkit.getLogger().info(Log.Error("Response not ok (" + response.code() + ") at:" + name));
-                return null;
-            }
-            return new JsonParser().parse(json).getAsJsonObject();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
