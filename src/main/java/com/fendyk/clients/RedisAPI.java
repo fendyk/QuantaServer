@@ -1,94 +1,96 @@
 package com.fendyk.clients;
 
+import com.fendyk.Log;
 import com.fendyk.QuantaServer;
+import com.fendyk.listeners.redis.AuthenticationListener;
+import com.fendyk.listeners.redis.UserListener;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import io.lettuce.core.RedisClient;
+import io.lettuce.core.api.StatefulRedisConnection;
+import io.lettuce.core.api.sync.RedisCommands;
+import io.lettuce.core.pubsub.RedisPubSubListener;
+import io.lettuce.core.pubsub.StatefulRedisPubSubConnection;
+import io.lettuce.core.pubsub.api.sync.RedisPubSubCommands;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
-public class RedisAPI implements ClientAPI {
+public abstract class RedisAPI<T> {
 
-    QuantaServer server;
+    protected final boolean inDebugMode;
+    protected QuantaServer server;
+    protected RedisClient client;
+    protected StatefulRedisConnection<String, String> connection;
+    protected StatefulRedisPubSubConnection<String, String> pubSubConnection;
+    protected RedisCommands<String, String> syncCommands;
+    protected RedisPubSubCommands<String, String> pubSubCommands;
 
-    public RedisAPI(QuantaServer server) {
+    public RedisAPI(QuantaServer server, RedisClient client, boolean inDebugMode, ArrayList<RedisPubSubListener<String, String>> listeners) {
         this.server = server;
-    }
+        this.inDebugMode = inDebugMode;
 
-    @Override
-    public JsonObject getMinecraftUser(UUID player) {
-        return JsonParser.parseString(
-                server.getRedisSyncCommands().get("minecraftuser:" + player.toString())
-        ).getAsJsonObject();
-    }
+        this.client = client; //TODO:
+        this.connection = client.connect();
+        this.syncCommands = connection.sync();
+        this.pubSubConnection = client.connectPubSub();
 
-    @Override
-    public boolean setMinecraftUser(UUID player, JsonObject data) {
-        JsonObject json = JsonParser.parseString(
-                server.getRedisSyncCommands().get("minecraftuser:" + player.toString())
-        ).getAsJsonObject();
+        // Add listeners
+        listeners.forEach(item -> {
+            this.pubSubConnection.addListener(item);
+        });
 
-        return json == null;
-    }
+        this.pubSubCommands = pubSubConnection.sync();
 
-    @Override
-    public BigDecimal getPlayerBalance(UUID player) {
-        JsonObject jPlayer = getMinecraftUser(player);
-        return jPlayer.get("quanta").getAsBigDecimal();
-    }
-
-    @Override
-    public boolean depositBalance(UUID player, BigDecimal amount) {
-        JsonObject jPlayer = getMinecraftUser(player);
-
-        BigDecimal oldAmount = jPlayer.get("quanta").getAsBigDecimal();
-        BigDecimal newAmount = oldAmount.add(amount).setScale(2, RoundingMode.HALF_EVEN);
-        jPlayer.addProperty("quanta", newAmount);
-
-        return setMinecraftUser(player, jPlayer);
-    }
-
-    @Override
-    public boolean withdrawBalance(UUID player, BigDecimal amount) {
-        JsonObject jPlayer = getMinecraftUser(player);
-        BigDecimal oldAmount = jPlayer.get("quanta").getAsBigDecimal();
-        BigDecimal newAmount = oldAmount.subtract(amount).setScale(2, RoundingMode.HALF_EVEN);
-
-        if(oldAmount.compareTo(amount) < 0) {
-            return false;
+        if(!connection.isOpen()) {
+            Bukkit.getLogger().info(Log.Error("Redis connection is not open!"));
+        }
+        else {
+            Bukkit.getLogger().info(Log.Success("Redis connection success!"));
         }
 
-        jPlayer.addProperty("quanta", newAmount);
-
-        return setMinecraftUser(player, jPlayer);
     }
 
-    @Override
+    public RedisClient getClient() {return this.client;}
+    public StatefulRedisConnection<String, String> getConnection() {
+        return connection;
+    }
+    public StatefulRedisPubSubConnection<String, String> getPubSubConnection() {
+        return pubSubConnection;
+    }
+    public RedisCommands<String, String> getSyncCommands() {
+        return syncCommands;
+    }
+
+    public RedisPubSubCommands<String, String> getPubSubCommands() {return pubSubCommands;}
+
+    public abstract JsonObject get(T key);
+    public abstract boolean set(T key, JsonObject data);
+
     public JsonObject getChunk(Chunk chunk) {
         final int x = chunk.getX();
-        final int y = chunk.getZ();
-
+        final int z = chunk.getZ();
         return JsonParser.parseString(
-                server.getRedisSyncCommands().get("chunk:" + x + ":" + y)
+                syncCommands.get("chunk:" + x + ":" + z)
         ).getAsJsonObject();
     }
 
-    @Override
-    public void createLand(UUID owner, String name, Chunk chunk) {
-
+    public boolean createLand(UUID owner, String name, Chunk chunk) {
+        return false;
     }
 
-    @Override
-    public void claimChunkForLand(UUID owner, Chunk chunk) {
-
+    public boolean claimChunkForLand(UUID owner, Chunk chunk) {
+        return false;
     }
 
-    @Override
     public JsonObject getLand(UUID owner) {
         return JsonParser.parseString(
-                server.getRedisSyncCommands().get("land:" + owner.toString())
+                syncCommands.get("land:" + owner.toString())
         ).getAsJsonObject();
     }
 

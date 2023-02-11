@@ -11,6 +11,7 @@ import de.leonhard.storage.Toml;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisCommands;
+import io.lettuce.core.pubsub.RedisPubSubListener;
 import io.lettuce.core.pubsub.StatefulRedisPubSubConnection;
 import io.lettuce.core.pubsub.api.sync.RedisPubSubCommands;
 import org.bukkit.Bukkit;
@@ -20,6 +21,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 public class QuantaServer extends JavaPlugin implements Listener {
 
     API api;
@@ -27,15 +32,7 @@ public class QuantaServer extends JavaPlugin implements Listener {
 
     EarningsConfig earningsConfig;
     Toml toml;
-    RedisClient redisClient;
-    StatefulRedisConnection<String, String> redisConnection;
-    StatefulRedisPubSubConnection<String, String> redisPubSubConnection;
-    RedisCommands<String, String> redisSyncCommands;
-    RedisPubSubCommands<String, String> redisPubSubSyncCommands;
 
-    public RedisCommands<String, String> getRedisSyncCommands() {
-        return redisSyncCommands;
-    }
     public EarningsConfig getEarningsConfig() {return earningsConfig;}
     public API getApi() {return api;}
 
@@ -43,13 +40,18 @@ public class QuantaServer extends JavaPlugin implements Listener {
     public void onEnable() {
         toml = new Toml("config", "plugins/QuantaServer");
         toml.setDefault("isInDebugMode", false);
-        String apiUrl = toml.getOrSetDefault("apiUrl", "<your apiUrl here>");
-        String redisUrl = toml.getOrSetDefault("redisUrl", "redis://password@localhost:6379/0");
+        toml.setDefault("apiUrl", "<your apiUrl here>");
+        toml.setDefault("redisUrl", "redis://password@localhost:6379/0");
 
         // Configs
         earningsConfig = new EarningsConfig();
 
-        api = new API(this, toml) ;
+        ArrayList<RedisPubSubListener<String, String>> listeners = new ArrayList<>();
+        listeners.add(new AuthenticationListener());
+        listeners.add(new UserListener());
+
+        // Instantiate api
+        api = new API(this, toml, listeners);
 
         // Commands
         new EconomyCommands(api);
@@ -59,27 +61,10 @@ public class QuantaServer extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(this, this);
         getServer().getPluginManager().registerEvents(new EntityDeathListener(this), this);
 
-        redisClient = RedisClient.create(redisUrl);
-        redisConnection = redisClient.connect();
-        redisSyncCommands = redisConnection.sync();
-        redisPubSubConnection = redisClient.connectPubSub();
-
-        // Add the listener
-        redisPubSubConnection.addListener(new AuthenticationListener());
-        redisPubSubConnection.addListener(new UserListener());
-
-        // Always sync after adding listeners
-        redisPubSubSyncCommands = redisPubSubConnection.sync();
+        RedisPubSubCommands<String, String> pubSubCommands = api.getRedisAPI().getPubSubCommands();
 
         // Subscribe
-        redisPubSubSyncCommands.subscribe("authentication", "user");
-
-        if(!redisConnection.isOpen()) {
-            Bukkit.getLogger().info(Log.Error("Redis connection is not open!"));
-        }
-        else {
-            Bukkit.getLogger().info(Log.Success("Redis connection success!"));
-        }
+        pubSubCommands.subscribe("authentication", "user");
 
     }
 

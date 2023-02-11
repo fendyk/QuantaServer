@@ -1,93 +1,63 @@
 package com.fendyk;
 
-import com.fendyk.clients.ClientAPI;
-import com.fendyk.clients.FetchAPI;
-import com.fendyk.clients.RedisAPI;
+import com.fendyk.clients.apis.MinecraftUserAPI;
+import com.fendyk.clients.fetch.FetchMinecraftUser;
+import com.fendyk.clients.redis.RedisMinecraftUser;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import de.leonhard.storage.Toml;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import io.lettuce.core.RedisClient;
+import io.lettuce.core.pubsub.RedisPubSubListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
-import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.UUID;
 
-public class API implements ClientAPI {
+public class API {
 
-    OkHttpClient client =  new OkHttpClient();
-    public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
-    final String url;
-    final boolean isInDebugMode;
+    final String worldName;
+    final boolean inDebugMode;
     QuantaServer server;
+    MinecraftUserAPI minecraftUserAPI;
 
-    private RedisAPI redisAPI;
-    private FetchAPI fetchAPI;
+    public boolean isInDebugMode() {return inDebugMode;}
 
-    public RedisAPI getRedisAPI() {return this.redisAPI;}
-    public FetchAPI getFetchAPI() {return this.fetchAPI;}
-
-    public API(QuantaServer server, Toml config) {
+    public API(QuantaServer server, Toml config, ArrayList<RedisPubSubListener<String, String>> listeners) {
         this.server = server;
-        this.url = config.getString("apiUrl");
-        this.isInDebugMode = config.getBoolean("isInDebugMode");
+        this.inDebugMode = config.getOrSetDefault("isInDebugMode", false);
+        this.worldName = config.getOrSetDefault("worldName", "overworld");
 
-        this.redisAPI = new RedisAPI(server);
+        String redisUrl = config.getOrSetDefault("redisUrl", "<url>");
+        String apiUrl = config.getOrSetDefault("apiUrl", "<url>");
+
+        RedisClient client = RedisClient.create(redisUrl);
+
+        minecraftUserAPI = new MinecraftUserAPI(
+                new FetchMinecraftUser(server, apiUrl, inDebugMode),
+                new RedisMinecraftUser(server, client, inDebugMode, listeners)
+        );
     }
 
-    @Override
-    public JsonObject getMinecraftUser(UUID player) {
-        JsonObject json = redisAPI.getMinecraftUser(player);
-        return json != null ? json : fetchAPI.getMinecraftUser(player);
+    public Chunk getChunk(Chunk chunk) {
+        JsonObject json = redisAPI.getChunk(chunk) fetchAPI.getChunk(chunk);
+        json = json != null ? json : fetchAPI.getChunk(chunk);
+
+        int x = json.get("xCoord").getAsInt();
+        int z = json.get("zCoord").getAsInt();
+
+        return Bukkit.getWorld(this.worldName).getChunkAt(x, z);
     }
 
-    @Override
-    public boolean setMinecraftUser(UUID player, JsonObject data) {
-        boolean isSet = redisAPI.setMinecraftUser(player, data);
-        return isSet || fetchAPI.setMinecraftUser(player, data);
+    public boolean createLand(UUID owner, String name, Chunk chunk) {
+        boolean isSet = redisAPI.createLand(owner, name, chunk);
+        return isSet || fetchAPI.createLand(owner, name, chunk);
     }
 
-    @Override
-    public BigDecimal getPlayerBalance(UUID player) {
-        BigDecimal amount = redisAPI.getPlayerBalance(player);
-        return amount != null ? amount : fetchAPI.getPlayerBalance(player);
+    public boolean claimChunkForLand(UUID owner, Chunk chunk) {
+        boolean isSet = redisAPI.claimChunkForLand(owner, chunk);
+        return isSet || fetchAPI.claimChunkForLand(owner, chunk);
     }
 
-    @Override
-    public boolean depositBalance(UUID player, BigDecimal amount) {
-        boolean isSet = redisAPI.depositBalance(player, amount);
-        return isSet || fetchAPI.depositBalance(player, amount);
-    }
-
-    @Override
-    public boolean withdrawBalance(UUID player, BigDecimal amount) {
-        boolean isSet = redisAPI.withdrawBalance(player, amount);
-        return isSet || fetchAPI.withdrawBalance(player, amount);
-    }
-
-    @Override
-    public JsonObject getChunk(Chunk chunk) {
-        JsonObject json = redisAPI.getChunk(chunk);
-        return json != null ? json : fetchAPI.getChunk(chunk);
-    }
-
-    @Override
-    public void createLand(UUID owner, String name, Chunk chunk) {
-
-    }
-
-    @Override
-    public void claimChunkForLand(UUID owner, Chunk chunk) {
-
-    }
-
-    @Override
     public JsonObject getLand(UUID owner) {
         return null;
     }

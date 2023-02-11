@@ -4,6 +4,7 @@ import com.fendyk.Log;
 import com.fendyk.QuantaServer;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -13,15 +14,21 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.UUID;
 
-public class FetchAPI implements ClientAPI {
+public abstract class FetchAPI<T> {
 
-    QuantaServer server;
-    OkHttpClient client =  new OkHttpClient();
+    protected final boolean inDebugMode;
+    protected QuantaServer server;
+    protected OkHttpClient client =  new OkHttpClient();
+    protected final MediaType JSON = MediaType.get("application/json; charset=utf-8");
+    protected final String url;
 
-    public FetchAPI(QuantaServer server) {
+    public FetchAPI(QuantaServer server, String url, boolean inDebugMode) {
         this.server = server;
+        this.url = url;
+        this.inDebugMode = inDebugMode;
     }
 
     /**
@@ -31,11 +38,11 @@ public class FetchAPI implements ClientAPI {
      * @return
      */
     @Nullable
-    private JsonObject fetchFromApi(Request request, String name) {
+    protected JsonObject fetchFromApi(Request request, String name) {
         try (Response response = client.newCall(request).execute()) {
             if(response.code() == 204) {
                 Bukkit.getLogger().info(Log.Info("Response empty (204) at:" + name));
-                return null;
+                return new JsonObject(); // Return empty
             }
             else if(response.code() != 200) {
                 Bukkit.getLogger().info(Log.Error("Response not ok (" + response.code() + ") at:" + name));
@@ -44,52 +51,61 @@ public class FetchAPI implements ClientAPI {
 
             assert response.body() != null;
             String json = response.body().string();
-            if(isInDebugMode) Bukkit.getLogger().info(json);
+            if(inDebugMode) Bukkit.getLogger().info(json);
             return JsonParser.parseString("").getAsJsonObject();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
+    public abstract JsonObject get(T key);
+    public abstract JsonObject create(JsonObject data);
+    public abstract JsonObject update(T key, JsonObject data);
+    public abstract JsonObject delete(T key);
 
-    @Override
-    public JsonObject getMinecraftUser(UUID player) {
-        return null;
-    }
-
-    @Override
-    public boolean setMinecraftUser(UUID player, JsonObject data) {
-        return false;
-    }
-
-    @Override
-    public BigDecimal getPlayerBalance(UUID player) {
-        return null;
-    }
-
-    @Override
-    public boolean depositBalance(UUID player, BigDecimal amount) {
-        return false;
-    }
-
-    @Override
-    public boolean withdrawBalance(UUID player, BigDecimal amount) {
-        return false;
-    }
 
     @Override
     public JsonObject getChunk(Chunk chunk) {
-        return null;
+        final int x = chunk.getX();
+        final int z = chunk.getZ();
+        Request request = new Request.Builder()
+                .url(url + "/chunks?x=" + x + "&z=" + z)
+                .get()
+                .build();
+        return fetchFromApi(request, "getChunk");
     }
 
     @Override
-    public void createLand(UUID owner, String name, Chunk chunk) {
-
+    public JsonObject createChunk(Chunk chunk) {
+        //TODO: add body
+        final int x = chunk.getX();
+        final int z = chunk.getZ();
+        Request request = new Request.Builder()
+                .url(url + "/chunks")
+                .post()
+                .build();
+        return fetchFromApi(request, "createChunk");
     }
 
     @Override
-    public void claimChunkForLand(UUID owner, Chunk chunk) {
+    public JsonObject claimChunk(Chunk chunk, UUID player) {
+        final int x = chunk.getX();
+        final int z = chunk.getZ();
+        Request request = new Request.Builder()
+                .url(url + "/chunks/")
+                .post()
+                .build();
+        return fetchFromApi(request, "createChunk");
+    }
 
+    @Override
+    public boolean createLand(UUID owner, String name, Chunk chunk) {
+        return false;
+    }
+
+    @Override
+    public boolean claimChunkForLand(UUID owner, Chunk chunk) {
+        return true;
     }
 
     @Override
