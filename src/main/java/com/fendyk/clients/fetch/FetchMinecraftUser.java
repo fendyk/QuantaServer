@@ -4,6 +4,7 @@ import com.fendyk.QuantaServer;
 import com.fendyk.clients.FetchAPI;
 import com.google.gson.JsonObject;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 
 import java.util.UUID;
 
@@ -30,10 +31,10 @@ public class FetchMinecraftUser extends FetchAPI<UUID> {
 
     @Override
     public JsonObject update(UUID key, JsonObject data) {
-        // TODO: Send body
+        RequestBody body = RequestBody.create(data.toString(), JSON);
         Request request = new Request.Builder()
                 .url(url + "/minecraftusers/" + key)
-                .patch()
+                .patch(body)
                 .build();
         return fetchFromApi(request, "updateMinecraftUser");
     }

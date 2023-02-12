@@ -16,7 +16,7 @@ public class EconomyCommands {
                 .withAliases("bal", "quanta", "money")
                 .executes((sender, args) -> {
                     Player player = (Player) sender;
-                    BigDecimal amount = api.getPlayerBalance(player.getUniqueId());
+                    BigDecimal amount = api.getMinecraftUserAPI().getPlayerBalance(player.getUniqueId());
                     player.sendMessage("Your balance is: " + amount);
                 })
                 .withSubcommand(new CommandAPICommand("deposit")
@@ -27,7 +27,11 @@ public class EconomyCommands {
                         .executes((sender, args) -> {
                             Player player = (Player) args[0];
                             Double amount = (Double) args[1];
-                            api.depositBalance(player.getUniqueId(), new BigDecimal(amount));
+                            boolean success = api.getMinecraftUserAPI().depositBalance(player.getUniqueId(), new BigDecimal(amount));
+                            if(!success) {
+                                player.sendMessage("Something went wrong when depositing. Please try again.");
+                                return;
+                            }
                             player.sendMessage("Your have deposited " + amount + " to " + player.getName());
                         })
                 )
@@ -39,7 +43,11 @@ public class EconomyCommands {
                         .executes((sender, args) -> {
                             Player player = (Player) args[0];
                             Double amount = (Double) args[1];
-                            api.withdrawBalance(player.getUniqueId(), new BigDecimal(amount));
+                            boolean success =api.getMinecraftUserAPI().withDrawBalance(player.getUniqueId(), new BigDecimal(amount));
+                            if(!success) {
+                                player.sendMessage("Something went wrong when withdrawing. Please try again.");
+                                return;
+                            }
                             player.sendMessage("Your have withdrawn " + amount + " from " + player.getName());
                         })
                 )

@@ -1,5 +1,6 @@
 package com.fendyk.clients.apis;
 
+import com.fendyk.API;
 import com.fendyk.clients.fetch.FetchMinecraftUser;
 import com.fendyk.clients.redis.RedisMinecraftUser;
 import com.google.gson.JsonObject;
@@ -10,11 +11,12 @@ import java.util.UUID;
 
 public class MinecraftUserAPI {
 
+    API api;
     FetchMinecraftUser fetch;
     RedisMinecraftUser redis;
 
-    public MinecraftUserAPI(FetchMinecraftUser fetch, RedisMinecraftUser redis) {
-        super();
+    public MinecraftUserAPI(API api, FetchMinecraftUser fetch, RedisMinecraftUser redis) {
+        this.api = api;
         this.fetch = fetch;
         this.redis = redis;
     }

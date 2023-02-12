@@ -20,17 +20,15 @@ public class LandCommands {
                             String name = (String) args[0];
                             Chunk chunk = player.getChunk();
 
-                            api.createLand(player.getUniqueId(), name, chunk);
                         })
                 )
                 .withSubcommand(new CommandAPICommand("claim")
-                        .withRequirement(sender -> api.getLand( ((Player) sender).getUniqueId() ) != null)
+                        //.withRequirement(sender -> api.getLandAPI()( ((Player) sender).getUniqueId() ) != null)
                         .executes((sender, args) -> {
                             Player player = (Player) sender;
                             String name = (String) args[0];
                             Chunk chunk = player.getChunk();
 
-                            api.claimChunkForLand(player.getUniqueId(), chunk);
                         })
                 )
                 .register();

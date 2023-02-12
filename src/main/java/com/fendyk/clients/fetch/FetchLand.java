@@ -9,7 +9,6 @@ import java.util.UUID;
 
 public class FetchLand extends FetchAPI<UUID> {
 
-
     public FetchLand(QuantaServer server, String url, boolean inDebugMode) {
         super(server, url, inDebugMode);
     }

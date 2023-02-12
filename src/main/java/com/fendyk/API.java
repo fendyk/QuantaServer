@@ -1,7 +1,13 @@
 package com.fendyk;
 
+import com.fendyk.clients.apis.ChunkAPI;
+import com.fendyk.clients.apis.LandAPI;
 import com.fendyk.clients.apis.MinecraftUserAPI;
+import com.fendyk.clients.fetch.FetchChunk;
+import com.fendyk.clients.fetch.FetchLand;
 import com.fendyk.clients.fetch.FetchMinecraftUser;
+import com.fendyk.clients.redis.RedisChunk;
+import com.fendyk.clients.redis.RedisLand;
 import com.fendyk.clients.redis.RedisMinecraftUser;
 import com.google.gson.JsonObject;
 import de.leonhard.storage.Toml;
@@ -14,13 +20,12 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class API {
-
     final String worldName;
     final boolean inDebugMode;
     QuantaServer server;
     MinecraftUserAPI minecraftUserAPI;
-
-    public boolean isInDebugMode() {return inDebugMode;}
+    LandAPI landAPI;
+    ChunkAPI chunkAPI;
 
     public API(QuantaServer server, Toml config, ArrayList<RedisPubSubListener<String, String>> listeners) {
         this.server = server;
@@ -33,32 +38,27 @@ public class API {
         RedisClient client = RedisClient.create(redisUrl);
 
         minecraftUserAPI = new MinecraftUserAPI(
+                this,
                 new FetchMinecraftUser(server, apiUrl, inDebugMode),
                 new RedisMinecraftUser(server, client, inDebugMode, listeners)
         );
+
+        landAPI = new LandAPI(
+                this,
+                new FetchLand(server, apiUrl, inDebugMode),
+                new RedisLand(server, client, inDebugMode, listeners)
+        );
+
+        chunkAPI = new ChunkAPI(
+                this,
+                new FetchChunk(server, apiUrl, inDebugMode),
+                new RedisChunk(server, client, inDebugMode, listeners)
+        );
+
     }
 
-    public Chunk getChunk(Chunk chunk) {
-        JsonObject json = redisAPI.getChunk(chunk) fetchAPI.getChunk(chunk);
-        json = json != null ? json : fetchAPI.getChunk(chunk);
+    public MinecraftUserAPI getMinecraftUserAPI() {return this.minecraftUserAPI;}
+    public LandAPI getLandAPI() {return this.landAPI;}
+    public ChunkAPI getChunkAPI() {return this.chunkAPI;}
 
-        int x = json.get("xCoord").getAsInt();
-        int z = json.get("zCoord").getAsInt();
-
-        return Bukkit.getWorld(this.worldName).getChunkAt(x, z);
-    }
-
-    public boolean createLand(UUID owner, String name, Chunk chunk) {
-        boolean isSet = redisAPI.createLand(owner, name, chunk);
-        return isSet || fetchAPI.createLand(owner, name, chunk);
-    }
-
-    public boolean claimChunkForLand(UUID owner, Chunk chunk) {
-        boolean isSet = redisAPI.claimChunkForLand(owner, chunk);
-        return isSet || fetchAPI.claimChunkForLand(owner, chunk);
-    }
-
-    public JsonObject getLand(UUID owner) {
-        return null;
-    }
 }
