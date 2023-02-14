@@ -2,9 +2,13 @@ package com.fendyk.clients.fetch;
 
 import com.fendyk.QuantaServer;
 import com.fendyk.clients.FetchAPI;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import okhttp3.Request;
+import okhttp3.RequestBody;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class FetchLand extends FetchAPI<UUID> {
@@ -14,7 +18,7 @@ public class FetchLand extends FetchAPI<UUID> {
     }
 
     @Override
-    public JsonObject get(UUID key) {
+    public JsonElement get(UUID key) {
         Request request = new Request.Builder()
                 .url(url + "/lands/" + key.toString())
                 .get()
@@ -23,17 +27,27 @@ public class FetchLand extends FetchAPI<UUID> {
     }
 
     @Override
-    public JsonObject create(JsonObject data) {
-        return null;
+    public JsonElement create(JsonObject data) {
+        RequestBody body = RequestBody.create(data.toString(), JSON);
+        Request request = new Request.Builder()
+                .url(url + "/lands")
+                .post(body)
+                .build();
+        return fetchFromApi(request, "fetchLand");
     }
 
     @Override
-    public JsonObject update(UUID key, JsonObject data) {
-        return null;
+    public JsonElement update(UUID key, JsonObject data) {
+        RequestBody body = RequestBody.create(data.toString(), JSON);
+        Request request = new Request.Builder()
+                .url(url + "/lands/" + key)
+                .patch(body)
+                .build();
+        return fetchFromApi(request, "updateLand");
     }
 
     @Override
-    public JsonObject delete(UUID key) {
+    public JsonElement delete(UUID key) {
         return null;
     }
 }

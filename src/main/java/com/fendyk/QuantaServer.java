@@ -20,8 +20,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,8 +52,11 @@ public class QuantaServer extends JavaPlugin implements Listener {
         listeners.add(new AuthenticationListener());
         listeners.add(new UserListener());
 
+        HashMap<String, String> subscriptions = new HashMap<>();
+        subscriptions.put("authentication", "user");
+
         // Instantiate api
-        api = new API(this, toml, listeners);
+        api = new API(this, toml, listeners, subscriptions);
 
         // Commands
         new EconomyCommands(api);
@@ -60,11 +65,6 @@ public class QuantaServer extends JavaPlugin implements Listener {
         // Listeners
         getServer().getPluginManager().registerEvents(this, this);
         getServer().getPluginManager().registerEvents(new EntityDeathListener(this), this);
-
-        RedisPubSubCommands<String, String> pubSubCommands = api.getRedisAPI().getPubSubCommands();
-
-        // Subscribe
-        pubSubCommands.subscribe("authentication", "user");
 
     }
 

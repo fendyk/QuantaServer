@@ -1,7 +1,7 @@
 package com.fendyk.listeners.redis.minecraft;
 
+import com.fendyk.API;
 import com.fendyk.QuantaServer;
-import com.fendyk.RedisAPI;
 import com.fendyk.configs.EarningsConfig;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -22,25 +22,25 @@ public class EntityDeathListener implements Listener {
     }
 
     @EventHandler
-    public void onEntityDeath(EntityDeathEvent event) throws IOException {
+    public void onEntityDeath(EntityDeathEvent event) {
         if(event.getEntity().getKiller() != null) {
 
             Entity killed = event.getEntity();
             Entity killer = event.getEntity().getKiller();
 
             EarningsConfig config = server.getEarningsConfig();
-            RedisAPI redisAPI = server.getRedisAPI();
+            API api = server.getApi();
 
             assert killer != null;
 
             if(killed instanceof Player) {
                 BigDecimal amount  = config.getPlayerKillEarnings().setScale(2, RoundingMode.HALF_EVEN);
-                redisAPI.depositBalance(killer.getUniqueId(), amount);
+                api.getMinecraftUserAPI().depositBalance(killer.getUniqueId(), amount);
                 killer.sendMessage("You have killed " + killed.getName() + " and received " + amount.toString() + "quanta");
             }
             else if(config.getEntities().containsKey(killed.getType().name())) {
                 BigDecimal amount  = config.getEntityEarnings(killed.getType()).setScale(2, RoundingMode.HALF_EVEN);
-                redisAPI.depositBalance(killer.getUniqueId(), amount);
+                api.getMinecraftUserAPI().depositBalance(killer.getUniqueId(), amount);
                 killer.sendMessage("You have killed a " + killed.getType() + " and received " + amount + "quanta");
             }
         }

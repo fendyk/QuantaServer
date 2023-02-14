@@ -3,7 +3,10 @@ package com.fendyk.clients.apis;
 import com.fendyk.API;
 import com.fendyk.clients.fetch.FetchMinecraftUser;
 import com.fendyk.clients.redis.RedisMinecraftUser;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.apache.commons.lang3.ObjectUtils;
+import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -22,25 +25,27 @@ public class MinecraftUserAPI {
     }
 
     public BigDecimal getPlayerBalance(UUID player) {
-        JsonObject jPlayer = redis.get(player);
-        jPlayer = jPlayer != null ? jPlayer : fetch.get(player);
-
-        return jPlayer.get("quanta").getAsBigDecimal();
+        JsonElement ePlayer = get(player);
+        if(ePlayer == null || ePlayer.isJsonNull()) return null;
+        return ePlayer.getAsJsonObject().get("quanta").getAsBigDecimal();
     }
 
-    public JsonObject get(UUID player) {
-        JsonObject json = redis.get(player);
-        return json != null ? json : fetch.get(player);
+    @Nullable
+    public JsonElement get(UUID player) {
+        return ObjectUtils.firstNonNull(redis.get(player), fetch.get(player));
     }
 
     public boolean update(UUID player, JsonObject data) {
         JsonObject result = fetch.update(player, data);
         boolean isCached = redis.set(player, data);
-        return !result.isJsonNull() && isCached;
+        return result != null && isCached;
     }
 
     public boolean withDrawBalance(UUID player, BigDecimal amount) {
-        JsonObject jPlayer = get(player);
+        JsonElement ePlayer = get(player);
+        if(ePlayer == null || ePlayer.isJsonNull()) return false;
+
+        JsonObject jPlayer = ePlayer.getAsJsonObject();
         BigDecimal oldAmount = jPlayer.get("quanta").getAsBigDecimal();
         BigDecimal newAmount = oldAmount.subtract(amount).setScale(2, RoundingMode.HALF_EVEN);
 
@@ -54,7 +59,9 @@ public class MinecraftUserAPI {
     }
 
     public boolean depositBalance(UUID player, BigDecimal amount) {
-        JsonObject jPlayer = get(player);
+        JsonElement ePlayer = get(player);
+        if(ePlayer == null || ePlayer.isJsonNull()) return false;
+        JsonObject jPlayer = ePlayer.getAsJsonObject();
 
         BigDecimal oldAmount = jPlayer.get("quanta").getAsBigDecimal();
         BigDecimal newAmount = oldAmount.add(amount).setScale(2, RoundingMode.HALF_EVEN);

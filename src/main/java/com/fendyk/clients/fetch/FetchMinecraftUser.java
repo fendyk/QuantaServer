@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class FetchMinecraftUser extends FetchAPI<UUID> {
@@ -21,7 +22,7 @@ public class FetchMinecraftUser extends FetchAPI<UUID> {
                 .url(url + "/minecraftusers/" + key.toString())
                 .get()
                 .build();
-        return fetchFromApi(request, "fetchMinecraftUser");
+        return Objects.requireNonNull(fetchFromApi(request, "fetchMinecraftUser")).getAsJsonObject();
     }
 
     @Override
@@ -36,7 +37,7 @@ public class FetchMinecraftUser extends FetchAPI<UUID> {
                 .url(url + "/minecraftusers/" + key)
                 .patch(body)
                 .build();
-        return fetchFromApi(request, "updateMinecraftUser");
+        return Objects.requireNonNull(fetchFromApi(request, "updateMinecraftUser")).getAsJsonObject();
     }
 
     @Override

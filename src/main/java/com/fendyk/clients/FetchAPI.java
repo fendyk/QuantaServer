@@ -2,6 +2,8 @@ package com.fendyk.clients;
 
 import com.fendyk.Log;
 import com.fendyk.QuantaServer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import okhttp3.MediaType;
@@ -9,16 +11,11 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.UUID;
 
 public abstract class FetchAPI<T> {
-
     protected final boolean inDebugMode;
     protected QuantaServer server;
     protected OkHttpClient client =  new OkHttpClient();
@@ -30,6 +27,15 @@ public abstract class FetchAPI<T> {
         this.url = url;
         this.inDebugMode = inDebugMode;
     }
+    void logDebug(Response res, String responseBody, String requestBody) {
+            Bukkit.getLogger().info("-----------------------------------");
+            Bukkit.getLogger().info("ResponseCode: " + res.code());
+            Bukkit.getLogger().info("Message: " + res.message());
+            Bukkit.getLogger().info("Request:" + requestBody);
+            Bukkit.getLogger().info("Response:" + responseBody);
+            Bukkit.getLogger().info("-----------------------------------");
+    }
+
 
     /**
      * Fetches from api
@@ -38,28 +44,47 @@ public abstract class FetchAPI<T> {
      * @return
      */
     @Nullable
-    protected JsonObject fetchFromApi(Request request, String name) {
+    protected JsonElement fetchFromApi(Request request, String name) {
         try (Response response = client.newCall(request).execute()) {
             if(response.code() == 204) {
                 Bukkit.getLogger().info(Log.Info("Response empty (204) at:" + name));
-                return new JsonObject(); // Return empty
+                if(inDebugMode) logDebug(response,
+                        JsonNull.INSTANCE.toString(),
+                        request.body() != null ? request.body().toString() : null
+                );
+                return JsonNull.INSTANCE; // Return empty
             }
             else if(response.code() != 200) {
                 Bukkit.getLogger().info(Log.Error("Response not ok (" + response.code() + ") at:" + name));
+                if(inDebugMode) logDebug(response,
+                        response.body() != null ? response.body().string() : null,
+                        request.body() != null ? request.body().toString() : null
+                );
                 return null;
             }
 
-            assert response.body() != null;
+            /* If no 'body' found we simpy return a JsonNull */
+            if(response.body() == null) {
+                return JsonNull.INSTANCE; // Return empty
+            }
+
             String json = response.body().string();
-            if(inDebugMode) Bukkit.getLogger().info(json);
-            return JsonParser.parseString("").getAsJsonObject();
+            if(inDebugMode) logDebug(response, json, request.body() != null ? request.body().toString() : null);
+            return JsonParser.parseString(json);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public abstract JsonObject get(T key);
-    public abstract JsonObject create(JsonObject data);
-    public abstract JsonObject update(T key, JsonObject data);
-    public abstract JsonObject delete(T key);
+    @Nullable
+    public abstract JsonElement get(T key);
+
+    @Nullable
+    public abstract JsonElement create(JsonObject data);
+
+    @Nullable
+    public abstract JsonElement update(T key, JsonObject data);
+
+    @Nullable
+    public abstract JsonElement delete(T key);
 }
