@@ -1,6 +1,8 @@
 package com.fendyk.clients.apis;
 
 import com.fendyk.API;
+import com.fendyk.DTOs.MinecraftUserDTO;
+import com.fendyk.QuantaServer;
 import com.fendyk.clients.fetch.FetchMinecraftUser;
 import com.fendyk.clients.redis.RedisMinecraftUser;
 import com.google.gson.JsonElement;
@@ -24,50 +26,66 @@ public class MinecraftUserAPI {
         this.redis = redis;
     }
 
+    /**
+     * Gets the player's balance
+     * @param player
+     * @return
+     */
+    @Nullable
     public BigDecimal getPlayerBalance(UUID player) {
-        JsonElement ePlayer = get(player);
-        if(ePlayer == null || ePlayer.isJsonNull()) return null;
-        return ePlayer.getAsJsonObject().get("quanta").getAsBigDecimal();
+        MinecraftUserDTO minecraftUser = get(player);
+        if(minecraftUser == null) return null;
+        return BigDecimal.valueOf(minecraftUser.getQuanta());
     }
 
+    /**
+     * Gets the player from either redis or db
+     * @param player
+     * @return
+     */
     @Nullable
-    public JsonElement get(UUID player) {
+    public MinecraftUserDTO get(UUID player) {
         return ObjectUtils.firstNonNull(redis.get(player), fetch.get(player));
     }
 
-    public boolean update(UUID player, JsonObject data) {
-        JsonObject result = fetch.update(player, data);
-        boolean isCached = redis.set(player, data);
-        return result != null && isCached;
+    /**
+     * Updates the player on both redis and db
+     * @param player
+     * @param data
+     * @return
+     */
+    public boolean update(UUID player, MinecraftUserDTO minecraftUserDTO) {
+        MinecraftUserDTO updatedMinecraftUserDTO = fetch.update(player, minecraftUserDTO);
+        boolean isCached = redis.set(player, updatedMinecraftUserDTO);
+        return updatedMinecraftUserDTO != null && isCached;
     }
 
     public boolean withDrawBalance(UUID player, BigDecimal amount) {
-        JsonElement ePlayer = get(player);
-        if(ePlayer == null || ePlayer.isJsonNull()) return false;
+        MinecraftUserDTO minecraftUser = get(player);
+        if(minecraftUser == null) return false;
 
-        JsonObject jPlayer = ePlayer.getAsJsonObject();
-        BigDecimal oldAmount = jPlayer.get("quanta").getAsBigDecimal();
+        BigDecimal oldAmount = BigDecimal.valueOf(minecraftUser.getQuanta());
         BigDecimal newAmount = oldAmount.subtract(amount).setScale(2, RoundingMode.HALF_EVEN);
 
         if(oldAmount.compareTo(amount) < 0) {
             return false;
         }
 
-        jPlayer.addProperty("quanta", newAmount);
+        minecraftUser.setQuanta(newAmount.floatValue());
 
-        return update(player, jPlayer);
+        return update(player, minecraftUser);
     }
 
     public boolean depositBalance(UUID player, BigDecimal amount) {
-        JsonElement ePlayer = get(player);
-        if(ePlayer == null || ePlayer.isJsonNull()) return false;
-        JsonObject jPlayer = ePlayer.getAsJsonObject();
+        MinecraftUserDTO minecraftUser = get(player);
+        if(minecraftUser == null) return false;
 
-        BigDecimal oldAmount = jPlayer.get("quanta").getAsBigDecimal();
+        BigDecimal oldAmount = BigDecimal.valueOf(minecraftUser.getQuanta());
         BigDecimal newAmount = oldAmount.add(amount).setScale(2, RoundingMode.HALF_EVEN);
-        jPlayer.addProperty("quanta", newAmount);
 
-        return update(player, jPlayer);
+        minecraftUser.setQuanta(newAmount.floatValue());
+
+        return update(player, minecraftUser);
     }
 
 }

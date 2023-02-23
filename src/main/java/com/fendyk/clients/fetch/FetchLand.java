@@ -1,53 +1,58 @@
 package com.fendyk.clients.fetch;
 
+import com.fendyk.DTOs.LandDTO;
 import com.fendyk.QuantaServer;
 import com.fendyk.clients.FetchAPI;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
 import java.util.UUID;
 
-public class FetchLand extends FetchAPI<UUID> {
+public class FetchLand extends FetchAPI<UUID, LandDTO, LandDTO> {
 
     public FetchLand(QuantaServer server, String url, boolean inDebugMode) {
         super(server, url, inDebugMode);
     }
 
     @Override
-    public JsonElement get(UUID key) {
+    public LandDTO get(UUID key) {
         Request request = new Request.Builder()
                 .url(url + "/lands/" + key.toString())
                 .get()
                 .build();
-        return fetchFromApi(request, "fetchLand");
+        return QuantaServer.gson.fromJson(
+                fetchFromApi(request, "fetchLand"),
+                LandDTO.class
+        );
     }
 
     @Override
-    public JsonElement create(JsonObject data) {
+    public LandDTO create(LandDTO data) {
         RequestBody body = RequestBody.create(data.toString(), JSON);
         Request request = new Request.Builder()
                 .url(url + "/lands")
                 .post(body)
                 .build();
-        return fetchFromApi(request, "fetchLand");
+        return QuantaServer.gson.fromJson(
+                fetchFromApi(request, "createLand"),
+                LandDTO.class
+        );
     }
 
     @Override
-    public JsonElement update(UUID key, JsonObject data) {
+    public LandDTO update(UUID key, LandDTO data) {
         RequestBody body = RequestBody.create(data.toString(), JSON);
         Request request = new Request.Builder()
                 .url(url + "/lands/" + key)
                 .patch(body)
                 .build();
-        return fetchFromApi(request, "updateLand");
+        return QuantaServer.gson.fromJson(
+                fetchFromApi(request, "updateLand"),
+                LandDTO.class
+        );
     }
 
     @Override
-    public JsonElement delete(UUID key) {
+    public LandDTO delete(UUID key) {
         return null;
     }
 }

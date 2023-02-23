@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class RedisAPI<T> {
+public abstract class RedisAPI<K, DTO> {
 
     protected final boolean inDebugMode;
     protected QuantaServer server;
@@ -84,8 +84,8 @@ public abstract class RedisAPI<T> {
     public RedisPubSubCommands<String, String> getPubSubCommands() {return pubSubCommands;}
 
     @Nullable
-    public abstract JsonElement get(T key);
-    public abstract boolean set(T key, JsonObject data);
+    public abstract DTO get(K key);
+    public abstract boolean set(K key, DTO data);
 
     public JsonElement getCache(String key) {
         String result = syncCommands.get(key);
@@ -106,8 +106,8 @@ public abstract class RedisAPI<T> {
                 JsonParser.parseString(result).getAsJsonObject();
     }
 
-    public boolean setCache(String key, JsonObject data) {
-        String result = syncCommands.set(key, data.toString());
+    public boolean setCache(String key, String data) {
+        String result = syncCommands.set(key, data);
         if(inDebugMode) {
             Bukkit.getLogger().info("Redis Action SET:");
             Bukkit.getLogger().info(result);

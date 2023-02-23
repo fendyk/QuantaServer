@@ -32,8 +32,9 @@ public class LandAPI {
      * @param name
      * @param chunk
      * @return The new land if created or null if something went wrong.
+     * @throws Exception dfsgdfg
      */
-    public JsonObject create(UUID owner, String name, Chunk chunk) {
+    public JsonObject create(UUID owner, String name, Chunk chunk) throws Exception {
         try {
             JsonObject json = new JsonObject();
             json.addProperty("name", name);

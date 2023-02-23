@@ -1,5 +1,6 @@
 package com.fendyk.clients;
 
+import com.fendyk.DTOs.DTO;
 import com.fendyk.Log;
 import com.fendyk.QuantaServer;
 import com.google.gson.JsonElement;
@@ -15,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 
-public abstract class FetchAPI<T> {
+public abstract class FetchAPI<K, DTO, UpdateDTO> {
     protected final boolean inDebugMode;
     protected QuantaServer server;
     protected OkHttpClient client =  new OkHttpClient();
@@ -52,7 +53,7 @@ public abstract class FetchAPI<T> {
                         JsonNull.INSTANCE.toString(),
                         request.body() != null ? request.body().toString() : null
                 );
-                return JsonNull.INSTANCE; // Return empty
+                return null; // Return empty
             }
             else if(response.code() != 200) {
                 Bukkit.getLogger().info(Log.Error("Response not ok (" + response.code() + ") at:" + name));
@@ -65,7 +66,7 @@ public abstract class FetchAPI<T> {
 
             /* If no 'body' found we simpy return a JsonNull */
             if(response.body() == null) {
-                return JsonNull.INSTANCE; // Return empty
+                return null; // Return empty
             }
 
             String json = response.body().string();
@@ -77,14 +78,14 @@ public abstract class FetchAPI<T> {
     }
 
     @Nullable
-    public abstract JsonElement get(T key);
+    public abstract DTO get(K key);
 
     @Nullable
-    public abstract JsonElement create(JsonObject data);
+    public abstract DTO create(DTO data);
 
     @Nullable
-    public abstract JsonElement update(T key, JsonObject data);
+    public abstract DTO update(K key, UpdateDTO data);
 
     @Nullable
-    public abstract JsonElement delete(T key);
+    public abstract DTO delete(K key);
 }

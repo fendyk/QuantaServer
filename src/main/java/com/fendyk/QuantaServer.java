@@ -30,8 +30,7 @@ import java.util.Map;
 public class QuantaServer extends JavaPlugin implements Listener {
 
     API api;
-    private Gson gson = new Gson();
-
+    public static Gson gson = new Gson();
     EarningsConfig earningsConfig;
     Toml toml;
 

@@ -1,5 +1,7 @@
 package com.fendyk.clients.fetch;
 
+import com.fendyk.DTOs.ChunkDTO;
+import com.fendyk.DTOs.updates.UpdateChunkDTO;
 import com.fendyk.QuantaServer;
 import com.fendyk.clients.FetchAPI;
 import com.fendyk.utilities.Vector2;
@@ -10,42 +12,51 @@ import okhttp3.RequestBody;
 
 import java.util.Objects;
 
-public class FetchChunk extends FetchAPI<Vector2> {
+public class FetchChunk extends FetchAPI<Vector2, ChunkDTO, UpdateChunkDTO> {
     public FetchChunk(QuantaServer server, String url, boolean inDebugMode) {
         super(server, url, inDebugMode);
     }
 
     @Override
-    public JsonElement get(Vector2 key) {
+    public ChunkDTO get(Vector2 key) {
         Request request = new Request.Builder()
                 .url(url + "/chunks?x=" + key.getX() + "&z=" + key.getY())
                 .get()
                 .build();
-        return fetchFromApi(request, "getChunk");
+        return QuantaServer.gson.fromJson(
+                fetchFromApi(request, "getChunk"),
+                ChunkDTO.class
+        );
     }
 
     @Override
-    public JsonElement create(JsonObject data) {
-        RequestBody body = RequestBody.create(data.toString(), JSON);
+    public ChunkDTO create(ChunkDTO data) {
+        RequestBody body = RequestBody.create(QuantaServer.gson.toJson(data), JSON);
         Request request = new Request.Builder()
                 .url(url + "/chunks")
                 .post(body)
                 .build();
-        return fetchFromApi(request, "createChunk");
+        return QuantaServer.gson.fromJson(
+                fetchFromApi(request, "createChunk"),
+                ChunkDTO.class
+        );
     }
 
     @Override
-    public JsonElement update(Vector2 key, JsonObject data) {
-        RequestBody body = RequestBody.create(data.toString(), JSON);
+    public ChunkDTO update(Vector2 key, UpdateChunkDTO data) {
+        RequestBody body = RequestBody.create(QuantaServer.gson.toJson(data), JSON);
         Request request = new Request.Builder()
                 .url(url + "/chunks?x=" + key.getX() + "&z=" + key.getY())
                 .patch(body)
                 .build();
-        return fetchFromApi(request, "updateChunk");
+        return QuantaServer.gson.fromJson(
+                fetchFromApi(request, "updateChunk"),
+                ChunkDTO.class
+        );
     }
 
     @Override
-    public JsonElement delete(Vector2 key) {
+    public ChunkDTO delete(Vector2 key) {
         return null;
     }
 }

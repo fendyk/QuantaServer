@@ -1,6 +1,9 @@
 package com.fendyk.clients.apis;
 
 import com.fendyk.API;
+import com.fendyk.DTOs.ChunkDTO;
+import com.fendyk.DTOs.MinecraftUserDTO;
+import com.fendyk.DTOs.updates.UpdateChunkDTO;
 import com.fendyk.clients.ApiClient;
 import com.fendyk.clients.fetch.FetchChunk;
 import com.fendyk.clients.redis.RedisChunk;
@@ -28,38 +31,40 @@ public class ChunkAPI extends ApiClient {
     }
 
     @Nullable
-    public JsonElement get(Chunk chunk) {
+    public ChunkDTO get(Chunk chunk) {
         Vector2 chunkPos = new Vector2(chunk.getX(), chunk.getZ());
         return ObjectUtils.firstNonNull(redis.get(chunkPos), fetch.get(chunkPos));
     }
 
-    public JsonElement create(Chunk chunk, boolean isNonClaimable) {
-        JsonObject data = new JsonObject();
-        data.addProperty("isNonClaimable", isNonClaimable);
-        data.addProperty("xCoord", chunk.getX());
-        data.addProperty("zCoord", chunk.getZ());
-        JsonElement result = fetch.create(data);
+    public ChunkDTO create(Chunk chunk, boolean isClaimable) {
+        ChunkDTO newChunkDTO = new ChunkDTO();
+        newChunkDTO.setClaimable(isClaimable);
+        newChunkDTO.setX(chunk.getX());
+        newChunkDTO.setZ(chunk.getZ());
 
-        if(result == null || result.isJsonNull()) return result;
+        newChunkDTO = fetch.create(newChunkDTO);
 
-        boolean isCached = redis.set(new Vector2(chunk.getX(), chunk.getZ()), result.getAsJsonObject());
-        return !result.isJsonNull() && isCached ? result : null;
+        if(newChunkDTO == null) return null;
+
+        boolean isCached = redis.set(new Vector2(chunk.getX(), chunk.getZ()), newChunkDTO);
+        return isCached ? newChunkDTO : null;
     }
 
-    public JsonElement update(Chunk chunk, JsonObject data) {
+    public ChunkDTO update(Chunk chunk, UpdateChunkDTO updates) {
         Vector2 vector2 = new Vector2(chunk.getX(), chunk.getZ());
-        JsonElement result = fetch.update(vector2, data);
-        if(result == null || result.isJsonNull()) return result;
+        ChunkDTO updatedChunk = fetch.update(vector2, updates);
 
-        boolean isCached = redis.set(vector2, data);
-        return isCached ? result : null;
+        if(updatedChunk == null) return null;
+
+        boolean isCached = redis.set(vector2, updatedChunk);
+        return isCached ? updatedChunk : null;
     }
 
     public boolean claim(Chunk chunk, String landId) {
-        JsonObject json = new JsonObject();
-        json.addProperty("landId", landId);
-        JsonElement result = update(chunk, json);
-        return result instanceof JsonObject;
+        UpdateChunkDTO updateChunkDTO = new UpdateChunkDTO();
+        updateChunkDTO.setLandId(landId);
+        ChunkDTO chunkDTO = update(chunk,updateChunkDTO );
+        return chunkDTO != null
     }
 
     public JsonObject setNonClaimable(Chunk chunk, boolean nonClaimable) {
