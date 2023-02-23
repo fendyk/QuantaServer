@@ -1,6 +1,8 @@
 package com.fendyk.commands;
 
 import com.fendyk.API;
+import com.fendyk.DTOs.ChunkDTO;
+import com.fendyk.DTOs.LandDTO;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.jorel.commandapi.CommandAPICommand;
@@ -23,43 +25,28 @@ public class LandCommands {
                             Player player = (Player) sender;
                             String name = (String) args[0];
                             Chunk chunk = player.getChunk();
-
-                            JsonElement eLand = api.getLandAPI().create(player.getUniqueId(), name, chunk);
-                            if(eLand == null) {
-                                player.sendMessage("Error when trying to find the land");
-                                return;
+                            try {
+                                LandDTO landDTO = api.getLandAPI().create(player.getUniqueId(), name, chunk);
+                                player.sendMessage("Your land has been created");
+                            } catch (Exception e) {
+                                player.sendMessage(e.getMessage());
                             }
-                            else if(eLand.isJsonNull()) {
-                                player.sendMessage("Land could not be found.");
-                                return;
-                            }
-
-                            JsonObject jLand = eLand.getAsJsonObject();
-
-                            player.sendMessage("Your land has been created");
-                            player.sendMessage("Name: " + jLand.get("name").getAsString());
                         })
                 )
                 .withSubcommand(new CommandAPICommand("claim")
                         //.withRequirement(sender -> api.getLandAPI()( ((Player) sender).getUniqueId() ) != null)
                         .executes((sender, args) -> {
                             Player player = (Player) sender;
-                            String name = (String) args[0];
                             Chunk chunk = player.getChunk();
 
-                            JsonElement eLand = api.getLandAPI().get(player.getUniqueId());
-                            if(eLand == null) {
+                            LandDTO landDTO = api.getLandAPI().get(player.getUniqueId());
+
+                            if(landDTO == null) {
                                 player.sendMessage("Error when trying to find the land");
                                 return;
                             }
-                            else if(eLand.isJsonNull()) {
-                                player.sendMessage("Land could not be found.");
-                                return;
-                            }
 
-                            JsonObject JLand = eLand.getAsJsonObject();
-
-                            boolean isClaimed = api.getChunkAPI().claim(chunk,JLand.get("id").getAsString());
+                            boolean isClaimed = api.getChunkAPI().claim(chunk,landDTO.getId());
                             if(!isClaimed) {
                                 player.sendMessage("Could not find or claim chunk");
                                 return;
@@ -77,20 +64,11 @@ public class LandCommands {
                                             boolean isNonClaimable = (boolean) args[0];
                                             Chunk chunk = player.getChunk();
 
-                                            JsonElement eChunk = api.getChunkAPI().create(chunk, isNonClaimable);
-                                            if(eChunk == null) {
+                                            ChunkDTO chunkDTO = api.getChunkAPI().create(chunk, isNonClaimable);
+                                            if(chunkDTO == null) {
                                                 player.sendMessage("Error when trying to create a chunk");
                                                 return;
                                             }
-                                            else if(eChunk.isJsonNull()) {
-                                                player.sendMessage("Chunk could not be found");
-                                                return;
-                                            }
-                                            else if(eChunk.getAsJsonObject().isEmpty()) {
-                                                player.sendMessage("Chunk is probably already generated");
-                                                return;
-                                            }
-
 
                                             player.sendMessage("Chunk has been generated");
                                         })

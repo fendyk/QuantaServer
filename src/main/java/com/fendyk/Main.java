@@ -8,26 +8,17 @@ import com.fendyk.listeners.redis.UserListener;
 import com.fendyk.listeners.redis.minecraft.EntityDeathListener;
 import com.google.gson.*;
 import de.leonhard.storage.Toml;
-import io.lettuce.core.RedisClient;
-import io.lettuce.core.api.StatefulRedisConnection;
-import io.lettuce.core.api.sync.RedisCommands;
 import io.lettuce.core.pubsub.RedisPubSubListener;
-import io.lettuce.core.pubsub.StatefulRedisPubSubConnection;
-import io.lettuce.core.pubsub.api.sync.RedisPubSubCommands;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-public class QuantaServer extends JavaPlugin implements Listener {
+public class Main extends JavaPlugin implements Listener {
 
     API api;
     public static Gson gson = new Gson();
@@ -39,7 +30,7 @@ public class QuantaServer extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        toml = new Toml("config", "plugins/QuantaServer");
+        toml = new Toml("config", "plugins/Main");
         toml.setDefault("isInDebugMode", false);
         toml.setDefault("apiUrl", "<your apiUrl here>");
         toml.setDefault("redisUrl", "redis://password@localhost:6379/0");

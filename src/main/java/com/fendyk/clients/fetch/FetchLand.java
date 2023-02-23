@@ -1,7 +1,7 @@
 package com.fendyk.clients.fetch;
 
 import com.fendyk.DTOs.LandDTO;
-import com.fendyk.QuantaServer;
+import com.fendyk.Main;
 import com.fendyk.clients.FetchAPI;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public class FetchLand extends FetchAPI<UUID, LandDTO, LandDTO> {
 
-    public FetchLand(QuantaServer server, String url, boolean inDebugMode) {
+    public FetchLand(Main server, String url, boolean inDebugMode) {
         super(server, url, inDebugMode);
     }
 
@@ -19,7 +19,7 @@ public class FetchLand extends FetchAPI<UUID, LandDTO, LandDTO> {
                 .url(url + "/lands/" + key.toString())
                 .get()
                 .build();
-        return QuantaServer.gson.fromJson(
+        return Main.gson.fromJson(
                 fetchFromApi(request, "fetchLand"),
                 LandDTO.class
         );
@@ -32,7 +32,7 @@ public class FetchLand extends FetchAPI<UUID, LandDTO, LandDTO> {
                 .url(url + "/lands")
                 .post(body)
                 .build();
-        return QuantaServer.gson.fromJson(
+        return Main.gson.fromJson(
                 fetchFromApi(request, "createLand"),
                 LandDTO.class
         );
@@ -45,7 +45,7 @@ public class FetchLand extends FetchAPI<UUID, LandDTO, LandDTO> {
                 .url(url + "/lands/" + key)
                 .patch(body)
                 .build();
-        return QuantaServer.gson.fromJson(
+        return Main.gson.fromJson(
                 fetchFromApi(request, "updateLand"),
                 LandDTO.class
         );

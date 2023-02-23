@@ -1,7 +1,7 @@
 package com.fendyk.listeners.redis.minecraft;
 
 import com.fendyk.API;
-import com.fendyk.QuantaServer;
+import com.fendyk.Main;
 import com.fendyk.configs.EarningsConfig;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -9,15 +9,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class EntityDeathListener implements Listener {
 
-    QuantaServer server;
+    Main server;
 
-    public EntityDeathListener(QuantaServer server) {
+    public EntityDeathListener(Main server) {
         this.server = server;
     }
 

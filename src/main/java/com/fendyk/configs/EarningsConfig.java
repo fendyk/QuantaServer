@@ -13,7 +13,7 @@ public class EarningsConfig {
     Toml config;
 
     public EarningsConfig() {
-        config = new Toml("earnings", "plugins/QuantaServer");
+        config = new Toml("earnings", "plugins/Main");
         config.setDefault("pvp", 2.5);
 
         if(config.get("materials") == null) {

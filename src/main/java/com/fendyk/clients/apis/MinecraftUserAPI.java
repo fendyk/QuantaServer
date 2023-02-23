@@ -2,11 +2,8 @@ package com.fendyk.clients.apis;
 
 import com.fendyk.API;
 import com.fendyk.DTOs.MinecraftUserDTO;
-import com.fendyk.QuantaServer;
 import com.fendyk.clients.fetch.FetchMinecraftUser;
 import com.fendyk.clients.redis.RedisMinecraftUser;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import org.apache.commons.lang3.ObjectUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -54,10 +51,11 @@ public class MinecraftUserAPI {
      * @param data
      * @return
      */
-    public boolean update(UUID player, MinecraftUserDTO minecraftUserDTO) {
+    public MinecraftUserDTO update(UUID player, MinecraftUserDTO minecraftUserDTO) {
         MinecraftUserDTO updatedMinecraftUserDTO = fetch.update(player, minecraftUserDTO);
+        if(updatedMinecraftUserDTO == null) return null;
         boolean isCached = redis.set(player, updatedMinecraftUserDTO);
-        return updatedMinecraftUserDTO != null && isCached;
+        return isCached ? updatedMinecraftUserDTO : null;
     }
 
     public boolean withDrawBalance(UUID player, BigDecimal amount) {
@@ -73,7 +71,7 @@ public class MinecraftUserAPI {
 
         minecraftUser.setQuanta(newAmount.floatValue());
 
-        return update(player, minecraftUser);
+        return update(player, minecraftUser) != null;
     }
 
     public boolean depositBalance(UUID player, BigDecimal amount) {
@@ -85,7 +83,7 @@ public class MinecraftUserAPI {
 
         minecraftUser.setQuanta(newAmount.floatValue());
 
-        return update(player, minecraftUser);
+        return update(player, minecraftUser) != null;
     }
 
 }

@@ -4,26 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="feat: better error handling and overhaul (again) to the api">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/ChunkDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/DTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/LandDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/LocationDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/MinecraftUserDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/updates/UpdateChunkDTO.java" afterDir="false" />
+    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="feat: DTO implementation">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/QuantaServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/QuantaServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/ChunkDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/ChunkDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/DTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/LandDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/LandDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/MinecraftUserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/MinecraftUserDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/FetchAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/FetchAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/RedisAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/RedisAPI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/ChunkAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/ChunkAPI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/LandAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/LandAPI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/MinecraftUserAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/MinecraftUserAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/fetch/FetchChunk.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/fetch/FetchChunk.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/fetch/FetchLand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/fetch/FetchLand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/fetch/FetchMinecraftUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/fetch/FetchMinecraftUser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisChunk.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisChunk.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisLand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisLand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisMinecraftUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisMinecraftUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -179,7 +171,7 @@
       <workItem from="1676320973717" duration="7261000" />
       <workItem from="1676366121572" duration="9274000" />
       <workItem from="1677070714079" duration="2351000" />
-      <workItem from="1677177006068" duration="10766000" />
+      <workItem from="1677177006068" duration="12310000" />
     </task>
     <task id="LOCAL-00001" summary="feat: redis">
       <created>1675545393878</created>
@@ -244,7 +236,14 @@
       <option name="project" value="LOCAL" />
       <updated>1676389840312</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="feat: DTO implementation">
+      <created>1677191889419</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1677191889419</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -271,6 +270,7 @@
     <MESSAGE value="feat: overhaul to the API" />
     <MESSAGE value="feat: added more functionality" />
     <MESSAGE value="feat: better error handling and overhaul (again) to the api" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: better error handling and overhaul (again) to the api" />
+    <MESSAGE value="feat: DTO implementation" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: DTO implementation" />
   </component>
 </project>

@@ -1,12 +1,9 @@
 package com.fendyk.clients;
 
 import com.fendyk.Log;
-import com.fendyk.QuantaServer;
-import com.fendyk.listeners.redis.AuthenticationListener;
-import com.fendyk.listeners.redis.UserListener;
+import com.fendyk.Main;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;
@@ -15,27 +12,22 @@ import io.lettuce.core.pubsub.RedisPubSubListener;
 import io.lettuce.core.pubsub.StatefulRedisPubSubConnection;
 import io.lettuce.core.pubsub.api.sync.RedisPubSubCommands;
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.jetbrains.annotations.Nullable;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
 
 public abstract class RedisAPI<K, DTO> {
 
     protected final boolean inDebugMode;
-    protected QuantaServer server;
+    protected Main server;
     protected RedisClient client;
     protected StatefulRedisConnection<String, String> connection;
     protected StatefulRedisPubSubConnection<String, String> pubSubConnection;
     protected RedisCommands<String, String> syncCommands;
     protected RedisPubSubCommands<String, String> pubSubCommands;
 
-    public RedisAPI(QuantaServer server,
+    public RedisAPI(Main server,
                     RedisClient client,
                     boolean inDebugMode,
                     ArrayList<RedisPubSubListener<String, String>> listeners,

@@ -1,12 +1,9 @@
 package com.fendyk.clients.redis;
 
 import com.fendyk.DTOs.ChunkDTO;
-import com.fendyk.DTOs.MinecraftUserDTO;
-import com.fendyk.QuantaServer;
+import com.fendyk.Main;
 import com.fendyk.clients.RedisAPI;
 import com.fendyk.utilities.Vector2;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.pubsub.RedisPubSubListener;
 
@@ -14,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class RedisChunk extends RedisAPI<Vector2, ChunkDTO> {
-    public RedisChunk(QuantaServer server,
+    public RedisChunk(Main server,
                       RedisClient client,
                       boolean inDebugMode,
                       ArrayList<RedisPubSubListener<String, String>> listeners,
@@ -24,7 +21,7 @@ public class RedisChunk extends RedisAPI<Vector2, ChunkDTO> {
 
     @Override
     public ChunkDTO get(Vector2 key) {
-        return QuantaServer.gson.fromJson(
+        return Main.gson.fromJson(
                 getCache("chunk:" + key.getX() + ":" + key.getY()),
                 ChunkDTO.class
         );
@@ -32,6 +29,6 @@ public class RedisChunk extends RedisAPI<Vector2, ChunkDTO> {
 
     @Override
     public boolean set(Vector2 key, ChunkDTO data) {
-        return setCache("chunk:" + key.getX() + ":" + key.getY(), QuantaServer.gson.toJson(data));
+        return setCache("chunk:" + key.getX() + ":" + key.getY(), Main.gson.toJson(data));
     }
 }

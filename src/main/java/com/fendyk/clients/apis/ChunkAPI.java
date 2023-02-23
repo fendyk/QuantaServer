@@ -53,9 +53,7 @@ public class ChunkAPI extends ApiClient {
     public ChunkDTO update(Chunk chunk, UpdateChunkDTO updates) {
         Vector2 vector2 = new Vector2(chunk.getX(), chunk.getZ());
         ChunkDTO updatedChunk = fetch.update(vector2, updates);
-
         if(updatedChunk == null) return null;
-
         boolean isCached = redis.set(vector2, updatedChunk);
         return isCached ? updatedChunk : null;
     }
@@ -64,11 +62,7 @@ public class ChunkAPI extends ApiClient {
         UpdateChunkDTO updateChunkDTO = new UpdateChunkDTO();
         updateChunkDTO.setLandId(landId);
         ChunkDTO chunkDTO = update(chunk,updateChunkDTO );
-        return chunkDTO != null
-    }
-
-    public JsonObject setNonClaimable(Chunk chunk, boolean nonClaimable) {
-        return null;
+        return chunkDTO != null;
     }
 
 

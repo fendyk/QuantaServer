@@ -9,30 +9,23 @@ import com.fendyk.clients.fetch.FetchMinecraftUser;
 import com.fendyk.clients.redis.RedisChunk;
 import com.fendyk.clients.redis.RedisLand;
 import com.fendyk.clients.redis.RedisMinecraftUser;
-import com.google.gson.JsonObject;
 import de.leonhard.storage.Toml;
 import io.lettuce.core.RedisClient;
-import io.lettuce.core.api.StatefulRedisConnection;
-import io.lettuce.core.api.sync.RedisCommands;
 import io.lettuce.core.pubsub.RedisPubSubListener;
-import io.lettuce.core.pubsub.StatefulRedisPubSubConnection;
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.UUID;
 
 public class API {
     final String worldName;
     final boolean inDebugMode;
     private final RedisClient client;
-    QuantaServer server;
+    Main server;
     MinecraftUserAPI minecraftUserAPI;
     LandAPI landAPI;
     ChunkAPI chunkAPI;
 
-    public API(QuantaServer server, Toml config, ArrayList<RedisPubSubListener<String, String>> listeners, HashMap<String, String> subscriptions) {
+    public API(Main server, Toml config, ArrayList<RedisPubSubListener<String, String>> listeners, HashMap<String, String> subscriptions) {
         this.server = server;
         this.inDebugMode = config.getOrSetDefault("isInDebugMode", false);
         this.worldName = config.getOrSetDefault("worldName", "overworld");

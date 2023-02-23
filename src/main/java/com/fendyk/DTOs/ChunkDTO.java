@@ -2,10 +2,20 @@ package com.fendyk.DTOs;
 
 public class ChunkDTO {
 
+    String id;
+
     boolean isClaimable;
     int x;
     int z;
     String landId;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public boolean isClaimable() {
         return isClaimable;

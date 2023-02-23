@@ -1,11 +1,9 @@
 package com.fendyk.clients;
 
-import com.fendyk.DTOs.DTO;
 import com.fendyk.Log;
-import com.fendyk.QuantaServer;
+import com.fendyk.Main;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -18,12 +16,12 @@ import java.io.IOException;
 
 public abstract class FetchAPI<K, DTO, UpdateDTO> {
     protected final boolean inDebugMode;
-    protected QuantaServer server;
+    protected Main server;
     protected OkHttpClient client =  new OkHttpClient();
     protected final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     protected final String url;
 
-    public FetchAPI(QuantaServer server, String url, boolean inDebugMode) {
+    public FetchAPI(Main server, String url, boolean inDebugMode) {
         this.server = server;
         this.url = url;
         this.inDebugMode = inDebugMode;

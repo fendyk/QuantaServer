@@ -1,6 +1,9 @@
 package com.fendyk.clients.apis;
 
 import com.fendyk.API;
+import com.fendyk.DTOs.ChunkDTO;
+import com.fendyk.DTOs.LandDTO;
+import com.fendyk.DTOs.MinecraftUserDTO;
 import com.fendyk.clients.fetch.FetchLand;
 import com.fendyk.clients.redis.RedisLand;
 import com.google.gson.JsonElement;
@@ -32,65 +35,55 @@ public class LandAPI {
      * @param name
      * @param chunk
      * @return The new land if created or null if something went wrong.
-     * @throws Exception dfsgdfg
+     * @throws Exception When something goes wrong lol
      */
-    public JsonObject create(UUID owner, String name, Chunk chunk) throws Exception {
-        try {
-            JsonObject json = new JsonObject();
-            json.addProperty("name", name);
+    public LandDTO create(UUID owner, String name, Chunk chunk) throws Exception {
+        JsonObject json = new JsonObject();
+        json.addProperty("name", name);
 
-            /* Get references */
-            ChunkAPI chunkAPI = api.getChunkAPI();
-            MinecraftUserAPI minecraftUserAPI = api.getMinecraftUserAPI();
+        /* Get references */
+        ChunkAPI chunkAPI = api.getChunkAPI();
+        MinecraftUserAPI minecraftUserAPI = api.getMinecraftUserAPI();
 
-            /* Get user */
-            JsonElement eUser = minecraftUserAPI.get(owner);
-            if(!(eUser instanceof JsonObject)) throw new Exception("Could not find user when creating land");
+        /* Get user */
+        MinecraftUserDTO minecraftUserDTO = minecraftUserAPI.get(owner);
+        if(minecraftUserDTO == null) throw new Exception("Could not find user when creating land");
 
-            JsonObject jUser = eUser.getAsJsonObject(); // Get the jsonobject
-            json.addProperty("userId", jUser.get("id").getAsString()); // Add user id property
+        /* Get chunk */
+        ChunkDTO chunkDTO = chunkAPI.get(chunk);
 
-            /* Get chunk */
-            JsonElement eChunk = chunkAPI.get(chunk);
-
-            /* If we cannot find one */
-            if(!(eChunk instanceof JsonObject)) {
-                Bukkit.getLogger().info("I need a chunk!");
-                eChunk = chunkAPI.create(chunk, false);
-                if(!(eChunk instanceof JsonObject)) throw new Exception("Could not create chunk when creating land");
-            }
-
-            JsonObject jChunk = eChunk.getAsJsonObject();
-
-            Bukkit.getLogger().info("I found a chunk!");
-            Bukkit.getLogger().info(jChunk.toString());
-
-            json.addProperty("chunkId", jChunk.get("id").getAsString()); // add chunkId
-
-            /* Create the actual land */
-            JsonElement eLand = fetch.create(json);
-            if(!(eLand instanceof JsonObject)) throw new Exception("Could not create land");
-            JsonObject jLand = eLand.getAsJsonObject();
-
-            /* Cache it into redis */
-            boolean isCached = redis.set(owner, jLand); // Put the eLand into the cache
-            if(!isCached) throw new Exception("Could not cache land when creating.");
-
-            Bukkit.getLogger().info(" I created a land");
-            Bukkit.getLogger().info(jLand.toString());
-
-            boolean isClaimed = chunkAPI.claim(chunk, jChunk.get("id").getAsString()); // Claim chunk
-            if(!isClaimed) throw new Exception("Could not claim chunk when creating land");
-
-            return jLand;
-        } catch(Exception e) {
-            Bukkit.getLogger().warning(e.toString());
-            Bukkit.getLogger().warning(Arrays.toString(e.getStackTrace()));
-            return null;
+        /* If we cannot find one, create new */
+        if(chunkDTO == null) {
+            Bukkit.getLogger().info("I need a chunk!");
+            chunkDTO = chunkAPI.create(chunk, false);
+            if(chunkDTO == null) throw new Exception("Could not create chunk when creating land");
         }
+
+        Bukkit.getLogger().info("I found a chunk!");
+
+        /* Claim the chunk */
+
+        /* Create the actual land */
+        LandDTO landDTO = new LandDTO();
+        landDTO.setName(name);
+        landDTO.setOwnerId(owner.toString());
+
+        landDTO = fetch.create(landDTO);
+        if(landDTO == null) throw new Exception("Could not create land");
+
+        /* Cache it into redis */
+        boolean isCached = redis.set(owner, landDTO); // Put the eLand into the cache
+        if(!isCached) throw new Exception("Could not cache land when creating.");
+
+        Bukkit.getLogger().info(" I created a land");
+
+        boolean isClaimed = chunkAPI.claim(chunk, landDTO.getId()); // Claim chunk
+        if(!isClaimed) throw new Exception("Could not claim chunk when creating land");
+
+        return landDTO;
     }
 
-    public JsonElement get(UUID owner) {
+    public LandDTO get(UUID owner) {
         return ObjectUtils.firstNonNull(redis.get(owner), fetch.get(owner));
     }
 
