@@ -2,38 +2,25 @@ package com.fendyk.clients.apis;
 
 import com.fendyk.API;
 import com.fendyk.DTOs.ChunkDTO;
-import com.fendyk.DTOs.MinecraftUserDTO;
 import com.fendyk.DTOs.updates.UpdateChunkDTO;
-import com.fendyk.clients.ApiClient;
+import com.fendyk.clients.ClientAPI;
 import com.fendyk.clients.fetch.FetchChunk;
 import com.fendyk.clients.redis.RedisChunk;
 import com.fendyk.utilities.Vector2;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
-import com.google.gson.JsonObject;
-import io.netty.util.internal.ObjectUtil;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bukkit.Chunk;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.UUID;
-
-public class ChunkAPI extends ApiClient {
-
-    API api;
-    FetchChunk fetch;
-    RedisChunk redis;
+public class ChunkAPI extends ClientAPI<FetchChunk, RedisChunk> {
 
     public ChunkAPI(API api, FetchChunk fetch, RedisChunk redis) {
-        this.api = api;
-        this.fetch = fetch;
-        this.redis = redis;
+        super(api, fetch, redis);
     }
 
     @Nullable
-    public ChunkDTO get(Chunk chunk) {
+    public ChunkDTO get(Chunk chunk, boolean needsFetch) {
         Vector2 chunkPos = new Vector2(chunk.getX(), chunk.getZ());
-        return ObjectUtils.firstNonNull(redis.get(chunkPos), fetch.get(chunkPos));
+        return needsFetch ? fetch.get(chunkPos) : redis.get(chunkPos);
     }
 
     public ChunkDTO create(Chunk chunk, boolean isClaimable) {
@@ -61,8 +48,7 @@ public class ChunkAPI extends ApiClient {
     public boolean claim(Chunk chunk, String landId) {
         UpdateChunkDTO updateChunkDTO = new UpdateChunkDTO();
         updateChunkDTO.setLandId(landId);
-        ChunkDTO chunkDTO = update(chunk,updateChunkDTO );
-        return chunkDTO != null;
+        return update(chunk,updateChunkDTO) != null;
     }
 
 

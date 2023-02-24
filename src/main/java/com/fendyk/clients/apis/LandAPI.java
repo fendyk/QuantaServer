@@ -4,6 +4,7 @@ import com.fendyk.API;
 import com.fendyk.DTOs.ChunkDTO;
 import com.fendyk.DTOs.LandDTO;
 import com.fendyk.DTOs.MinecraftUserDTO;
+import com.fendyk.clients.ClientAPI;
 import com.fendyk.clients.fetch.FetchLand;
 import com.fendyk.clients.redis.RedisLand;
 import com.google.gson.JsonElement;
@@ -17,16 +18,10 @@ import org.bukkit.Chunk;
 import java.util.Arrays;
 import java.util.UUID;
 
-public class LandAPI {
-
-    API api;
-    FetchLand fetch;
-    RedisLand redis;
+public class LandAPI extends ClientAPI<FetchLand, RedisLand> {
 
     public LandAPI(API api, FetchLand fetch, RedisLand redis) {
-        this.api = api;
-        this.fetch = fetch;
-        this.redis = redis;
+        super(api, fetch, redis);
     }
 
     /**
@@ -38,19 +33,17 @@ public class LandAPI {
      * @throws Exception When something goes wrong lol
      */
     public LandDTO create(UUID owner, String name, Chunk chunk) throws Exception {
-        JsonObject json = new JsonObject();
-        json.addProperty("name", name);
 
         /* Get references */
         ChunkAPI chunkAPI = api.getChunkAPI();
         MinecraftUserAPI minecraftUserAPI = api.getMinecraftUserAPI();
 
         /* Get user */
-        MinecraftUserDTO minecraftUserDTO = minecraftUserAPI.get(owner);
+        MinecraftUserDTO minecraftUserDTO = minecraftUserAPI.get(owner, false);
         if(minecraftUserDTO == null) throw new Exception("Could not find user when creating land");
 
         /* Get chunk */
-        ChunkDTO chunkDTO = chunkAPI.get(chunk);
+        ChunkDTO chunkDTO = chunkAPI.get(chunk, true);
 
         /* If we cannot find one, create new */
         if(chunkDTO == null) {
@@ -58,10 +51,6 @@ public class LandAPI {
             chunkDTO = chunkAPI.create(chunk, false);
             if(chunkDTO == null) throw new Exception("Could not create chunk when creating land");
         }
-
-        Bukkit.getLogger().info("I found a chunk!");
-
-        /* Claim the chunk */
 
         /* Create the actual land */
         LandDTO landDTO = new LandDTO();
@@ -74,8 +63,6 @@ public class LandAPI {
         /* Cache it into redis */
         boolean isCached = redis.set(owner, landDTO); // Put the eLand into the cache
         if(!isCached) throw new Exception("Could not cache land when creating.");
-
-        Bukkit.getLogger().info(" I created a land");
 
         boolean isClaimed = chunkAPI.claim(chunk, landDTO.getId()); // Claim chunk
         if(!isClaimed) throw new Exception("Could not claim chunk when creating land");

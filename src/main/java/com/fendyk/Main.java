@@ -30,7 +30,7 @@ public class Main extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        toml = new Toml("config", "plugins/Main");
+        toml = new Toml("config", "plugins/QuantaServer");
         toml.setDefault("isInDebugMode", false);
         toml.setDefault("apiUrl", "<your apiUrl here>");
         toml.setDefault("redisUrl", "redis://password@localhost:6379/0");

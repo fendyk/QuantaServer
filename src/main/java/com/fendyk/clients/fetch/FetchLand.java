@@ -27,7 +27,7 @@ public class FetchLand extends FetchAPI<UUID, LandDTO, LandDTO> {
 
     @Override
     public LandDTO create(LandDTO data) {
-        RequestBody body = RequestBody.create(data.toString(), JSON);
+        RequestBody body = RequestBody.create(Main.gson.toJson(data), JSON);
         Request request = new Request.Builder()
                 .url(url + "/lands")
                 .post(body)

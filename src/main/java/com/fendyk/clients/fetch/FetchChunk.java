@@ -16,7 +16,7 @@ public class FetchChunk extends FetchAPI<Vector2, ChunkDTO, UpdateChunkDTO> {
     @Override
     public ChunkDTO get(Vector2 key) {
         Request request = new Request.Builder()
-                .url(url + "/chunks?x=" + key.getX() + "&z=" + key.getY())
+                .url(url + "/chunks/" + key.getX() + "/" + key.getY())
                 .get()
                 .build();
         return Main.gson.fromJson(
@@ -42,7 +42,7 @@ public class FetchChunk extends FetchAPI<Vector2, ChunkDTO, UpdateChunkDTO> {
     public ChunkDTO update(Vector2 key, UpdateChunkDTO data) {
         RequestBody body = RequestBody.create(Main.gson.toJson(data), JSON);
         Request request = new Request.Builder()
-                .url(url + "/chunks?x=" + key.getX() + "&z=" + key.getY())
+                .url(url + "/chunks/" + key.getX() + "/" + key.getY())
                 .patch(body)
                 .build();
         return Main.gson.fromJson(

@@ -26,13 +26,14 @@ public abstract class FetchAPI<K, DTO, UpdateDTO> {
         this.url = url;
         this.inDebugMode = inDebugMode;
     }
-    void logDebug(Response res, String responseBody, String requestBody) {
-            Bukkit.getLogger().info("-----------------------------------");
-            Bukkit.getLogger().info("ResponseCode: " + res.code());
-            Bukkit.getLogger().info("Message: " + res.message());
-            Bukkit.getLogger().info("Request:" + requestBody);
-            Bukkit.getLogger().info("Response:" + responseBody);
-            Bukkit.getLogger().info("-----------------------------------");
+    void logDebug(Response res, String responseBody, String requestBody, String name) {
+        Bukkit.getLogger().info("-----------------------------------");
+        Bukkit.getLogger().info("Name: " + name);
+        Bukkit.getLogger().info("ResponseCode: " + res.code());
+        Bukkit.getLogger().info("Message: " + res.message());
+        Bukkit.getLogger().info("Request:" + requestBody);
+        Bukkit.getLogger().info("Response:" + responseBody);
+        Bukkit.getLogger().info("-----------------------------------");
     }
 
 
@@ -49,7 +50,8 @@ public abstract class FetchAPI<K, DTO, UpdateDTO> {
                 Bukkit.getLogger().info(Log.Info("Response empty (204) at:" + name));
                 if(inDebugMode) logDebug(response,
                         JsonNull.INSTANCE.toString(),
-                        request.body() != null ? request.body().toString() : null
+                        request.body() != null ? request.body().toString() : null,
+                        name
                 );
                 return null; // Return empty
             }
@@ -57,7 +59,8 @@ public abstract class FetchAPI<K, DTO, UpdateDTO> {
                 Bukkit.getLogger().info(Log.Error("Response not ok (" + response.code() + ") at:" + name));
                 if(inDebugMode) logDebug(response,
                         response.body() != null ? response.body().string() : null,
-                        request.body() != null ? request.body().toString() : null
+                        request.body() != null ? request.body().toString() : null,
+                        name
                 );
                 return null;
             }
@@ -68,7 +71,7 @@ public abstract class FetchAPI<K, DTO, UpdateDTO> {
             }
 
             String json = response.body().string();
-            if(inDebugMode) logDebug(response, json, request.body() != null ? request.body().toString() : null);
+            if(inDebugMode) logDebug(response, json, request.body() != null ? request.body().toString() : null, name);
             return JsonParser.parseString(json);
         } catch (IOException e) {
             throw new RuntimeException(e);

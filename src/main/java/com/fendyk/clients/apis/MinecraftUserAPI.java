@@ -2,6 +2,8 @@ package com.fendyk.clients.apis;
 
 import com.fendyk.API;
 import com.fendyk.DTOs.MinecraftUserDTO;
+import com.fendyk.Main;
+import com.fendyk.clients.ClientAPI;
 import com.fendyk.clients.fetch.FetchMinecraftUser;
 import com.fendyk.clients.redis.RedisMinecraftUser;
 import org.apache.commons.lang3.ObjectUtils;
@@ -11,16 +13,21 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.UUID;
 
-public class MinecraftUserAPI {
-
-    API api;
-    FetchMinecraftUser fetch;
-    RedisMinecraftUser redis;
+public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecraftUser> {
 
     public MinecraftUserAPI(API api, FetchMinecraftUser fetch, RedisMinecraftUser redis) {
-        this.api = api;
-        this.fetch = fetch;
-        this.redis = redis;
+        super(api, fetch, redis);
+    }
+
+    public MinecraftUserDTO create(UUID player) {
+        MinecraftUserDTO minecraftUserDTO = new MinecraftUserDTO();
+        minecraftUserDTO.setId(player.toString());
+
+        minecraftUserDTO = fetch.create(minecraftUserDTO);
+        if(minecraftUserDTO == null) return null;
+
+        boolean isCached = redis.set(player, minecraftUserDTO);
+        return isCached ? minecraftUserDTO : null;
     }
 
     /**
@@ -30,7 +37,7 @@ public class MinecraftUserAPI {
      */
     @Nullable
     public BigDecimal getPlayerBalance(UUID player) {
-        MinecraftUserDTO minecraftUser = get(player);
+        MinecraftUserDTO minecraftUser = get(player, false);
         if(minecraftUser == null) return null;
         return BigDecimal.valueOf(minecraftUser.getQuanta());
     }
@@ -41,8 +48,8 @@ public class MinecraftUserAPI {
      * @return
      */
     @Nullable
-    public MinecraftUserDTO get(UUID player) {
-        return ObjectUtils.firstNonNull(redis.get(player), fetch.get(player));
+    public MinecraftUserDTO get(UUID player, boolean needsFetch) {
+        return needsFetch ? fetch.get(player) : redis.get(player);
     }
 
     /**
@@ -59,7 +66,7 @@ public class MinecraftUserAPI {
     }
 
     public boolean withDrawBalance(UUID player, BigDecimal amount) {
-        MinecraftUserDTO minecraftUser = get(player);
+        MinecraftUserDTO minecraftUser = get(player, false);
         if(minecraftUser == null) return false;
 
         BigDecimal oldAmount = BigDecimal.valueOf(minecraftUser.getQuanta());
@@ -75,7 +82,7 @@ public class MinecraftUserAPI {
     }
 
     public boolean depositBalance(UUID player, BigDecimal amount) {
-        MinecraftUserDTO minecraftUser = get(player);
+        MinecraftUserDTO minecraftUser = get(player, false);
         if(minecraftUser == null) return false;
 
         BigDecimal oldAmount = BigDecimal.valueOf(minecraftUser.getQuanta());

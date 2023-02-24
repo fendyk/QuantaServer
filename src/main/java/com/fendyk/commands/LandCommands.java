@@ -9,8 +9,11 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandPermission;
 import dev.jorel.commandapi.arguments.BooleanArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
+
+import java.util.Arrays;
 
 public class LandCommands {
 
@@ -29,9 +32,11 @@ public class LandCommands {
                                 LandDTO landDTO = api.getLandAPI().create(player.getUniqueId(), name, chunk);
                                 player.sendMessage("Your land has been created");
                             } catch (Exception e) {
+                                Bukkit.getLogger().info(Arrays.toString(e.getStackTrace()));
                                 player.sendMessage(e.getMessage());
                             }
                         })
+
                 )
                 .withSubcommand(new CommandAPICommand("claim")
                         //.withRequirement(sender -> api.getLandAPI()( ((Player) sender).getUniqueId() ) != null)
