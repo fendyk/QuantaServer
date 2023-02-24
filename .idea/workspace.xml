@@ -4,18 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="feat: DTO implementation">
+    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="fix: naming change for Main for consistency">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/ChunkDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/ChunkDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/DTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/LandDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/LandDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/MinecraftUserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/MinecraftUserDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/FetchAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/FetchAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/ChunkAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/ChunkAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/LandAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/LandAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/MinecraftUserAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/MinecraftUserAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisChunk.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisChunk.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/API.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/API.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/RedisAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/RedisAPI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -171,7 +163,10 @@
       <workItem from="1676320973717" duration="7261000" />
       <workItem from="1676366121572" duration="9274000" />
       <workItem from="1677070714079" duration="2351000" />
-      <workItem from="1677177006068" duration="12310000" />
+      <workItem from="1677177006068" duration="13616000" />
+      <workItem from="1677238123745" duration="5965000" />
+      <workItem from="1677256550500" duration="296000" />
+      <workItem from="1677269833123" duration="27000" />
     </task>
     <task id="LOCAL-00001" summary="feat: redis">
       <created>1675545393878</created>
@@ -243,7 +238,14 @@
       <option name="project" value="LOCAL" />
       <updated>1677191889419</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="fix: naming change for Main for consistency">
+      <created>1677193806172</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1677193806172</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -271,6 +273,7 @@
     <MESSAGE value="feat: added more functionality" />
     <MESSAGE value="feat: better error handling and overhaul (again) to the api" />
     <MESSAGE value="feat: DTO implementation" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: DTO implementation" />
+    <MESSAGE value="fix: naming change for Main for consistency" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: naming change for Main for consistency" />
   </component>
 </project>

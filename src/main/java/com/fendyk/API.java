@@ -1,5 +1,7 @@
 package com.fendyk;
 
+import com.fendyk.clients.FetchAPI;
+import com.fendyk.clients.RedisAPI;
 import com.fendyk.clients.apis.ChunkAPI;
 import com.fendyk.clients.apis.LandAPI;
 import com.fendyk.clients.apis.MinecraftUserAPI;
@@ -12,6 +14,7 @@ import com.fendyk.clients.redis.RedisMinecraftUser;
 import de.leonhard.storage.Toml;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.pubsub.RedisPubSubListener;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +28,9 @@ public class API {
     LandAPI landAPI;
     ChunkAPI chunkAPI;
 
+    FetchAPI<String, Object,  Object> fetchAPI;
+    RedisAPI<String, Object> redisAPI;
+
     public API(Main server, Toml config, ArrayList<RedisPubSubListener<String, String>> listeners, HashMap<String, String> subscriptions) {
         this.server = server;
         this.inDebugMode = config.getOrSetDefault("isInDebugMode", false);
@@ -34,6 +40,14 @@ public class API {
         String apiUrl = config.getOrSetDefault("apiUrl", "<url>");
 
         this.client = RedisClient.create(redisUrl);
+
+        /* Sometimes we need to access certain api methods like redis's pubsub commands */
+        redisAPI = new RedisAPI<>(server, client, inDebugMode, listeners, subscriptions) {
+            @Override
+            public @Nullable Object get(String key) {return null;}
+            @Override
+            public boolean set(String key, Object data) {return false;}
+        };
 
         minecraftUserAPI = new MinecraftUserAPI(
                 this,
@@ -55,6 +69,8 @@ public class API {
 
     }
 
+    public FetchAPI<String, Object, Object> getFetchAPI() {return fetchAPI;}
+    public RedisAPI<String, Object> getRedisAPI() {return redisAPI;}
     public MinecraftUserAPI getMinecraftUserAPI() {return this.minecraftUserAPI;}
     public LandAPI getLandAPI() {return this.landAPI;}
     public ChunkAPI getChunkAPI() {return this.chunkAPI;}

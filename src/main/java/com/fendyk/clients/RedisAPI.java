@@ -41,17 +41,21 @@ public abstract class RedisAPI<K, DTO> {
         this.syncCommands = connection.sync();
         this.pubSubConnection = client.connectPubSub();
 
-        // Add listeners
-        listeners.forEach(item -> {
-            this.pubSubConnection.addListener(item);
-        });
+        if(listeners != null) {
+            listeners.forEach(item -> {
+                this.pubSubConnection.addListener(item);
+            });
+        }
 
         this.pubSubCommands = pubSubConnection.sync();
 
+
         // Add subscriptions
-        subscriptions.forEach((k, v) -> {
-            this.pubSubCommands.subscribe(k, v);
-        });
+        if(subscriptions != null) {
+            subscriptions.forEach((k, v) -> {
+                this.pubSubCommands.subscribe(k, v);
+            });
+        }
 
         if(!connection.isOpen()) {
             Bukkit.getLogger().info(Log.Error("Redis connection is not open!"));
