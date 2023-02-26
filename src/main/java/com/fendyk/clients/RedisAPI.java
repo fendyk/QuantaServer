@@ -85,7 +85,7 @@ public abstract class RedisAPI<K, DTO> {
 
     public abstract boolean exists(K key);
 
-    protected JsonElement getCache(String key) {
+    public JsonElement getCache(String key) {
         String result = syncCommands.get(key);
         if(inDebugMode) {
             Bukkit.getLogger().info("-----------------------------------");
@@ -104,7 +104,7 @@ public abstract class RedisAPI<K, DTO> {
                 JsonParser.parseString(result).getAsJsonObject();
     }
 
-    protected boolean setCache(String key, String data) {
+    public boolean setCache(String key, String data) {
         String result = syncCommands.set(key, data);
         if(inDebugMode) {
             Bukkit.getLogger().info("Redis Action SET:");
@@ -113,7 +113,7 @@ public abstract class RedisAPI<K, DTO> {
         return result.equals("OK");
     }
 
-    protected boolean existsInCache(String key) {
+    public boolean existsInCache(String key) {
         Long amount = syncCommands.exists(key);
         if(inDebugMode) {
             Bukkit.getLogger().info("Redis Action EXISTS:");

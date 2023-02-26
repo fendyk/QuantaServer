@@ -20,12 +20,21 @@ public class RedisLand extends RedisAPI<UUID, LandDTO> {
     }
 
     @Override
+    public LandDTO getById(String key) {
+        return Main.gson.fromJson(
+                getCache("land:" + key),
+                LandDTO.class
+        );
+    }
+
+    @Override
     public LandDTO get(UUID key) {
         return Main.gson.fromJson(
                 getCache("land:" + key.toString()),
                 LandDTO.class
         );
     }
+
 
     @Override
     public boolean set(UUID key, LandDTO data) {

@@ -4,23 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="fix: land working">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/redis/minecraft/ChunkLoadListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/managers/WorldguardSyncManager.java" afterDir="false" />
+    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="fix: Reduces redis">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/API.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/API.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/ClientAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/ClientAPI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/RedisAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/RedisAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/ChunkAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/ChunkAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/LandAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/LandAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/fetch/FetchLand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/fetch/FetchLand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisChunk.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisChunk.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisLand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisLand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisMinecraftUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisMinecraftUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/redis/minecraft/ChunkLoadListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/redis/minecraft/ChunkLoadListener.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -184,7 +173,9 @@
       <workItem from="1677276513393" duration="877000" />
       <workItem from="1677277455604" duration="10997000" />
       <workItem from="1677345731341" duration="4447000" />
-      <workItem from="1677373135063" duration="1802000" />
+      <workItem from="1677373135063" duration="2199000" />
+      <workItem from="1677375401006" duration="3000" />
+      <workItem from="1677414525857" duration="4401000" />
     </task>
     <task id="LOCAL-00001" summary="feat: redis">
       <created>1675545393878</created>
@@ -277,7 +268,14 @@
       <option name="project" value="LOCAL" />
       <updated>1677281835394</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="fix: Reduces redis">
+      <created>1677375324479</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1677375324479</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -308,6 +306,7 @@
     <MESSAGE value="fix: naming change for Main for consistency" />
     <MESSAGE value="fix: small fixes" />
     <MESSAGE value="fix: land working" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix: land working" />
+    <MESSAGE value="fix: Reduces redis" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: Reduces redis" />
   </component>
 </project>
