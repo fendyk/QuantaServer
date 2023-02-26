@@ -11,6 +11,7 @@ import com.fendyk.clients.fetch.FetchMinecraftUser;
 import com.fendyk.clients.redis.RedisChunk;
 import com.fendyk.clients.redis.RedisLand;
 import com.fendyk.clients.redis.RedisMinecraftUser;
+import com.fendyk.listeners.redis.*;
 import de.leonhard.storage.Toml;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.pubsub.RedisPubSubListener;
@@ -31,7 +32,7 @@ public class API {
     FetchAPI<String, Object,  Object> fetchAPI;
     RedisAPI<String, Object> redisAPI;
 
-    public API(Main server, Toml config, ArrayList<RedisPubSubListener<String, String>> listeners, HashMap<String, String> subscriptions) {
+    public API(Main server, Toml config) {
         this.server = server;
         this.inDebugMode = config.getOrSetDefault("isInDebugMode", false);
         this.worldName = config.getOrSetDefault("worldName", "overworld");
@@ -41,8 +42,21 @@ public class API {
 
         this.client = RedisClient.create(redisUrl);
 
+        HashMap<String, RedisPubSubListener<String, String>> userSubscriptions = new HashMap<>();
+        userSubscriptions.put("authentication", new AuthenticationListener());
+
+        HashMap<String, RedisPubSubListener<String, String>> landSubscriptions = new HashMap<>();
+        landSubscriptions.put("landCreateEvent", new CreateLandListener());
+        landSubscriptions.put("landUpdateEvent", new UpdateLandListener());
+        landSubscriptions.put("landDeleteEvent", new DeleteLandListener());
+
+        HashMap<String, RedisPubSubListener<String, String>> chunkSubscriptions = new HashMap<>();
+        chunkSubscriptions.put("chunkCreateEvent", new CreateChunkListener());
+        chunkSubscriptions.put("chunkUpdateEvent", new UpdateChunkListener());
+        chunkSubscriptions.put("chunkDeleteEvent", new DeleteChunkListener());
+
         /* Sometimes we need to access certain api methods like redis's pubsub commands */
-        redisAPI = new RedisAPI<>(server, client, inDebugMode, listeners, subscriptions) {
+        redisAPI = new RedisAPI<>(server, client, inDebugMode, userSubscriptions) {
             @Override
             public @Nullable Object get(String key) {return null;}
             @Override
@@ -57,19 +71,19 @@ public class API {
         minecraftUserAPI = new MinecraftUserAPI(
                 this,
                 new FetchMinecraftUser(server, apiUrl, inDebugMode),
-                new RedisMinecraftUser(server, client, inDebugMode, listeners, subscriptions)
+                new RedisMinecraftUser(server, client, inDebugMode, null)
         );
 
         landAPI = new LandAPI(
                 this,
                 new FetchLand(server, apiUrl, inDebugMode),
-                new RedisLand(server, client, inDebugMode, listeners, subscriptions)
+                new RedisLand(server, client, inDebugMode, landSubscriptions)
         );
 
         chunkAPI = new ChunkAPI(
                 this,
                 new FetchChunk(server, apiUrl, inDebugMode),
-                new RedisChunk(server, client, inDebugMode, listeners, subscriptions)
+                new RedisChunk(server, client, inDebugMode, chunkSubscriptions)
         );
 
     }

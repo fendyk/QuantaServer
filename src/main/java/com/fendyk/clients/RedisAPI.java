@@ -30,8 +30,7 @@ public abstract class RedisAPI<K, DTO> {
     public RedisAPI(Main server,
                     RedisClient client,
                     boolean inDebugMode,
-                    ArrayList<RedisPubSubListener<String, String>> listeners,
-                    HashMap<String, String> subscriptions
+                    HashMap<String, RedisPubSubListener<String, String>> subscriptions
     ) {
         this.server = server;
         this.inDebugMode = inDebugMode;
@@ -41,19 +40,13 @@ public abstract class RedisAPI<K, DTO> {
         this.syncCommands = connection.sync();
         this.pubSubConnection = client.connectPubSub();
 
-        if(listeners != null) {
-            listeners.forEach(item -> {
-                this.pubSubConnection.addListener(item);
-            });
-        }
-
         this.pubSubCommands = pubSubConnection.sync();
-
 
         // Add subscriptions
         if(subscriptions != null) {
-            subscriptions.forEach((k, v) -> {
-                this.pubSubCommands.subscribe(k, v);
+            subscriptions.forEach((String k, RedisPubSubListener<String, String> v) -> {
+                this.pubSubCommands.subscribe(k);
+                this.pubSubConnection.addListener(v);
             });
         }
 

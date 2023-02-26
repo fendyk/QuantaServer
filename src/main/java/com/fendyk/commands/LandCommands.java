@@ -5,6 +5,7 @@ import com.fendyk.DTOs.ChunkDTO;
 import com.fendyk.DTOs.LandDTO;
 import com.fendyk.DTOs.MinecraftUserDTO;
 import com.fendyk.clients.apis.MinecraftUserAPI;
+import com.fendyk.utilities.Vector2;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.jorel.commandapi.CommandAPICommand;
@@ -63,15 +64,7 @@ public class LandCommands {
                                     Player player = (Player) sender;
                                     Chunk chunk = player.getChunk();
 
-                                    LandDTO landDTO = api.getLandAPI().get(player.getUniqueId());
-
-                                    if(landDTO == null) {
-                                        player.sendMessage("Error when trying to find the land");
-                                        return;
-                                    }
-
-                                    /* Verify if chunk is already claimed by another person */
-                                    ChunkDTO chunkDTO = api.getChunkAPI().get(chunk);
+                                    ChunkDTO chunkDTO = api.getChunkAPI().getRedis().get(new Vector2(chunk.getX(), chunk.getZ()));
 
                                     if(chunkDTO == null) {
                                         chunkDTO = api.getChunkAPI().create(chunk, true);
@@ -83,15 +76,27 @@ public class LandCommands {
                                     }
 
                                     String chunkLandId = chunkDTO.getLandId();
-                                    String landId = landDTO.getId();
-
                                     if(chunkLandId != null) {
+                                        player.sendMessage("This chunk has already been claimed by someone else");
+                                        return;
+                                    }
 
-                                        if(chunkLandId.equalsIgnoreCase(landId)) {
-                                            player.sendMessage("This chunk is already yours");
-                                            return;
-                                        }
+                                    MinecraftUserDTO minecraftUserDTO = api.getMinecraftUserAPI().getRedis().get(player.getUniqueId());
+                                    if(minecraftUserDTO == null) {
+                                        player.sendMessage("Something went wrong when fetching your data.");
+                                        return;
+                                    }
 
+                                    LandDTO landDTO = api.getLandAPI().getRedis().get(minecraftUserDTO.getId());
+                                    if(landDTO == null) {
+                                        player.sendMessage("Error when trying to find the land");
+                                        return;
+                                    }
+
+                                    String landId = landDTO.getId();
+                                    if(landId == null) {
+                                        player.sendMessage("You currently dont have a land. To create one, type /land create <name>");
+                                        return;
                                     }
 
                                     if(!chunkDTO.isClaimable()) {
@@ -114,7 +119,14 @@ public class LandCommands {
                                     Player player = (Player) sender;
                                     Chunk chunk = player.getChunk();
 
-                                    LandDTO landDTO = api.getLandAPI().get(player.getUniqueId());
+                                    ChunkDTO chunkDTO = api.getChunkAPI().getRedis().get(new Vector2(chunk.getX(), chunk.getZ()));
+
+                                    if(chunkDTO == null) {
+                                        player.sendMessage("This chunk has not been claimed yet.");
+                                        return;
+                                    }
+
+                                    LandDTO landDTO = api.getLandAPI().getRedis().get(chunkDTO.getLandId());
 
                                     if(landDTO == null) {
                                         player.sendMessage("Error when trying to find the land");
@@ -125,14 +137,6 @@ public class LandCommands {
 
                                     if(minecraftUserDTO == null) {
                                         player.sendMessage("Error when trying to find owner's land");
-                                        return;
-                                    }
-
-                                    /* Verify if chunk is already claimed by another person */
-                                    ChunkDTO chunkDTO = api.getChunkAPI().get(chunk);
-
-                                    if(chunkDTO == null) {
-                                        player.sendMessage("Looks like this chunk has not been claimed yet. to claim, type /land chunk claim");
                                         return;
                                     }
 

@@ -3,8 +3,7 @@ package com.fendyk;
 import com.fendyk.commands.EconomyCommands;
 import com.fendyk.commands.LandCommands;
 import com.fendyk.configs.EarningsConfig;
-import com.fendyk.listeners.redis.AuthenticationListener;
-import com.fendyk.listeners.redis.UserListener;
+import com.fendyk.listeners.redis.*;
 import com.fendyk.listeners.redis.minecraft.ChunkLoadListener;
 import com.fendyk.listeners.redis.minecraft.EntityDeathListener;
 import com.google.gson.*;
@@ -48,16 +47,8 @@ public class Main extends JavaPlugin implements Listener {
 
         // Configs
         earningsConfig = new EarningsConfig();
-
-        ArrayList<RedisPubSubListener<String, String>> listeners = new ArrayList<>();
-        listeners.add(new AuthenticationListener());
-        listeners.add(new UserListener());
-
-        HashMap<String, String> subscriptions = new HashMap<>();
-        subscriptions.put("authentication", "user");
-
         // Instantiate api
-        api = new API(this, config, listeners, subscriptions);
+        api = new API(this, config);
 
         // Commands
         new EconomyCommands(api);

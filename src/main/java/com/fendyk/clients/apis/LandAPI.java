@@ -7,6 +7,7 @@ import com.fendyk.DTOs.MinecraftUserDTO;
 import com.fendyk.clients.ClientAPI;
 import com.fendyk.clients.fetch.FetchLand;
 import com.fendyk.clients.redis.RedisLand;
+import com.fendyk.utilities.Vector2;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.leonhard.storage.Json;
@@ -14,6 +15,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.UUID;
@@ -60,10 +62,6 @@ public class LandAPI extends ClientAPI<FetchLand, RedisLand> {
         landDTO = fetch.create(landDTO);
         if(landDTO == null) throw new Exception("Could not create land");
         return landDTO;
-    }
-
-    public LandDTO get(UUID owner) {
-        return redis.get(owner);
     }
 
 }

@@ -3,11 +3,11 @@ package com.fendyk.listeners.redis;
 import io.lettuce.core.pubsub.RedisPubSubListener;
 import org.bukkit.Bukkit;
 
-public class UserListener implements RedisPubSubListener<String, String> {
+public class CreateLandListener implements RedisPubSubListener<String, String> {
 
     @Override
     public void message(String channel, String message) {
-        Bukkit.getLogger().info("UserListener");
+        Bukkit.getLogger().info("CreateLandListener");
         Bukkit.getLogger().info(channel + ", " + message);
     }
 

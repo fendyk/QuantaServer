@@ -49,7 +49,7 @@ public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecra
      */
     @Nullable
     public MinecraftUserDTO get(UUID player, boolean needsFetch) {
-        return needsFetch ? fetch.get(player) : redis.get(player);
+        return redis.get(player);
     }
 
     /**

@@ -2,27 +2,19 @@ package com.fendyk.listeners.redis.minecraft;
 
 import com.fendyk.DTOs.ChunkDTO;
 import com.fendyk.DTOs.LandDTO;
-import com.fendyk.DTOs.MinecraftUserDTO;
 import com.fendyk.Main;
 import com.fendyk.utilities.Vector2;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.domains.DefaultDomain;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.RegionResultSet;
-import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import io.papermc.paper.event.packet.PlayerChunkLoadEvent;
-import io.papermc.paper.event.packet.PlayerChunkUnloadEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.world.ChunkLoadEvent;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,18 +33,6 @@ public class ChunkLoadListener implements Listener {
         this.checkedChunks = new HashMap<>();
 
         this.worldName = server.getTomlConfig().getString("worldName");
-    }
-
-    @EventHandler
-    public void onChunkUnload(PlayerChunkUnloadEvent event) {
-        if(!event.getWorld().getName().equalsIgnoreCase(worldName)) return;
-        Chunk chunk = event.getChunk();
-        String key = chunk.getX() + ":" + chunk.getZ();
-        if(!checkedChunks.containsKey(key)) return;
-
-        Bukkit.getLogger().info(chunk.getX() + "/" + chunk.getZ() + " unloaded");
-
-        checkedChunks.remove(key);
     }
 
     /**
@@ -79,7 +59,7 @@ public class ChunkLoadListener implements Listener {
             if(chunkDTO == null) return; // Could not find so no need for check
 
             /* Find the land by landID */
-            LandDTO land = server.getApi().getLandAPI().getRedis().getById(chunkDTO.getLandId());
+            LandDTO land = server.getApi().getLandAPI().getRedis().get(chunkDTO.getLandId());
             if(land == null) return;
 
 

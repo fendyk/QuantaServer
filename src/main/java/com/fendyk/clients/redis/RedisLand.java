@@ -10,39 +10,28 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class RedisLand extends RedisAPI<UUID, LandDTO> {
+public class RedisLand extends RedisAPI<String, LandDTO> {
     public RedisLand(Main server,
-                     RedisClient client,
-                     boolean inDebugMode,
-                     ArrayList<RedisPubSubListener<String, String>> listeners,
-                     HashMap<String, String> subscriptions) {
-        super(server, client, inDebugMode, listeners, subscriptions);
+                      RedisClient client,
+                      boolean inDebugMode,
+                      HashMap<String, RedisPubSubListener<String, String>> subscriptions) {
+        super(server, client, inDebugMode, subscriptions);
     }
-
-    @Override
-    public LandDTO getById(String key) {
+    public LandDTO get(String key) {
         return Main.gson.fromJson(
                 getCache("land:" + key),
                 LandDTO.class
         );
     }
 
-    @Override
-    public LandDTO get(UUID key) {
-        return Main.gson.fromJson(
-                getCache("land:" + key.toString()),
-                LandDTO.class
-        );
-    }
-
 
     @Override
-    public boolean set(UUID key, LandDTO data) {
-        return setCache("land:" + key.toString(), Main.gson.toJson(data));
+    public boolean set(String key, LandDTO data) {
+        return setCache("land:" + key, Main.gson.toJson(data));
     }
 
     @Override
-    public boolean exists(UUID key) {
-        return existsInCache("land:" + key.toString());
+    public boolean exists(String key) {
+        return existsInCache("land:" + key);
     }
 }

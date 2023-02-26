@@ -14,9 +14,8 @@ public class RedisChunk extends RedisAPI<Vector2, ChunkDTO> {
     public RedisChunk(Main server,
                       RedisClient client,
                       boolean inDebugMode,
-                      ArrayList<RedisPubSubListener<String, String>> listeners,
-                      HashMap<String, String> subscriptions) {
-        super(server, client, inDebugMode, listeners, subscriptions);
+                      HashMap<String, RedisPubSubListener<String, String>> subscriptions) {
+        super(server, client, inDebugMode, subscriptions);
     }
 
     @Override
