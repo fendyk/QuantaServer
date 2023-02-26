@@ -31,4 +31,9 @@ public class RedisLand extends RedisAPI<UUID, LandDTO> {
     public boolean set(UUID key, LandDTO data) {
         return setCache("land:" + key.toString(), Main.gson.toJson(data));
     }
+
+    @Override
+    public boolean exists(UUID key) {
+        return existsInCache("land:" + key.toString());
+    }
 }

@@ -13,4 +13,11 @@ public abstract class ClientAPI<FetchAPI, RedisAPI> {
         this.redis = redis;
     }
 
+    public FetchAPI getFetch() {
+        return fetch;
+    }
+
+    public RedisAPI getRedis() {
+        return redis;
+    }
 }

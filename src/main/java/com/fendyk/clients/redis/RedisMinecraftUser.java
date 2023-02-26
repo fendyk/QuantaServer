@@ -31,4 +31,9 @@ public class RedisMinecraftUser extends RedisAPI<UUID, MinecraftUserDTO> {
         return setCache("minecraftuser:" + player.toString(), Main.gson.toJson(data));
     }
 
+    @Override
+    public boolean exists(UUID key) {
+        return false;
+    }
+
 }

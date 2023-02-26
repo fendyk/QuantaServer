@@ -47,6 +47,11 @@ public class API {
             public @Nullable Object get(String key) {return null;}
             @Override
             public boolean set(String key, Object data) {return false;}
+
+            @Override
+            public boolean exists(String key) {
+                return false;
+            }
         };
 
         minecraftUserAPI = new MinecraftUserAPI(

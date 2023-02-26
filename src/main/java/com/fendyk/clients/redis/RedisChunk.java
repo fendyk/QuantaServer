@@ -31,4 +31,9 @@ public class RedisChunk extends RedisAPI<Vector2, ChunkDTO> {
     public boolean set(Vector2 key, ChunkDTO data) {
         return setCache("chunk:" + key.getX() + ":" + key.getY(), Main.gson.toJson(data));
     }
+
+    @Override
+    public boolean exists(Vector2 key) {
+        return false;
+    }
 }

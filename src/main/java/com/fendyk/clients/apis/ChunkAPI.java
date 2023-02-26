@@ -18,9 +18,9 @@ public class ChunkAPI extends ClientAPI<FetchChunk, RedisChunk> {
     }
 
     @Nullable
-    public ChunkDTO get(Chunk chunk, boolean needsFetch) {
+    public ChunkDTO get(Chunk chunk) {
         Vector2 chunkPos = new Vector2(chunk.getX(), chunk.getZ());
-        return needsFetch ? fetch.get(chunkPos) : redis.get(chunkPos);
+        return redis.get(chunkPos);
     }
 
     public ChunkDTO create(Chunk chunk, boolean isClaimable) {
@@ -28,21 +28,12 @@ public class ChunkAPI extends ClientAPI<FetchChunk, RedisChunk> {
         newChunkDTO.setClaimable(isClaimable);
         newChunkDTO.setX(chunk.getX());
         newChunkDTO.setZ(chunk.getZ());
-
-        newChunkDTO = fetch.create(newChunkDTO);
-
-        if(newChunkDTO == null) return null;
-
-        boolean isCached = redis.set(new Vector2(chunk.getX(), chunk.getZ()), newChunkDTO);
-        return isCached ? newChunkDTO : null;
+        return fetch.create(newChunkDTO);
     }
 
     public ChunkDTO update(Chunk chunk, UpdateChunkDTO updates) {
         Vector2 vector2 = new Vector2(chunk.getX(), chunk.getZ());
-        ChunkDTO updatedChunk = fetch.update(vector2, updates);
-        if(updatedChunk == null) return null;
-        boolean isCached = redis.set(vector2, updatedChunk);
-        return isCached ? updatedChunk : null;
+        return fetch.update(vector2, updates);
     }
 
     public boolean claim(Chunk chunk, String landId) {

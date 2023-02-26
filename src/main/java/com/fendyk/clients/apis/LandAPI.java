@@ -43,7 +43,7 @@ public class LandAPI extends ClientAPI<FetchLand, RedisLand> {
         if(minecraftUserDTO == null) throw new Exception("Could not find user when creating land");
 
         /* Get chunk */
-        ChunkDTO chunkDTO = chunkAPI.get(chunk, true);
+        ChunkDTO chunkDTO = chunkAPI.get(chunk);
 
         /* If we cannot find one, create new */
         if(chunkDTO == null) {
@@ -59,19 +59,11 @@ public class LandAPI extends ClientAPI<FetchLand, RedisLand> {
 
         landDTO = fetch.create(landDTO);
         if(landDTO == null) throw new Exception("Could not create land");
-
-        /* Cache it into redis */
-        boolean isCached = redis.set(owner, landDTO); // Put the eLand into the cache
-        if(!isCached) throw new Exception("Could not cache land when creating.");
-
-        boolean isClaimed = chunkAPI.claim(chunk, landDTO.getId()); // Claim chunk
-        if(!isClaimed) throw new Exception("Could not claim chunk when creating land");
-
         return landDTO;
     }
 
     public LandDTO get(UUID owner) {
-        return ObjectUtils.firstNonNull(redis.get(owner), fetch.get(owner));
+        return redis.get(owner);
     }
 
 }

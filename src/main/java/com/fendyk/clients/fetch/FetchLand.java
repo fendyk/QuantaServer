@@ -20,7 +20,18 @@ public class FetchLand extends FetchAPI<UUID, LandDTO, LandDTO> {
                 .get()
                 .build();
         return Main.gson.fromJson(
-                fetchFromApi(request, "fetchLand"),
+                fetchFromApi(request, "fetchLandByOwner"),
+                LandDTO.class
+        );
+    }
+
+    public LandDTO get(String key) {
+        Request request = new Request.Builder()
+                .url(url + "/lands/" + key)
+                .get()
+                .build();
+        return Main.gson.fromJson(
+                fetchFromApi(request, "fetchLandByKey"),
                 LandDTO.class
         );
     }
