@@ -7,6 +7,8 @@ public class DeleteLandListener implements RedisPubSubListener<String, String> {
 
     @Override
     public void message(String channel, String message) {
+        if(!channel.equals("landDeleteEvent")) return;
+
         Bukkit.getLogger().info("DeleteChunkListener");
         Bukkit.getLogger().info(channel + ", " + message);
     }

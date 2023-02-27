@@ -38,15 +38,19 @@ public abstract class RedisAPI<K, DTO> {
         this.client = client;
         this.connection = client.connect();
         this.syncCommands = connection.sync();
-        this.pubSubConnection = client.connectPubSub();
-
-        this.pubSubCommands = pubSubConnection.sync();
 
         // Add subscriptions
         if(subscriptions != null) {
+            this.pubSubConnection = client.connectPubSub();
+
+            subscriptions.forEach((String k, RedisPubSubListener<String, String> v) -> {
+                this.pubSubConnection.addListener(v);
+            });
+
+            this.pubSubCommands = pubSubConnection.sync();
+
             subscriptions.forEach((String k, RedisPubSubListener<String, String> v) -> {
                 this.pubSubCommands.subscribe(k);
-                this.pubSubConnection.addListener(v);
             });
         }
 

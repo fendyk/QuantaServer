@@ -7,6 +7,8 @@ public class UpdateLandListener implements RedisPubSubListener<String, String> {
 
     @Override
     public void message(String channel, String message) {
+        if(!channel.equals("landUpdateEvent")) return;
+
         Bukkit.getLogger().info("UpdateLandListener");
         Bukkit.getLogger().info(channel + ", " + message);
     }

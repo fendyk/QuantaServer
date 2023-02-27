@@ -33,6 +33,6 @@ public class RedisChunk extends RedisAPI<Vector2, ChunkDTO> {
 
     @Override
     public boolean exists(Vector2 key) {
-        return false;
+            return existsInCache("chunk:" + key.getX() + ":" + key.getY());
     }
 }

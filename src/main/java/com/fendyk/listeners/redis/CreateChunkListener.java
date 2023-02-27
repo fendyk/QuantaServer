@@ -7,6 +7,8 @@ public class CreateChunkListener implements RedisPubSubListener<String, String> 
 
     @Override
     public void message(String channel, String message) {
+        if(!channel.equals("chunkCreateEvent")) return;
+
         Bukkit.getLogger().info("CreateChunkListener");
         Bukkit.getLogger().info(channel + ", " + message);
     }

@@ -7,6 +7,8 @@ public class CreateLandListener implements RedisPubSubListener<String, String> {
 
     @Override
     public void message(String channel, String message) {
+        if(!channel.equals("landCreateEvent")) return;
+
         Bukkit.getLogger().info("CreateLandListener");
         Bukkit.getLogger().info(channel + ", " + message);
     }

@@ -42,21 +42,17 @@ public class API {
 
         this.client = RedisClient.create(redisUrl);
 
-        HashMap<String, RedisPubSubListener<String, String>> userSubscriptions = new HashMap<>();
-        userSubscriptions.put("authentication", new AuthenticationListener());
-
-        HashMap<String, RedisPubSubListener<String, String>> landSubscriptions = new HashMap<>();
-        landSubscriptions.put("landCreateEvent", new CreateLandListener());
-        landSubscriptions.put("landUpdateEvent", new UpdateLandListener());
-        landSubscriptions.put("landDeleteEvent", new DeleteLandListener());
-
-        HashMap<String, RedisPubSubListener<String, String>> chunkSubscriptions = new HashMap<>();
-        chunkSubscriptions.put("chunkCreateEvent", new CreateChunkListener());
-        chunkSubscriptions.put("chunkUpdateEvent", new UpdateChunkListener());
-        chunkSubscriptions.put("chunkDeleteEvent", new DeleteChunkListener());
+        HashMap<String, RedisPubSubListener<String, String>> subscriptions = new HashMap<>();
+        subscriptions.put("authentication", new AuthenticationListener());
+        subscriptions.put("landCreateEvent", new CreateLandListener());
+        subscriptions.put("landUpdateEvent", new UpdateLandListener());
+        subscriptions.put("landDeleteEvent", new DeleteLandListener());
+        subscriptions.put("chunkCreateEvent", new CreateChunkListener());
+        subscriptions.put("chunkUpdateEvent", new UpdateChunkListener(server));
+        subscriptions.put("chunkDeleteEvent", new DeleteChunkListener());
 
         /* Sometimes we need to access certain api methods like redis's pubsub commands */
-        redisAPI = new RedisAPI<>(server, client, inDebugMode, userSubscriptions) {
+        redisAPI = new RedisAPI<>(server, client, inDebugMode, subscriptions) {
             @Override
             public @Nullable Object get(String key) {return null;}
             @Override
@@ -77,13 +73,13 @@ public class API {
         landAPI = new LandAPI(
                 this,
                 new FetchLand(server, apiUrl, inDebugMode),
-                new RedisLand(server, client, inDebugMode, landSubscriptions)
+                new RedisLand(server, client, inDebugMode, null)
         );
 
         chunkAPI = new ChunkAPI(
                 this,
                 new FetchChunk(server, apiUrl, inDebugMode),
-                new RedisChunk(server, client, inDebugMode, chunkSubscriptions)
+                new RedisChunk(server, client, inDebugMode, null)
         );
 
     }

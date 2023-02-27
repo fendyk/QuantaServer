@@ -6,6 +6,7 @@ import com.fendyk.configs.EarningsConfig;
 import com.fendyk.listeners.redis.*;
 import com.fendyk.listeners.redis.minecraft.ChunkLoadListener;
 import com.fendyk.listeners.redis.minecraft.EntityDeathListener;
+import com.fendyk.managers.WorldguardSyncManager;
 import com.google.gson.*;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.world.World;
@@ -44,6 +45,8 @@ public class Main extends JavaPlugin implements Listener {
         config.setDefault("apiUrl", "<your apiUrl here>");
         config.setDefault("redisUrl", "redis://password@localhost:6379/0");
         config.setDefault("worldName", "overworld");
+
+        WorldguardSyncManager.server = this;
 
         // Configs
         earningsConfig = new EarningsConfig();

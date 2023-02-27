@@ -7,6 +7,8 @@ public class AuthenticationListener implements RedisPubSubListener<String, Strin
 
     @Override
     public void message(String channel, String message) {
+        if(!channel.equals("authentication")) return;
+
         Bukkit.getLogger().info("Authentication");
         Bukkit.getLogger().info(channel + ", " + message);
     }
