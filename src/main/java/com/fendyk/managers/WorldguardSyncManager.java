@@ -12,6 +12,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -29,65 +30,76 @@ public final class WorldguardSyncManager {
         return new Location(chunk.getWorld(), x, y, z); // create and return a new Location object with the center coordinates
     }
 
-    public static void setRegionMembersAndOwner(ProtectedRegion region, String landOwnerId, ArrayList<String> memberIds) {
+    public static void setRegionMembersAndOwner(ProtectedRegion region, @Nullable  String landOwnerId, @Nullable  ArrayList<String> memberIds) {
         DefaultDomain newOwners = new DefaultDomain();
         DefaultDomain newMembers = new DefaultDomain();
 
-        UUID landOwnerUuid = UUID.fromString(landOwnerId);
-
-        for(String memberId : memberIds) {
-            newMembers.addPlayer(UUID.fromString(memberId));
+        if(landOwnerId != null) {
+            UUID landOwnerUuid = UUID.fromString(landOwnerId);
+            newOwners.addPlayer(landOwnerUuid);
         }
-        newOwners.addPlayer(landOwnerUuid);
+
+        if(memberIds != null) {
+            for(String memberId : memberIds) {
+                newMembers.addPlayer(UUID.fromString(memberId));
+            }
+        }
 
         /* Update the region owners and members */
         region.setOwners(newOwners);
         region.setMembers(newMembers);
     }
 
-    public static void syncChunkWithRegion(Chunk chunk) throws StorageException {
-        /* To avoid unnecessary calls to the api, first check if we already CACHED the chunk  */
-        boolean isCached = server.getApi().getChunkAPI().getRedis().exists(new Vector2(chunk.getX(), chunk.getZ()));
+    public static void syncChunkWithRegion(Chunk chunk, @Nullable ChunkDTO chunkDTO) throws StorageException {
+        Bukkit.getLogger().info(chunk.getX() + "/" + chunk.getZ() + " is trying to sync with region");
 
         /* If it's cached, we're going to do stuff with it. */
-        if(isCached) {
-            Bukkit.getLogger().info(chunk.getX() + "/" + chunk.getZ() + " needs an verification");
-            ChunkDTO chunkDTO = server.getApi().getChunkAPI().get(chunk);
+        if(chunkDTO == null) {
+            /* To avoid unnecessary calls to the api, first check if we already CACHED the chunk  */
+            boolean isCached = server.getApi().getChunkAPI().getRedis().exists(new Vector2(chunk.getX(), chunk.getZ()));
+            if(!isCached) return;
+            chunkDTO = server.getApi().getChunkAPI().get(chunk);
             if(chunkDTO == null) return; // Could not find so no need for check
+        }
 
-            /* Find the land by landID */
-            LandDTO land = server.getApi().getLandAPI().getRedis().get(chunkDTO.getLandId());
-            if(land == null) return;
+        /* Find the land by landID */
+        LandDTO landDTO = server.getApi().getLandAPI().getRedis().get(chunkDTO.getLandId());
+        if(landDTO == null) return;
 
+        /* Find the region */
+        Location center = WorldguardSyncManager.getChunkCenter(chunk);
+        Set<ProtectedRegion> set = server.getRegionManager().getApplicableRegions(
+                BlockVector3.at(center.x(), center.y(), center.z())
+        ).getRegions();
 
-            /* Find the region */
-            Location center = WorldguardSyncManager.getChunkCenter(chunk);
-            Set<ProtectedRegion> set = server.getRegionManager().getApplicableRegions(
-                    BlockVector3.at(center.x(), center.y(), center.z())
-            ).getRegions();
+        /* If we cannot find the region but the land has a landOwnerId, we need to sync */
+        if(set.size() < 1) {
+            Location topLeft = chunk.getBlock(0,-64,0).getLocation();
+            Location bottomRight = chunk.getBlock(15,320,15).getLocation();
 
-            /* If we cannot find the region but the land has a landOwnerId, we need to sync */
-            if(set.size() < 1) {
-                Location topLeft = chunk.getBlock(0,-64,0).getLocation();
-                Location bottomRight = chunk.getBlock(15,320,15).getLocation();
+            BlockVector3 min = BlockVector3.at(topLeft.getX(), -256, topLeft.getZ());
+            BlockVector3 max = BlockVector3.at(bottomRight.getX(), 256, bottomRight.getZ());
+            ProtectedRegion newRegion = new ProtectedCuboidRegion(chunkDTO.getId(), min, max);
 
-                BlockVector3 min = BlockVector3.at(topLeft.getX(), -256, topLeft.getZ());
-                BlockVector3 max = BlockVector3.at(bottomRight.getX(), 256, bottomRight.getZ());
-                ProtectedRegion newRegion = new ProtectedCuboidRegion(chunkDTO.getId(), min, max);
+            WorldguardSyncManager.setRegionMembersAndOwner(newRegion,
+                    landDTO.getOwnerId(),
+                    landDTO.getMemberIDs()
+            ); // Updates the region
+            server.getRegionManager().addRegion(newRegion); // Dont forget to save the region
+        }
 
-                WorldguardSyncManager.setRegionMembersAndOwner(newRegion, land.getOwnerId(), land.getMemberIDs()); // Updates the region
-                server.getRegionManager().addRegion(newRegion); // Dont forget to save the region
-            }
+        /* Verify if the current region owner is equal to the chunk */
+        for (ProtectedRegion regionChild : set) {
+            if(regionChild.getId().equalsIgnoreCase(chunkDTO.getId())) { // If we found the region with the correct key
 
-            /* Verify if the current region owner is equal to the chunk */
-            for (ProtectedRegion regionChild : set) {
-                if(regionChild.getId().equalsIgnoreCase(chunkDTO.getId())) { // If we found the region with the correct key
-
-                    WorldguardSyncManager.setRegionMembersAndOwner(regionChild, land.getOwnerId(), land.getMemberIDs()); // Updates the region
-                    server.getRegionManager().save(); // Dont forget to save the region
-                }
+                WorldguardSyncManager.setRegionMembersAndOwner(regionChild,
+                        landDTO.getOwnerId(),
+                        landDTO.getMemberIDs()
+                ); // Updates the region
             }
         }
+
+        server.getRegionManager().save(); // Dont forget to save the region
     }
 
 }

@@ -12,11 +12,13 @@ import java.util.UUID;
 
 public class RedisLand extends RedisAPI<String, LandDTO> {
     public RedisLand(Main server,
-                      RedisClient client,
-                      boolean inDebugMode,
-                      HashMap<String, RedisPubSubListener<String, String>> subscriptions) {
-        super(server, client, inDebugMode, subscriptions);
+                              RedisClient client,
+                              boolean inDebugMode,
+                              ArrayList<RedisPubSubListener<String, String>> listeners,
+                              ArrayList<String> subscriptions) {
+        super(server, client, inDebugMode, listeners, subscriptions);
     }
+
     public LandDTO get(String key) {
         return Main.gson.fromJson(
                 getCache("land:" + key),

@@ -15,8 +15,9 @@ public class RedisMinecraftUser extends RedisAPI<UUID, MinecraftUserDTO> {
     public RedisMinecraftUser(Main server,
                      RedisClient client,
                      boolean inDebugMode,
-                     HashMap<String, RedisPubSubListener<String, String>> subscriptions) {
-        super(server, client, inDebugMode, subscriptions);
+                     ArrayList<RedisPubSubListener<String, String>> listeners,
+                     ArrayList<String> subscriptions) {
+        super(server, client, inDebugMode, listeners, subscriptions);
     }
 
     public MinecraftUserDTO get(UUID player) {

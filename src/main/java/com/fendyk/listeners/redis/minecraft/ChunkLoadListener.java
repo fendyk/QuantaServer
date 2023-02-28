@@ -51,7 +51,7 @@ public class ChunkLoadListener implements Listener {
 
         Bukkit.getLogger().info(chunk.getX() + "/" + chunk.getZ() + " loaded");
 
-        WorldguardSyncManager.syncChunkWithRegion(chunk);
+        WorldguardSyncManager.syncChunkWithRegion(chunk, null);
         checkedChunks.put(key, chunk); // We've checked this region so no need for a re-check
     }
 

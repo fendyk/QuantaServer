@@ -12,10 +12,11 @@ import java.util.HashMap;
 
 public class RedisChunk extends RedisAPI<Vector2, ChunkDTO> {
     public RedisChunk(Main server,
-                      RedisClient client,
-                      boolean inDebugMode,
-                      HashMap<String, RedisPubSubListener<String, String>> subscriptions) {
-        super(server, client, inDebugMode, subscriptions);
+                     RedisClient client,
+                     boolean inDebugMode,
+                     ArrayList<RedisPubSubListener<String, String>> listeners,
+                     ArrayList<String> subscriptions) {
+        super(server, client, inDebugMode, listeners, subscriptions);
     }
 
     @Override
