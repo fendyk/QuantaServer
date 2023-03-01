@@ -37,7 +37,7 @@ public class ActivityCommands {
                             Player player = (Player) sender;
 
                             ActivitiesDTO activitiesDTO = api.getActivitiesAPI().getRedis().get(player.getUniqueId());
-                            if(activitiesDTO == null || activitiesDTO.getPve() == null) {
+                            if(activitiesDTO == null || activitiesDTO.getPve() == null || activitiesDTO.getPve().size() < 1) {
                                 player.sendMessage("Could not find PVE activities.");
                                 return;
                             }
@@ -55,7 +55,7 @@ public class ActivityCommands {
                             Player player = (Player) sender;
 
                             ActivitiesDTO activitiesDTO = api.getActivitiesAPI().getRedis().get(player.getUniqueId());
-                            if(activitiesDTO == null || activitiesDTO.getPvp() == null) {
+                            if(activitiesDTO == null || activitiesDTO.getPvp() == null || activitiesDTO.getPvp().size() < 1) {
                                 player.sendMessage("Could not find PVP activities.");
                                 return;
                             }
@@ -73,7 +73,7 @@ public class ActivityCommands {
                             Player player = (Player) sender;
 
                             ActivitiesDTO activitiesDTO = api.getActivitiesAPI().getRedis().get(player.getUniqueId());
-                            if(activitiesDTO == null || activitiesDTO.getMining() == null) {
+                            if(activitiesDTO == null || activitiesDTO.getMining() == null || activitiesDTO.getMining().size() < 1) {
                                 player.sendMessage("Could not find MINING activities.");
                                 return;
                             }

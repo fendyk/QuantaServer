@@ -7,6 +7,7 @@ import com.fendyk.configs.EarningsConfig;
 import com.fendyk.listeners.redis.*;
 import com.fendyk.listeners.redis.minecraft.ChunkLoadListener;
 import com.fendyk.listeners.redis.minecraft.EntityDeathListener;
+import com.fendyk.managers.ActivityEarningsManager;
 import com.fendyk.managers.WorldguardSyncManager;
 import com.google.gson.*;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -51,6 +52,8 @@ public class Main extends JavaPlugin implements Listener {
 
         // Configs
         earningsConfig = new EarningsConfig();
+        ActivityEarningsManager.earningsConfig = earningsConfig;
+
         // Instantiate api
         api = new API(this, config);
 
