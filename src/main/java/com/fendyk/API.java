@@ -2,9 +2,11 @@ package com.fendyk;
 
 import com.fendyk.clients.FetchAPI;
 import com.fendyk.clients.RedisAPI;
+import com.fendyk.clients.apis.ActivitiesAPI;
 import com.fendyk.clients.apis.ChunkAPI;
 import com.fendyk.clients.apis.LandAPI;
 import com.fendyk.clients.apis.MinecraftUserAPI;
+import com.fendyk.clients.fetch.FetchActivities;
 import com.fendyk.clients.fetch.FetchChunk;
 import com.fendyk.clients.fetch.FetchLand;
 import com.fendyk.clients.fetch.FetchMinecraftUser;
@@ -25,6 +27,8 @@ public class API {
     final boolean inDebugMode;
     private final RedisClient client;
     Main server;
+
+    ActivitiesAPI activitiesAPI;
     MinecraftUserAPI minecraftUserAPI;
     LandAPI landAPI;
     ChunkAPI chunkAPI;
@@ -65,6 +69,12 @@ public class API {
             }
         };
 
+        activitiesAPI = new ActivitiesAPI(
+                this,
+                new FetchActivities(server, apiUrl, inDebugMode),
+                null
+        );
+
         minecraftUserAPI = new MinecraftUserAPI(
                 this,
                 new FetchMinecraftUser(server, apiUrl, inDebugMode),
@@ -85,6 +95,7 @@ public class API {
 
     }
 
+    public ActivitiesAPI getActivitiesAPI() {return activitiesAPI;}
     public FetchAPI<String, Object, Object> getFetchAPI() {return fetchAPI;}
     public RedisAPI<String, Object> getRedisAPI() {return redisAPI;}
     public MinecraftUserAPI getMinecraftUserAPI() {return this.minecraftUserAPI;}

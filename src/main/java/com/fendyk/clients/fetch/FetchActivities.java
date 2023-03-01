@@ -1,23 +1,16 @@
 package com.fendyk.clients.fetch;
 
-package com.fendyk.clients.fetch;
-
-import com.fendyk.DTOs.ActivityDTO;
-import com.fendyk.DTOs.ChunkDTO;
 import com.fendyk.DTOs.ActivitiesDTO;
 import com.fendyk.DTOs.updates.UpdateActivitiesDTO;
-import com.fendyk.DTOs.updates.UpdateChunkDTO;
 import com.fendyk.Main;
 import com.fendyk.clients.FetchAPI;
-import com.fendyk.utilities.Vector2;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public class FetchActivity extends FetchAPI<UUID, ActivitiesDTO, UpdateActivitiesDTO> {
-    public FetchActivity(Main server, String url, boolean inDebugMode) {
+public class FetchActivities extends FetchAPI<UUID, ActivitiesDTO, UpdateActivitiesDTO> {
+    public FetchActivities(Main server, String url, boolean inDebugMode) {
         super(server, url, inDebugMode);
     }
 
