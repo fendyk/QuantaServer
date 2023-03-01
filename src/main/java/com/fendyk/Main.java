@@ -1,5 +1,6 @@
 package com.fendyk;
 
+import com.fendyk.commands.ActivityCommands;
 import com.fendyk.commands.EconomyCommands;
 import com.fendyk.commands.LandCommands;
 import com.fendyk.configs.EarningsConfig;
@@ -56,6 +57,7 @@ public class Main extends JavaPlugin implements Listener {
         // Commands
         new EconomyCommands(api);
         new LandCommands(api);
+        new ActivityCommands(api);
 
         // Setup WorldGuard
         setupWorldguard();

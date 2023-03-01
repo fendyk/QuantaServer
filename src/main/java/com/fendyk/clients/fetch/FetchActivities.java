@@ -16,27 +16,12 @@ public class FetchActivities extends FetchAPI<UUID, ActivitiesDTO, UpdateActivit
 
     @Override
     public ActivitiesDTO get(UUID key) {
-        Request request = new Request.Builder()
-                .url(url + "/activities/" + key.toString())
-                .get()
-                .build();
-        return Main.gson.fromJson(
-                fetchFromApi(request, "getActivities"),
-                ActivitiesDTO.class
-        );
+        return null;
     }
 
     @Override
     public ActivitiesDTO create(ActivitiesDTO data) {
-        RequestBody body = RequestBody.create(Main.gson.toJson(data), JSON);
-        Request request = new Request.Builder()
-                .url(url + "/activities")
-                .post(body)
-                .build();
-        return Main.gson.fromJson(
-                fetchFromApi(request, "createActivities"),
-                ActivitiesDTO.class
-        );
+        return null;
     }
 
     @Override

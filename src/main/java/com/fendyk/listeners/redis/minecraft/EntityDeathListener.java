@@ -35,12 +35,12 @@ public class EntityDeathListener implements Listener {
         if(killer == null) return;
 
         UpdateActivitiesDTO updateActivitiesDTO = new UpdateActivitiesDTO();
+        ArrayList<ActivityDTO> activities = new ArrayList<>();
 
         // TODO: Find the amount the player already has killed.
 
         if(killed instanceof Player) {
             BigDecimal amount  = config.getPlayerKillEarnings().setScale(2, RoundingMode.HALF_EVEN);
-            ArrayList<ActivityDTO> activities = new ArrayList<>();
             ActivityDTO activity = new ActivityDTO();
             activity.setName(killed.getUniqueId().toString());
             activity.setEarnings(amount.longValue());
@@ -49,22 +49,21 @@ public class EntityDeathListener implements Listener {
             updateActivitiesDTO.setPvp(activities);
 
             api.getMinecraftUserAPI().depositBalance(killer.getUniqueId(), amount);
-            api.getActivitiesAPI().update(killer.getUniqueId(), updateActivitiesDTO);
+            api.getActivitiesAPI().getFetch().update(killer.getUniqueId(), updateActivitiesDTO);
 
             killer.sendMessage("You have killed " + killed.getName() + " and received " + amount + "quanta");
         }
         else if(config.getEntities().containsKey(killed.getType().name())) {
             BigDecimal amount  = config.getEntityEarnings(killed.getType()).setScale(2, RoundingMode.HALF_EVEN);
-            ArrayList<ActivityDTO> activities = new ArrayList<>();
             ActivityDTO activity = new ActivityDTO();
             activity.setName(killed.getType().name());
             activity.setEarnings(amount.longValue());
             activity.setQuantity(1);
             activities.add(activity);
-            updateActivitiesDTO.setPvp(activities);
+            updateActivitiesDTO.setPve(activities);
 
             api.getMinecraftUserAPI().depositBalance(killer.getUniqueId(), amount);
-            api.getActivitiesAPI().update(killer.getUniqueId(), updateActivitiesDTO);
+            api.getActivitiesAPI().getFetch().update(killer.getUniqueId(), updateActivitiesDTO);
 
             killer.sendMessage("You have killed a " + killed.getType() + " and received " + amount + "quanta");
         }

@@ -10,6 +10,7 @@ import com.fendyk.clients.fetch.FetchActivities;
 import com.fendyk.clients.fetch.FetchChunk;
 import com.fendyk.clients.fetch.FetchLand;
 import com.fendyk.clients.fetch.FetchMinecraftUser;
+import com.fendyk.clients.redis.RedisActivities;
 import com.fendyk.clients.redis.RedisChunk;
 import com.fendyk.clients.redis.RedisLand;
 import com.fendyk.clients.redis.RedisMinecraftUser;
@@ -72,7 +73,7 @@ public class API {
         activitiesAPI = new ActivitiesAPI(
                 this,
                 new FetchActivities(server, apiUrl, inDebugMode),
-                null
+                new RedisActivities(server, client, inDebugMode, null, null)
         );
 
         minecraftUserAPI = new MinecraftUserAPI(
