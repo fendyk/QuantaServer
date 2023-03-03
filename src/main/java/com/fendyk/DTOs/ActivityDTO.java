@@ -2,9 +2,9 @@ package com.fendyk.DTOs;
 
 public class ActivityDTO {
 
-    public String name;
-    public double earnings;
-    public double quantity;
+    String name;
+    double earnings;
+    double quantity;
 
     public String getName() {
         return name;

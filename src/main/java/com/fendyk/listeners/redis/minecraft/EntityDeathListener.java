@@ -46,9 +46,10 @@ public class EntityDeathListener implements Listener {
 
         if(killed instanceof Player) {
             Optional<ActivityDTO> pvpActivity = activitiesDTO.getPvp().stream().filter(activity1 -> activity1.getName().equals(killed.getUniqueId().toString())).findFirst();
+            double amount = 0;
 
-            double amount = pvpActivity.map(
-                    activityDTO -> ActivityEarningsManager.getEarningsFromPvp((int) activityDTO.quantity, 1))
+            amount = pvpActivity.map(
+                    activityDTO -> ActivityEarningsManager.getEarningsFromPvp((int) activityDTO.getQuantity(), 1))
                     .orElseGet(() -> ActivityEarningsManager.getEarningsFromPvp(1, 1));
 
             activity.setName(killed.getUniqueId().toString());
@@ -64,9 +65,9 @@ public class EntityDeathListener implements Listener {
         }
         else if(config.getEntities().containsKey(killed.getType().name())) {
             Optional<ActivityDTO> pvpActivity = activitiesDTO.getPve().stream().filter(activity1 -> activity1.getName().equals(killed.getType().name())).findFirst();
+            double amount = 0;
 
-            double amount = pvpActivity.map(
-                            activityDTO -> ActivityEarningsManager.getEarningsFromPve(killed.getType(), (int) activityDTO.quantity, 1))
+            amount = pvpActivity.map(activityDTO -> ActivityEarningsManager.getEarningsFromPve(killed.getType(), (int) activityDTO.getQuantity(), 1))
                     .orElseGet(() -> ActivityEarningsManager.getEarningsFromPve(killed.getType(), 1, 1));
 
             activity.setName(killed.getType().name());

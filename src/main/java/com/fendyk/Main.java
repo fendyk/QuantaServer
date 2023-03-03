@@ -5,6 +5,7 @@ import com.fendyk.commands.EconomyCommands;
 import com.fendyk.commands.LandCommands;
 import com.fendyk.configs.EarningsConfig;
 import com.fendyk.listeners.redis.*;
+import com.fendyk.listeners.redis.minecraft.BlockBreakListener;
 import com.fendyk.listeners.redis.minecraft.ChunkLoadListener;
 import com.fendyk.listeners.redis.minecraft.EntityDeathListener;
 import com.fendyk.managers.ActivityEarningsManager;
@@ -69,6 +70,7 @@ public class Main extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(this, this);
         getServer().getPluginManager().registerEvents(new EntityDeathListener(this), this);
         getServer().getPluginManager().registerEvents(new ChunkLoadListener(this), this);
+        getServer().getPluginManager().registerEvents(new BlockBreakListener(this), this);
 
     }
 

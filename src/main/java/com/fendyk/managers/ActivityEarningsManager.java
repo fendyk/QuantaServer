@@ -18,10 +18,10 @@ public class ActivityEarningsManager {
      */
     public static double getEarningsFromPvp(int dailyKills, int workers) {
         final double reward = earningsConfig.getPlayerKillEarnings();
-        final double effectiveness = earningsConfig.getPlayerKillEffectiveness();
+        final double threshold = earningsConfig.getPlayerKillThreshold();
         final int citizens = Math.min(workers, maxWorkers);
 
-        double root = Math.max(effectiveness - (dailyKills + 1), 1);
+        double root = Math.max(threshold - (dailyKills + 1), 1);
         double newEarnings = (Math.sqrt(root) * reward) * citizens;
         double oldEarnings = (Math.sqrt(root + 1) * reward) * citizens;
         return oldEarnings - newEarnings;
@@ -35,10 +35,10 @@ public class ActivityEarningsManager {
      */
     public static double getEarningsFromTime(long secondsPlayed, long dailyTimePlayed, int workers) {
         final double reward = earningsConfig.getTimeEarnings();
-        final double effectiveness = earningsConfig.getTimeEffectiveness();
+        final double threshold = earningsConfig.getTimeThreshold();
         final int citizens = Math.min(workers, maxWorkers);
 
-        double root = Math.max(effectiveness - (dailyTimePlayed + secondsPlayed), secondsPlayed);
+        double root = Math.max(threshold - (dailyTimePlayed + secondsPlayed), secondsPlayed);
         double newEarnings = (Math.sqrt(root) * reward) * citizens;
         double oldEarnings = (Math.sqrt(root + secondsPlayed) * reward) * citizens;
         return oldEarnings - newEarnings;
@@ -52,10 +52,10 @@ public class ActivityEarningsManager {
      */
     public static double getEarningsFromMining(Material ore, int dailyOreMined, int workers) {
         final double reward = earningsConfig.getMaterialEarnings(ore);
-        final double effectiveness = earningsConfig.getMaterialEffectiveness(ore);
+        final double threshold = earningsConfig.getMaterialThreshold(ore);
         final int citizens = Math.min(workers, maxWorkers);
 
-        double root = Math.max(effectiveness - (dailyOreMined + 1), 1);
+        double root = Math.max(threshold - (dailyOreMined + 1), 1);
         double newEarnings = (Math.sqrt(root) * reward) * citizens;
         double oldEarnings = (Math.sqrt(root + 1) * reward) * citizens;
         return oldEarnings - newEarnings;
@@ -69,10 +69,10 @@ public class ActivityEarningsManager {
      */
     public static double getEarningsFromPve(EntityType type, int dailyPveKills, int workers) {
         final double reward = earningsConfig.getEntityEarnings(type);
-        final double effectiveness = earningsConfig.getEntityEffectiveness(type);
+        final double threshold = earningsConfig.getEntityThreshold(type);
         final int citizens = Math.min(workers, maxWorkers);
 
-        double root = Math.max(effectiveness - (dailyPveKills + 1), 1);
+        double root = Math.max(threshold - (dailyPveKills + 1), 1);
         double newEarnings = (Math.sqrt(root) * reward) * citizens;
         double oldEarnings = (Math.sqrt(root + 1) * reward) * citizens;
         return oldEarnings - newEarnings;

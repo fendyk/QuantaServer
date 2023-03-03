@@ -4,13 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Update activities now working as intended">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/managers/ActivityEarningsManager.java" afterDir="false" />
+    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Update activities (not really working yet)">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/redis/minecraft/BlockBreakListener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/ActivityDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/ActivityDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/ActivityCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/ActivityCommands.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/configs/EarningsConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/configs/EarningsConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/redis/minecraft/EntityDeathListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/redis/minecraft/EntityDeathListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/managers/ActivityEarningsManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/managers/ActivityEarningsManager.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -193,7 +194,8 @@
       <workItem from="1677606476684" duration="8865000" />
       <workItem from="1677693989707" duration="3000" />
       <workItem from="1677698403168" duration="2629000" />
-      <workItem from="1677701058550" duration="8305000" />
+      <workItem from="1677701058550" duration="8651000" />
+      <workItem from="1677797112553" duration="6390000" />
     </task>
     <task id="LOCAL-00001" summary="feat: redis">
       <created>1675545393878</created>
@@ -321,7 +323,14 @@
       <option name="project" value="LOCAL" />
       <updated>1677703387448</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="Update activities (not really working yet)">
+      <created>1677710078866</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1677710078866</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -357,6 +366,7 @@
     <MESSAGE value="feat: worldguard now syncing with redis" />
     <MESSAGE value="feat: activities" />
     <MESSAGE value="Update activities now working as intended" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update activities now working as intended" />
+    <MESSAGE value="Update activities (not really working yet)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update activities (not really working yet)" />
   </component>
 </project>
