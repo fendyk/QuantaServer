@@ -44,6 +44,7 @@ public class API {
 
         String redisUrl = config.getOrSetDefault("redisUrl", "<url>");
         String apiUrl = config.getOrSetDefault("apiUrl", "<url>");
+        String jwtToken = config.getOrSetDefault("jwtToken", "<token>");
 
         this.client = RedisClient.create(redisUrl);
 
@@ -72,25 +73,25 @@ public class API {
 
         activitiesAPI = new ActivitiesAPI(
                 this,
-                new FetchActivities(server, apiUrl, inDebugMode),
+                new FetchActivities(server, apiUrl, inDebugMode, jwtToken),
                 new RedisActivities(server, client, inDebugMode, null, null)
         );
 
         minecraftUserAPI = new MinecraftUserAPI(
                 this,
-                new FetchMinecraftUser(server, apiUrl, inDebugMode),
+                new FetchMinecraftUser(server, apiUrl, inDebugMode, jwtToken),
                 new RedisMinecraftUser(server, client, inDebugMode, null, null)
         );
 
         landAPI = new LandAPI(
                 this,
-                new FetchLand(server, apiUrl, inDebugMode),
+                new FetchLand(server, apiUrl, inDebugMode, jwtToken),
                 new RedisLand(server, client, inDebugMode, null, null)
         );
 
         chunkAPI = new ChunkAPI(
                 this,
-                new FetchChunk(server, apiUrl, inDebugMode),
+                new FetchChunk(server, apiUrl, inDebugMode, jwtToken),
                 new RedisChunk(server, client, inDebugMode, null, null)
         );
 

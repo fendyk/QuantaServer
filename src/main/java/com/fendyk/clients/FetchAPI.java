@@ -20,11 +20,15 @@ public abstract class FetchAPI<K, DTO, UpdateDTO> {
     protected OkHttpClient client =  new OkHttpClient();
     protected final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     protected final String url;
+    protected final String authHeader = "Authorization";
+    protected Request.Builder requestBuilder;
 
-    public FetchAPI(Main server, String url, boolean inDebugMode) {
+    public FetchAPI(Main server, String url, boolean inDebugMode, String authKey) {
         this.server = server;
         this.url = url;
         this.inDebugMode = inDebugMode;
+        this.requestBuilder = new Request.Builder()
+                .addHeader(authHeader, "Bearer " + authKey);
     }
     void logDebug(Response res, String responseBody, String requestBody, String name) {
         Bukkit.getLogger().info("-----------------------------------");

@@ -60,7 +60,12 @@ public class LandAPI extends ClientAPI<FetchLand, RedisLand> {
         landDTO.setOwnerId(owner.toString());
 
         landDTO = fetch.create(landDTO);
+
         if(landDTO == null) throw new Exception("Could not create land");
+
+        /* Claim the chunk */
+        chunkAPI.claim(chunk, landDTO.getId());
+
         return landDTO;
     }
 

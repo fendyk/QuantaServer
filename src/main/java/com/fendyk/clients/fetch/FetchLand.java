@@ -9,13 +9,13 @@ import java.util.UUID;
 
 public class FetchLand extends FetchAPI<UUID, LandDTO, LandDTO> {
 
-    public FetchLand(Main server, String url, boolean inDebugMode) {
-        super(server, url, inDebugMode);
+    public FetchLand(Main server, String url, boolean inDebugMode, String apiKey) {
+        super(server, url, inDebugMode, apiKey);
     }
 
     @Override
     public LandDTO get(UUID key) {
-        Request request = new Request.Builder()
+        Request request = this.requestBuilder
                 .url(url + "/lands/" + key.toString())
                 .get()
                 .build();
@@ -26,7 +26,7 @@ public class FetchLand extends FetchAPI<UUID, LandDTO, LandDTO> {
     }
 
     public LandDTO get(String key) {
-        Request request = new Request.Builder()
+        Request request = this.requestBuilder
                 .url(url + "/lands/" + key)
                 .get()
                 .build();
@@ -39,7 +39,7 @@ public class FetchLand extends FetchAPI<UUID, LandDTO, LandDTO> {
     @Override
     public LandDTO create(LandDTO data) {
         RequestBody body = RequestBody.create(Main.gson.toJson(data), JSON);
-        Request request = new Request.Builder()
+        Request request = this.requestBuilder
                 .url(url + "/lands")
                 .post(body)
                 .build();
@@ -52,7 +52,7 @@ public class FetchLand extends FetchAPI<UUID, LandDTO, LandDTO> {
     @Override
     public LandDTO update(UUID key, LandDTO data) {
         RequestBody body = RequestBody.create(data.toString(), JSON);
-        Request request = new Request.Builder()
+        Request request = this.requestBuilder
                 .url(url + "/lands/" + key)
                 .patch(body)
                 .build();

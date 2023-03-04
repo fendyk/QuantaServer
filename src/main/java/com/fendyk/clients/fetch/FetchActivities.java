@@ -10,8 +10,8 @@ import okhttp3.RequestBody;
 import java.util.UUID;
 
 public class FetchActivities extends FetchAPI<UUID, ActivitiesDTO, UpdateActivitiesDTO> {
-    public FetchActivities(Main server, String url, boolean inDebugMode) {
-        super(server, url, inDebugMode);
+    public FetchActivities(Main server, String url, boolean inDebugMode, String apiKey) {
+        super(server, url, inDebugMode, apiKey);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class FetchActivities extends FetchAPI<UUID, ActivitiesDTO, UpdateActivit
     @Override
     public ActivitiesDTO update(UUID key, UpdateActivitiesDTO data) {
         RequestBody body = RequestBody.create(Main.gson.toJson(data), JSON);
-        Request request = new Request.Builder()
+        Request request = this.requestBuilder
                 .url(url + "/activities/" + key.toString())
                 .patch(body)
                 .build();

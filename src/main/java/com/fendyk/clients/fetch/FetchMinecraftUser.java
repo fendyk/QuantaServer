@@ -10,13 +10,13 @@ import java.util.UUID;
 
 public class FetchMinecraftUser extends FetchAPI<UUID, MinecraftUserDTO, MinecraftUserDTO> {
 
-    public FetchMinecraftUser(Main server, String url, boolean inDebugMode) {
-        super(server, url, inDebugMode);
+    public FetchMinecraftUser(Main server, String url, boolean inDebugMode, String apiKey) {
+        super(server, url, inDebugMode, apiKey);
     }
 
     @Override
     public MinecraftUserDTO get(UUID key) {
-        Request request = new Request.Builder()
+        Request request = this.requestBuilder
                 .url(url + "/minecraftusers/" + key.toString())
                 .get()
                 .build();
@@ -34,7 +34,7 @@ public class FetchMinecraftUser extends FetchAPI<UUID, MinecraftUserDTO, Minecra
     @Override
     public MinecraftUserDTO update(UUID key, MinecraftUserDTO data) {
         RequestBody body = RequestBody.create(Main.gson.toJson(data), JSON);
-        Request request = new Request.Builder()
+        Request request = this.requestBuilder
                 .url(url + "/minecraftusers/" + key)
                 .patch(body)
                 .build();
