@@ -1,4 +1,4 @@
-package com.fendyk.listeners.redis.minecraft;
+package com.fendyk.listeners.minecraft;
 
 import com.fendyk.API;
 import com.fendyk.DTOs.ActivitiesDTO;

@@ -4,6 +4,7 @@ import com.fendyk.API;
 import com.fendyk.DTOs.ChunkDTO;
 import com.fendyk.DTOs.LandDTO;
 import com.fendyk.DTOs.MinecraftUserDTO;
+import com.fendyk.DTOs.updates.UpdateLandDTO;
 import com.fendyk.Main;
 import com.fendyk.clients.apis.MinecraftUserAPI;
 import com.fendyk.managers.WorldguardSyncManager;
@@ -13,10 +14,12 @@ import com.google.gson.JsonObject;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandPermission;
 import dev.jorel.commandapi.arguments.BooleanArgument;
+import dev.jorel.commandapi.arguments.PlayerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -39,9 +42,17 @@ public class LandCommands {
                             Player player = (Player) sender;
                             String name = (String) args[0];
                             Chunk chunk = player.getChunk();
+
+                            if(api.getBlacklistedChunkAPI().getRedis().hGet(new Vector2(chunk.getX(), chunk.getZ()))) {
+                                player.sendMessage("The chunk you're currently standing on is considered 'blacklisted' and not claimable.");
+                                return;
+                            }
+
                             try {
                                 LandDTO landDTO = api.getLandAPI().create(player.getUniqueId(), name, chunk);
                                 player.sendMessage("Your land has been created");
+                                WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(16, 185, 129, 15));
+                                ParticleEffect.FIREWORKS_SPARK.display(player.getLocation());
                             } catch (Exception e) {
                                 Bukkit.getLogger().info(Arrays.toString(e.getStackTrace()));
                                 player.sendMessage(e.getMessage());
@@ -49,9 +60,52 @@ public class LandCommands {
                         })
 
                 )
+                .withSubcommand(new CommandAPICommand("members")
+                        .withSubcommand(new CommandAPICommand("add")
+                                .withArguments(new PlayerArgument("member"))
+                                .executes((sender, args) -> {
+                                    Player player = (Player) sender;
+                                    OfflinePlayer newMember = (OfflinePlayer) sender;
+                                    UUID uuid = player.getUniqueId();
+                                    UUID memberUuid = newMember.getUniqueId();
+
+                                    UpdateLandDTO updateLandDTO = new UpdateLandDTO();
+                                    LandDTO landDTO = api.getLandAPI().getRedis().get(uuid.toString());
+                                    if(landDTO == null) {
+                                        player.sendMessage("Could not find your land");
+                                        return;
+                                    }
+
+                                    updateLandDTO.getConnectMembers().add(memberUuid.toString());
+                                    api.getLandAPI().getFetch().update(uuid, updateLandDTO);
+                                    player.sendMessage("has been added as a member to your land");
+                                })
+                        )
+                        .withSubcommand(new CommandAPICommand("remove")
+                                .withArguments(new PlayerArgument("member"))
+                                .executes((sender, args) -> {
+                                    Player player = (Player) sender;
+                                    OfflinePlayer newMember = (OfflinePlayer) sender;
+                                    UUID uuid = player.getUniqueId();
+                                    UUID memberUuid = newMember.getUniqueId();
+
+                                    UpdateLandDTO updateLandDTO = new UpdateLandDTO();
+                                    LandDTO landDTO = api.getLandAPI().getRedis().get(uuid.toString());
+                                    if(landDTO == null) {
+                                        player.sendMessage("Could not find your land");
+                                        return;
+                                    }
+
+                                    updateLandDTO.getDisconnectMembers().add(memberUuid.toString());
+                                    api.getLandAPI().getFetch().update(uuid, updateLandDTO);
+                                    player.sendMessage("has been added as a member to your land");
+                                })
+                        )
+                )
                 .withSubcommand(new CommandAPICommand("chunk")
                         .withSubcommand(new CommandAPICommand("generate")
                                 //.withRequirement(sender -> api.getLandAPI()( ((Player) sender).getUniqueId() ) != null)
+                                .withPermission("quantaserver.land.chunk.generate")
                                 .withArguments(new BooleanArgument("isClaimable"))
                                 .executes((sender, args) -> {
                                     Player player = (Player) sender;
@@ -72,6 +126,11 @@ public class LandCommands {
                                 .executes((sender, args) -> {
                                     Player player = (Player) sender;
                                     Chunk chunk = player.getChunk();
+
+                                    if(api.getBlacklistedChunkAPI().getRedis().hGet(new Vector2(chunk.getX(), chunk.getZ()))) {
+                                        player.sendMessage("The chunk you're currently standing on is considered 'blacklisted' and not claimable.");
+                                        return;
+                                    }
 
                                     ChunkDTO chunkDTO = api.getChunkAPI().getRedis().get(new Vector2(chunk.getX(), chunk.getZ()));
 
@@ -103,7 +162,7 @@ public class LandCommands {
                                         return;
                                     }
 
-                                    if(!chunkDTO.isClaimable()) {
+                                    if(chunkDTO.isClaimable() != null && !chunkDTO.isClaimable()) {
                                         WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(252, 211, 77, 15));
                                         player.sendMessage("This chunk is considered not claimable");
                                         return;
@@ -111,15 +170,12 @@ public class LandCommands {
 
                                     // Find out if there is a neighbour.
                                     List<Chunk> neighbours = WorldguardSyncManager.getNeighboringChunks(chunk);
-                                    boolean hasNeighbour = false;
-                                    for(Chunk neighbour : neighbours) {
+                                    long countNeighbours = neighbours.stream().filter(neighbour -> {
                                         ChunkDTO neighbourChunkDTO = api.getChunkAPI().getRedis().get(new Vector2(neighbour.getX(), neighbour.getZ()));
-                                        if(neighbourChunkDTO != null && neighbourChunkDTO.getLandId() != null && neighbourChunkDTO.getLandId().equals(landDTO.getId())) {
-                                            hasNeighbour = true;
-                                        }
-                                    }
+                                        return neighbourChunkDTO != null && neighbourChunkDTO.getLandId() != null && neighbourChunkDTO.getLandId().equals(landDTO.getId());
+                                    }).count();
 
-                                    if(!hasNeighbour) {
+                                    if(countNeighbours < 1) {
                                         player.sendMessage("You can only claim chunks that are neighbours of you current land.");
                                         return;
                                     }
@@ -131,6 +187,7 @@ public class LandCommands {
                                     }
 
                                     WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(16, 185, 129, 15));
+                                    ParticleEffect.FIREWORKS_SPARK.display(player.getLocation());
                                     player.sendMessage("Chunk has been claimed");
                                 })
                         )
@@ -140,17 +197,23 @@ public class LandCommands {
                                     Player player = (Player) sender;
                                     Chunk chunk = player.getChunk();
 
-                                    ChunkDTO chunkDTO = api.getChunkAPI().getRedis().get(new Vector2(chunk.getX(), chunk.getZ()));
 
-                                    if(chunkDTO != null && !chunkDTO.isClaimable()) {
-                                        WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(252, 211, 77, 15));
-                                        player.sendMessage("This chunk is considered not claimable");
+                                    if(api.getBlacklistedChunkAPI().getRedis().hGet(new Vector2(chunk.getX(), chunk.getZ()))) {
+                                        player.sendMessage("The chunk you're currently standing on is considered 'blacklisted' and not claimable.");
                                         return;
                                     }
+
+                                    ChunkDTO chunkDTO = api.getChunkAPI().getRedis().get(new Vector2(chunk.getX(), chunk.getZ()));
 
                                     if(chunkDTO == null || chunkDTO.getLandId() == null) {
                                         WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(16, 185, 129, 15));
                                         player.sendMessage("This chunk has not been claimed yet.");
+                                        return;
+                                    }
+
+                                    if(chunkDTO.isClaimable() != null && !chunkDTO.isClaimable()) {
+                                        WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(252, 211, 77, 15));
+                                        player.sendMessage("This chunk is considered not claimable");
                                         return;
                                     }
 

@@ -1,4 +1,4 @@
-package com.fendyk.listeners.redis.minecraft;
+package com.fendyk.listeners.minecraft;
 
 import com.fendyk.DTOs.ChunkDTO;
 import com.fendyk.DTOs.LandDTO;
@@ -43,16 +43,25 @@ public class ChunkLoadListener implements Listener {
      * @param event
      */
     @EventHandler
-    public void onChunkLoad(PlayerChunkLoadEvent event) throws StorageException {
-        if(!event.getWorld().getName().equalsIgnoreCase(worldName)) return;
-        Chunk chunk = event.getChunk();
-        final String key = chunk.getX() + ":" + chunk.getZ();
-        if(checkedChunks.containsKey(key)) return;
+    public void onChunkLoad(PlayerChunkLoadEvent event) {
+        Bukkit.getScheduler().runTaskAsynchronously(server, () -> {
+            if(!event.getWorld().getName().equalsIgnoreCase(worldName)) return;
+            Chunk chunk = event.getChunk();
+            final String key = chunk.getX() + ":" + chunk.getZ();
 
-        Bukkit.getLogger().info(chunk.getX() + "/" + chunk.getZ() + " loaded");
+            if (!checkedChunks.containsKey(key)) {
+                Bukkit.getLogger().info(chunk.getX() + "/" + chunk.getZ() + " loaded");
 
-        WorldguardSyncManager.syncChunkWithRegion(chunk, null);
-        checkedChunks.put(key, chunk); // We've checked this region so no need for a re-check
+                Bukkit.getScheduler().runTask(server, () -> {
+                    try {
+                        WorldguardSyncManager.syncChunkWithRegion(chunk, null, null);
+                    } catch (StorageException e) {
+                        throw new RuntimeException(e);
+                    }
+                    checkedChunks.put(key, chunk);
+                });
+            }
+        });
     }
 
 }

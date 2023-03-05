@@ -1,13 +1,14 @@
 package com.fendyk.clients.fetch;
 
 import com.fendyk.DTOs.LandDTO;
+import com.fendyk.DTOs.updates.UpdateLandDTO;
 import com.fendyk.Main;
 import com.fendyk.clients.FetchAPI;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import java.util.UUID;
 
-public class FetchLand extends FetchAPI<UUID, LandDTO, LandDTO> {
+public class FetchLand extends FetchAPI<UUID, LandDTO, UpdateLandDTO> {
 
     public FetchLand(Main server, String url, boolean inDebugMode, String apiKey) {
         super(server, url, inDebugMode, apiKey);
@@ -50,7 +51,7 @@ public class FetchLand extends FetchAPI<UUID, LandDTO, LandDTO> {
     }
 
     @Override
-    public LandDTO update(UUID key, LandDTO data) {
+    public LandDTO update(UUID key, UpdateLandDTO data) {
         RequestBody body = RequestBody.create(data.toString(), JSON);
         Request request = this.requestBuilder
                 .url(url + "/lands/" + key)

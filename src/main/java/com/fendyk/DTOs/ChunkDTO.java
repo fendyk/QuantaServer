@@ -4,7 +4,7 @@ public class ChunkDTO {
 
     String id;
 
-    boolean isClaimable;
+    Boolean isClaimable;
     int x;
     int z;
     String landId;
@@ -17,7 +17,7 @@ public class ChunkDTO {
         this.id = id;
     }
 
-    public boolean isClaimable() {
+    public Boolean isClaimable() {
         return isClaimable;
     }
 

@@ -129,7 +129,7 @@ public final class WorldguardSyncManager {
         region.setMembers(newMembers);
     }
 
-    public static void syncChunkWithRegion(Chunk chunk, @Nullable ChunkDTO chunkDTO) throws StorageException {
+    public static void syncChunkWithRegion(Chunk chunk, @Nullable ChunkDTO chunkDTO, @Nullable LandDTO landDTO) throws StorageException {
         Bukkit.getLogger().info(chunk.getX() + "/" + chunk.getZ() + " is trying to sync with region");
 
         /* If it's cached, we're going to do stuff with it. */
@@ -142,8 +142,10 @@ public final class WorldguardSyncManager {
         }
 
         /* Find the land by landID */
-        LandDTO landDTO = server.getApi().getLandAPI().getRedis().get(chunkDTO.getLandId());
-        if(landDTO == null) return;
+        if(landDTO == null) {
+            landDTO = server.getApi().getLandAPI().getRedis().get(chunkDTO.getLandId());
+            if(landDTO == null) return;
+        }
 
         /* Find the region */
         Location center = WorldguardSyncManager.getChunkCenter(chunk);
@@ -179,6 +181,7 @@ public final class WorldguardSyncManager {
         }
 
         server.getRegionManager().save(); // Dont forget to save the region
+        Bukkit.getLogger().info(chunk.getX() + "/" + chunk.getZ() + " is synced");
     }
 
     public static void showParticleEffectAtChunk(Chunk chunk, Location location, ParticleData particleData) {

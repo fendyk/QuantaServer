@@ -2,37 +2,32 @@ package com.fendyk;
 
 import com.fendyk.clients.FetchAPI;
 import com.fendyk.clients.RedisAPI;
-import com.fendyk.clients.apis.ActivitiesAPI;
-import com.fendyk.clients.apis.ChunkAPI;
-import com.fendyk.clients.apis.LandAPI;
-import com.fendyk.clients.apis.MinecraftUserAPI;
+import com.fendyk.clients.apis.*;
 import com.fendyk.clients.fetch.FetchActivities;
 import com.fendyk.clients.fetch.FetchChunk;
 import com.fendyk.clients.fetch.FetchLand;
 import com.fendyk.clients.fetch.FetchMinecraftUser;
-import com.fendyk.clients.redis.RedisActivities;
-import com.fendyk.clients.redis.RedisChunk;
-import com.fendyk.clients.redis.RedisLand;
-import com.fendyk.clients.redis.RedisMinecraftUser;
-import com.fendyk.listeners.redis.*;
+import com.fendyk.clients.redis.*;
+import com.fendyk.listeners.AuthenticationListener;
+import com.fendyk.listeners.ChunkListener;
+import com.fendyk.listeners.LandListener;
 import de.leonhard.storage.Toml;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.pubsub.RedisPubSubListener;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class API {
     final String worldName;
     final boolean inDebugMode;
     private final RedisClient client;
     Main server;
-
     ActivitiesAPI activitiesAPI;
     MinecraftUserAPI minecraftUserAPI;
     LandAPI landAPI;
     ChunkAPI chunkAPI;
+    BlacklistedChunkAPI blacklistedChunkAPI;
 
     FetchAPI<String, Object,  Object> fetchAPI;
     RedisAPI<String, Object> redisAPI;
@@ -49,14 +44,15 @@ public class API {
         this.client = RedisClient.create(redisUrl);
 
         ArrayList<RedisPubSubListener<String, String>> listeners = new ArrayList<>();
-        listeners.add(new AuthenticationListener());
+        listeners.add(new AuthenticationListener(server));
         listeners.add(new ChunkListener(server));
+        listeners.add(new LandListener(server));
 
         ArrayList<String> subscriptions = new ArrayList<>();
         subscriptions.add("authentication");
-        subscriptions.add("chunkCreateEvent");
-        subscriptions.add("chunkUpdateEvent");
-        subscriptions.add("chunkDeleteEvent");
+        subscriptions.add("chunk");
+        subscriptions.add("land");
+
 
         /* Sometimes we need to access certain api methods like redis's pubsub commands */
         redisAPI = new RedisAPI<>(server, client, inDebugMode, listeners, subscriptions) {
@@ -70,6 +66,12 @@ public class API {
                 return false;
             }
         };
+
+        blacklistedChunkAPI = new BlacklistedChunkAPI(
+                this,
+                null,
+                new RedisBlacklistedChunk(server, client, inDebugMode, null, null)
+        );
 
         activitiesAPI = new ActivitiesAPI(
                 this,
@@ -97,6 +99,7 @@ public class API {
 
     }
 
+    public BlacklistedChunkAPI getBlacklistedChunkAPI() {return blacklistedChunkAPI;}
     public ActivitiesAPI getActivitiesAPI() {return activitiesAPI;}
     public FetchAPI<String, Object, Object> getFetchAPI() {return fetchAPI;}
     public RedisAPI<String, Object> getRedisAPI() {return redisAPI;}
