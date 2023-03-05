@@ -21,7 +21,7 @@ public class ActivityEarningsManager {
         final double threshold = earningsConfig.getPlayerKillThreshold();
         final int citizens = Math.min(workers, maxWorkers);
 
-        double root = Math.max(threshold - (dailyKills + 1), 1);
+        double root = Math.max(threshold - Math.min(1, dailyKills + 1), 1);
         double newEarnings = (Math.sqrt(root) * reward) * citizens;
         double oldEarnings = (Math.sqrt(root + 1) * reward) * citizens;
         return oldEarnings - newEarnings;
@@ -38,7 +38,7 @@ public class ActivityEarningsManager {
         final double threshold = earningsConfig.getTimeThreshold();
         final int citizens = Math.min(workers, maxWorkers);
 
-        double root = Math.max(threshold - (dailyTimePlayed + secondsPlayed), secondsPlayed);
+        double root = Math.max(threshold - Math.min(1, dailyTimePlayed + secondsPlayed), secondsPlayed);
         double newEarnings = (Math.sqrt(root) * reward) * citizens;
         double oldEarnings = (Math.sqrt(root + secondsPlayed) * reward) * citizens;
         return oldEarnings - newEarnings;
@@ -55,7 +55,7 @@ public class ActivityEarningsManager {
         final double threshold = earningsConfig.getMaterialThreshold(ore);
         final int citizens = Math.min(workers, maxWorkers);
 
-        double root = Math.max(threshold - (dailyOreMined + 1), 1);
+        double root = Math.max(threshold - Math.min(1, dailyOreMined + 1), 1);
         double newEarnings = (Math.sqrt(root) * reward) * citizens;
         double oldEarnings = (Math.sqrt(root + 1) * reward) * citizens;
         return oldEarnings - newEarnings;
@@ -72,7 +72,7 @@ public class ActivityEarningsManager {
         final double threshold = earningsConfig.getEntityThreshold(type);
         final int citizens = Math.min(workers, maxWorkers);
 
-        double root = Math.max(threshold - (dailyPveKills + 1), 1);
+        double root = Math.max(threshold - Math.min(1, dailyPveKills + 1), 1);
         double newEarnings = (Math.sqrt(root) * reward) * citizens;
         double oldEarnings = (Math.sqrt(root + 1) * reward) * citizens;
         return oldEarnings - newEarnings;

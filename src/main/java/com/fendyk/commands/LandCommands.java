@@ -4,7 +4,9 @@ import com.fendyk.API;
 import com.fendyk.DTOs.ChunkDTO;
 import com.fendyk.DTOs.LandDTO;
 import com.fendyk.DTOs.MinecraftUserDTO;
+import com.fendyk.Main;
 import com.fendyk.clients.apis.MinecraftUserAPI;
+import com.fendyk.managers.WorldguardSyncManager;
 import com.fendyk.utilities.Vector2;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -14,15 +16,22 @@ import dev.jorel.commandapi.arguments.BooleanArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitScheduler;
+import xyz.xenondevs.particle.ParticleBuilder;
+import xyz.xenondevs.particle.ParticleEffect;
+import xyz.xenondevs.particle.data.color.DustData;
+import xyz.xenondevs.particle.data.color.RegularColor;
+import xyz.xenondevs.particle.task.TaskManager;
 
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class LandCommands {
 
-    public LandCommands(API api) {
+    public LandCommands(Main server) {
+        API api = server.getApi();
         new CommandAPICommand("land")
                 .withSubcommand(new CommandAPICommand("create")
                         .withArguments(new StringArgument("name"))
@@ -77,6 +86,7 @@ public class LandCommands {
 
                                     String chunkLandId = chunkDTO.getLandId();
                                     if(chunkLandId != null) {
+                                        WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(239, 68, 68, 15));
                                         player.sendMessage("This chunk has already been claimed by someone else");
                                         return;
                                     }
@@ -87,20 +97,15 @@ public class LandCommands {
                                         return;
                                     }
 
-                                    LandDTO landDTO = api.getLandAPI().getRedis().get(minecraftUserDTO.getId());
+                                    LandDTO landDTO = api.getLandAPI().getRedis().get(player.getUniqueId().toString());
                                     if(landDTO == null) {
-                                        player.sendMessage("Error when trying to find the land");
-                                        return;
-                                    }
-
-                                    String landId = landDTO.getId();
-                                    if(landId == null) {
                                         player.sendMessage("You currently dont have a land. To create one, type /land create <name>");
                                         return;
                                     }
 
                                     if(!chunkDTO.isClaimable()) {
-                                        player.sendMessage("This chunk is consired 'not claimable'");
+                                        WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(252, 211, 77, 15));
+                                        player.sendMessage("This chunk is considered not claimable");
                                         return;
                                     }
 
@@ -110,6 +115,7 @@ public class LandCommands {
                                         return;
                                     }
 
+                                    WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(16, 185, 129, 15));
                                     player.sendMessage("Chunk has been claimed");
                                 })
                         )
@@ -121,25 +127,32 @@ public class LandCommands {
 
                                     ChunkDTO chunkDTO = api.getChunkAPI().getRedis().get(new Vector2(chunk.getX(), chunk.getZ()));
 
-                                    if(chunkDTO == null) {
+                                    if(chunkDTO == null || chunkDTO.getLandId() == null) {
+                                        WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(59, 130, 246, 15));
                                         player.sendMessage("This chunk has not been claimed yet.");
                                         return;
                                     }
 
                                     LandDTO landDTO = api.getLandAPI().getRedis().get(chunkDTO.getLandId());
-
                                     if(landDTO == null) {
-                                        player.sendMessage("Error when trying to find the land");
+                                        player.sendMessage("Could not find land at current chunk.");
                                         return;
                                     }
 
-                                    MinecraftUserDTO minecraftUserDTO = api.getMinecraftUserAPI().get(UUID.fromString(landDTO.getOwnerId()), false);
-
+                                    MinecraftUserDTO minecraftUserDTO = api.getMinecraftUserAPI().getRedis().get(UUID.fromString(landDTO.getOwnerId()));
                                     if(minecraftUserDTO == null) {
-                                        player.sendMessage("Error when trying to find owner's land");
+                                        player.sendMessage("Error when trying to find the land owner.");
                                         return;
                                     }
 
+
+                                    if(!chunkDTO.isClaimable()) {
+                                        WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(252, 211, 77, 15));
+                                        player.sendMessage("This chunk is considered not claimable");
+                                        return;
+                                    }
+
+                                    WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(59, 130, 246, 15));
                                     player.sendMessage("You're currently standing at:");
                                     player.sendMessage("Chunk: " + chunkDTO.getX() + "/" + chunkDTO.getZ());
                                     player.sendMessage("Land:" + landDTO.getName());

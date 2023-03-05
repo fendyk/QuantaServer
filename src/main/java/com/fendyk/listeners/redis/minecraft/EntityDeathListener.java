@@ -37,20 +37,26 @@ public class EntityDeathListener implements Listener {
         if(killer == null) return;
 
         ActivitiesDTO activitiesDTO = server.getApi().getActivitiesAPI().getRedis().get(killer.getUniqueId());
-
-        if(activitiesDTO == null) return;
-
         UpdateActivitiesDTO updateActivitiesDTO = new UpdateActivitiesDTO();
         ArrayList<ActivityDTO> activities = new ArrayList<>();
         ActivityDTO activity = new ActivityDTO();
 
         if(killed instanceof Player) {
-            Optional<ActivityDTO> pvpActivity = activitiesDTO.getPvp().stream().filter(activity1 -> activity1.getName().equals(killed.getUniqueId().toString())).findFirst();
             double amount = 0;
+            if(activitiesDTO != null) {
+                Optional<ActivityDTO> pvpActivity = activitiesDTO.getPvp().stream().filter(activity1 -> activity1.getName().equals(killed.getUniqueId().toString())).findFirst();
 
-            amount = pvpActivity.map(
-                    activityDTO -> ActivityEarningsManager.getEarningsFromPvp((int) activityDTO.getQuantity(), 1))
-                    .orElseGet(() -> ActivityEarningsManager.getEarningsFromPvp(1, 1));
+                if(pvpActivity.isPresent()) {
+                    amount = pvpActivity.map(
+                            activityDTO ->  ActivityEarningsManager.getEarningsFromPvp((int) activityDTO.getQuantity(), 1)).get();
+                }
+                else {
+                    amount = ActivityEarningsManager.getEarningsFromPvp(1, 1);
+                }
+            }
+            else {
+                amount = ActivityEarningsManager.getEarningsFromPvp(1, 1);
+            }
 
             activity.setName(killed.getUniqueId().toString());
             activity.setEarnings(amount);
@@ -64,11 +70,21 @@ public class EntityDeathListener implements Listener {
             killer.sendMessage("You have killed " + killed.getName() + " and received " + amount + " quanta");
         }
         else if(config.getEntities().containsKey(killed.getType().name())) {
-            Optional<ActivityDTO> pvpActivity = activitiesDTO.getPve().stream().filter(activity1 -> activity1.getName().equals(killed.getType().name())).findFirst();
             double amount = 0;
+            if(activitiesDTO != null) {
+                Optional<ActivityDTO> pvpActivity = activitiesDTO.getPve().stream().filter(activity1 -> activity1.getName().equals(killed.getType().name())).findFirst();
 
-            amount = pvpActivity.map(activityDTO -> ActivityEarningsManager.getEarningsFromPve(killed.getType(), (int) activityDTO.getQuantity(), 1))
-                    .orElseGet(() -> ActivityEarningsManager.getEarningsFromPve(killed.getType(), 1, 1));
+                if(pvpActivity.isPresent()) {
+                    amount = pvpActivity.map(
+                            activityDTO -> ActivityEarningsManager.getEarningsFromPve(killed.getType(), (int) activityDTO.getQuantity(), 1)).get();
+                }
+                else {
+                    amount = ActivityEarningsManager.getEarningsFromPve(killed.getType(), 1, 1);
+                }
+            }
+            else {
+                amount = ActivityEarningsManager.getEarningsFromPve(killed.getType(), 1, 1);
+            }
 
             activity.setName(killed.getType().name());
             activity.setEarnings(amount);

@@ -59,14 +59,23 @@ public class BlockBreakListener implements Listener {
             Bukkit.getConsoleSender().sendMessage(player.getName() + " mined");
 
             ActivitiesDTO activitiesDTO = server.getApi().getActivitiesAPI().getRedis().get(player.getUniqueId());
-            if(activitiesDTO == null) return;
 
-            Optional<ActivityDTO> pvpActivity = activitiesDTO.getMining().stream().filter(activity1 -> activity1.getName().equals(material.name())).findFirst();
+            // If we dont find the DTO, set default. The route will create an activity by itself
             double amount = 0;
+            if(activitiesDTO != null) {
+                Optional<ActivityDTO> pvpActivity = activitiesDTO.getMining().stream().filter(activity1 -> activity1.getName().equals(material.name())).findFirst();
 
-            amount = pvpActivity.map(
-                    activityDTO -> ActivityEarningsManager.getEarningsFromMining(material, (int) activityDTO.getQuantity(), 1))
-                    .orElseGet(() -> ActivityEarningsManager.getEarningsFromMining(material, 1, 1));
+                if(pvpActivity.isPresent()) {
+                    amount = pvpActivity.map(
+                            activityDTO -> ActivityEarningsManager.getEarningsFromMining(material, (int) activityDTO.getQuantity(), 1)) .get();
+                }
+                else {
+                    amount = ActivityEarningsManager.getEarningsFromMining(material, 1, 1);
+                }
+            }
+            else {
+                amount = ActivityEarningsManager.getEarningsFromMining(material, 1, 1);
+            }
 
             UpdateActivitiesDTO updateActivitiesDTO = new UpdateActivitiesDTO();
             ArrayList<ActivityDTO> activities = new ArrayList<>();

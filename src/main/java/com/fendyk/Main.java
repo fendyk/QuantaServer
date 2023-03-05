@@ -60,7 +60,7 @@ public class Main extends JavaPlugin implements Listener {
 
         // Commands
         new EconomyCommands(api);
-        new LandCommands(api);
+        new LandCommands(this);
         new ActivityCommands(api);
 
         // Setup WorldGuard
