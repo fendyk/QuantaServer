@@ -109,6 +109,21 @@ public class LandCommands {
                                         return;
                                     }
 
+                                    // Find out if there is a neighbour.
+                                    List<Chunk> neighbours = WorldguardSyncManager.getNeighboringChunks(chunk);
+                                    boolean hasNeighbour = false;
+                                    for(Chunk neighbour : neighbours) {
+                                        ChunkDTO neighbourChunkDTO = api.getChunkAPI().getRedis().get(new Vector2(neighbour.getX(), neighbour.getZ()));
+                                        if(neighbourChunkDTO != null && neighbourChunkDTO.getLandId() != null && neighbourChunkDTO.getLandId().equals(landDTO.getId())) {
+                                            hasNeighbour = true;
+                                        }
+                                    }
+
+                                    if(!hasNeighbour) {
+                                        player.sendMessage("You can only claim chunks that are neighbours of you current land.");
+                                        return;
+                                    }
+
                                     boolean isClaimed = api.getChunkAPI().claim(chunk,landDTO.getId());
                                     if(!isClaimed) {
                                         player.sendMessage("Could not claim chunk .");
@@ -127,8 +142,14 @@ public class LandCommands {
 
                                     ChunkDTO chunkDTO = api.getChunkAPI().getRedis().get(new Vector2(chunk.getX(), chunk.getZ()));
 
+                                    if(chunkDTO != null && !chunkDTO.isClaimable()) {
+                                        WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(252, 211, 77, 15));
+                                        player.sendMessage("This chunk is considered not claimable");
+                                        return;
+                                    }
+
                                     if(chunkDTO == null || chunkDTO.getLandId() == null) {
-                                        WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(59, 130, 246, 15));
+                                        WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(16, 185, 129, 15));
                                         player.sendMessage("This chunk has not been claimed yet.");
                                         return;
                                     }
@@ -145,14 +166,13 @@ public class LandCommands {
                                         return;
                                     }
 
-
-                                    if(!chunkDTO.isClaimable()) {
-                                        WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(252, 211, 77, 15));
-                                        player.sendMessage("This chunk is considered not claimable");
-                                        return;
+                                    if(!landDTO.getOwnerId().equals(player.getUniqueId().toString())) {
+                                        WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(239, 68, 68, 15));
+                                    }
+                                    else {
+                                        WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(59, 130, 246, 15));
                                     }
 
-                                    WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(59, 130, 246, 15));
                                     player.sendMessage("You're currently standing at:");
                                     player.sendMessage("Chunk: " + chunkDTO.getX() + "/" + chunkDTO.getZ());
                                     player.sendMessage("Land:" + landDTO.getName());

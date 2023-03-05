@@ -28,6 +28,62 @@ public final class WorldguardSyncManager {
 
     public static Main server;
 
+    public static List<Chunk> getNeighboringChunks(Chunk chunk) {
+        List<Chunk> chunks = new ArrayList<>();
+        World world = chunk.getWorld();
+
+        int chunkX = chunk.getX();
+        int chunkZ = chunk.getZ();
+
+        // Get the neighboring chunks
+        chunks.add(world.getChunkAt(chunkX + 1, chunkZ));
+        chunks.add(world.getChunkAt(chunkX - 1, chunkZ));
+        chunks.add(world.getChunkAt(chunkX, chunkZ + 1));
+        chunks.add(world.getChunkAt(chunkX, chunkZ - 1));
+        return chunks;
+    }
+
+    public static boolean areChunksAdjacent(Chunk chunk1, Chunk chunk2) {
+        World world = chunk1.getWorld();
+
+        int chunk1X = chunk1.getX();
+        int chunk1Z = chunk1.getZ();
+        int chunk2X = chunk2.getX();
+        int chunk2Z = chunk2.getZ();
+
+        // Check if the chunks are adjacent horizontally
+        if (Math.abs(chunk1X - chunk2X) <= 1 && chunk1Z == chunk2Z) {
+            // Check if the neighboring chunks are loaded
+            if (world.isChunkLoaded(chunk2X + 1, chunk2Z) && world.isChunkLoaded(chunk2X - 1, chunk2Z)) {
+                // Get the neighboring chunks
+                Chunk eastChunk = world.getChunkAt(chunk2X + 1, chunk2Z);
+                Chunk westChunk = world.getChunkAt(chunk2X - 1, chunk2Z);
+
+                // Check if chunk1 is adjacent to either of the neighboring chunks
+                if (chunk1.equals(eastChunk) || chunk1.equals(westChunk)) {
+                    return true;
+                }
+            }
+        }
+
+        // Check if the chunks are adjacent vertically
+        if (Math.abs(chunk1Z - chunk2Z) <= 1 && chunk1X == chunk2X) {
+            // Check if the neighboring chunks are loaded
+            if (world.isChunkLoaded(chunk2X, chunk2Z + 1) && world.isChunkLoaded(chunk2X, chunk2Z - 1)) {
+                // Get the neighboring chunks
+                Chunk northChunk = world.getChunkAt(chunk2X, chunk2Z + 1);
+                Chunk southChunk = world.getChunkAt(chunk2X, chunk2Z - 1);
+
+                // Check if chunk1 is adjacent to either of the neighboring chunks
+                if (chunk1.equals(northChunk) || chunk1.equals(southChunk)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public static List<Location> getChunkBounds(Chunk chunk, double height) {
         List<Location> bounds = new ArrayList<Location>();
         int minX = chunk.getX() * 16;
