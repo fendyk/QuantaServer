@@ -1,6 +1,7 @@
 package com.fendyk.clients.fetch;
 
 import com.fendyk.DTOs.MinecraftUserDTO;
+import com.fendyk.DTOs.updates.UpdateMinecraftUserDTO;
 import com.fendyk.Main;
 import com.fendyk.clients.FetchAPI;
 import okhttp3.Request;
@@ -8,7 +9,7 @@ import okhttp3.RequestBody;
 
 import java.util.UUID;
 
-public class FetchMinecraftUser extends FetchAPI<UUID, MinecraftUserDTO, MinecraftUserDTO> {
+public class FetchMinecraftUser extends FetchAPI<UUID, MinecraftUserDTO, UpdateMinecraftUserDTO> {
 
     public FetchMinecraftUser(Main server, String url, boolean inDebugMode, String apiKey) {
         super(server, url, inDebugMode, apiKey);
@@ -32,7 +33,7 @@ public class FetchMinecraftUser extends FetchAPI<UUID, MinecraftUserDTO, Minecra
     }
 
     @Override
-    public MinecraftUserDTO update(UUID key, MinecraftUserDTO data) {
+    public MinecraftUserDTO update(UUID key, UpdateMinecraftUserDTO data) {
         RequestBody body = RequestBody.create(Main.gson.toJson(data), JSON);
         Request request = this.requestBuilder
                 .url(url + "/minecraftusers/" + key)

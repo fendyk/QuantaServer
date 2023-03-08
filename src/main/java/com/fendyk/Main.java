@@ -3,6 +3,7 @@ package com.fendyk;
 import com.fendyk.commands.ActivityCommands;
 import com.fendyk.commands.EconomyCommands;
 import com.fendyk.commands.LandCommands;
+import com.fendyk.commands.RewardCommands;
 import com.fendyk.configs.EarningsConfig;
 import com.fendyk.listeners.minecraft.*;
 import com.fendyk.managers.ActivityEarningsManager;
@@ -63,6 +64,7 @@ public class Main extends JavaPlugin implements Listener {
         new EconomyCommands(api);
         new LandCommands(this);
         new ActivityCommands(api);
+        new RewardCommands(this);
 
         // Setup Plugin libraries
         setupWorldGuard();

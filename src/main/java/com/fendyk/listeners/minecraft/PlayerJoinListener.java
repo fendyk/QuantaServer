@@ -1,5 +1,7 @@
 package com.fendyk.listeners.minecraft;
 
+import com.fendyk.DTOs.MinecraftUserDTO;
+import com.fendyk.DTOs.SubscriptionRewardDTO;
 import com.fendyk.Main;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
@@ -11,7 +13,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 public class PlayerJoinListener implements Listener {
     Main server;
@@ -39,6 +44,22 @@ public class PlayerJoinListener implements Listener {
         else {
             server.getFrozenPlayers().remove(player.getUniqueId());
         }
+
+        MinecraftUserDTO minecraftUserDTO = server.getApi().getMinecraftUserAPI().get(player.getUniqueId());
+
+        Bukkit.getLogger().info("HIII");
+
+        // Verify if user still has a reward that needs to be claimed
+        if(minecraftUserDTO != null) {
+            Bukkit.getLogger().info("Found it");
+            List<SubscriptionRewardDTO> subscriptions = minecraftUserDTO.getSubscriptionRewards().stream().filter(s -> !s.isClaimed()).toList();
+
+            Bukkit.getLogger().info(subscriptions.size() + " :");
+            if(subscriptions.size() > 0) {
+                player.sendMessage("You have unclaimed rewards awaiting to be redeemed. To claim your reward, type /claim");
+            }
+        }
+
     }
 
 }

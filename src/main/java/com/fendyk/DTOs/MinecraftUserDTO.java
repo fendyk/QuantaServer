@@ -1,25 +1,27 @@
 package com.fendyk.DTOs;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-
 import java.util.ArrayList;
 import java.util.Date;
 
 public class MinecraftUserDTO {
 
     String id;
-
     String userId;
     Date authorizeExpireDate;
     Float quanta;
     ArrayList<TaggedLocationDTO> homes;
     ArrayList<String> memberLandIDs;
+    ArrayList<SubscriptionRewardDTO> subscriptionRewards;
 
     public MinecraftUserDTO() {
         this.homes = new ArrayList<>();
         this.memberLandIDs = new ArrayList<>();
+        this.subscriptionRewards = new ArrayList<>();
     }
+
+    public ArrayList<SubscriptionRewardDTO> getSubscriptionRewards() {return subscriptionRewards;}
+
+    public void setSubscriptionRewards(ArrayList<SubscriptionRewardDTO> subscriptionRewards) {this.subscriptionRewards = subscriptionRewards;}
 
     public String getId() {
         return id;

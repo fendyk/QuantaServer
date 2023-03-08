@@ -8,18 +8,9 @@ import com.fendyk.DTOs.TaggedLocationDTO;
 import com.fendyk.clients.ClientAPI;
 import com.fendyk.clients.fetch.FetchLand;
 import com.fendyk.clients.redis.RedisLand;
-import com.fendyk.utilities.Vector2;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import de.leonhard.storage.Json;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.ObjectUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Arrays;
 import java.util.UUID;
 
 public class LandAPI extends ClientAPI<FetchLand, RedisLand> {
@@ -43,7 +34,7 @@ public class LandAPI extends ClientAPI<FetchLand, RedisLand> {
         MinecraftUserAPI minecraftUserAPI = api.getMinecraftUserAPI();
 
         /* Get user */
-        MinecraftUserDTO minecraftUserDTO = minecraftUserAPI.get(owner, false);
+        MinecraftUserDTO minecraftUserDTO = minecraftUserAPI.get(owner);
         if(minecraftUserDTO == null) throw new Exception("Could not find user when creating land");
 
         /* Get chunk */

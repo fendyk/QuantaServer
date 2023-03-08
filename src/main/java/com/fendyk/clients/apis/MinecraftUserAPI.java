@@ -2,6 +2,7 @@ package com.fendyk.clients.apis;
 
 import com.fendyk.API;
 import com.fendyk.DTOs.MinecraftUserDTO;
+import com.fendyk.DTOs.updates.UpdateMinecraftUserDTO;
 import com.fendyk.Main;
 import com.fendyk.clients.ClientAPI;
 import com.fendyk.clients.fetch.FetchMinecraftUser;
@@ -19,17 +20,6 @@ public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecra
         super(api, fetch, redis);
     }
 
-    public MinecraftUserDTO create(UUID player) {
-        MinecraftUserDTO minecraftUserDTO = new MinecraftUserDTO();
-        minecraftUserDTO.setId(player.toString());
-
-        minecraftUserDTO = fetch.create(minecraftUserDTO);
-        if(minecraftUserDTO == null) return null;
-
-        boolean isCached = redis.set(player, minecraftUserDTO);
-        return isCached ? minecraftUserDTO : null;
-    }
-
     /**
      * Gets the player's balance
      * @param player
@@ -37,7 +27,7 @@ public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecra
      */
     @Nullable
     public BigDecimal getPlayerBalance(UUID player) {
-        MinecraftUserDTO minecraftUser = get(player, false);
+        MinecraftUserDTO minecraftUser = get(player);
         if(minecraftUser == null) return null;
         return BigDecimal.valueOf(minecraftUser.getQuanta());
     }
@@ -48,25 +38,21 @@ public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecra
      * @return
      */
     @Nullable
-    public MinecraftUserDTO get(UUID player, boolean needsFetch) {
+    public MinecraftUserDTO get(UUID player) {
         return redis.get(player);
     }
 
     /**
      * Updates the player on both redis and db
      * @param player
-     * @param data
      * @return
      */
-    public MinecraftUserDTO update(UUID player, MinecraftUserDTO minecraftUserDTO) {
-        MinecraftUserDTO updatedMinecraftUserDTO = fetch.update(player, minecraftUserDTO);
-        if(updatedMinecraftUserDTO == null) return null;
-        boolean isCached = redis.set(player, updatedMinecraftUserDTO);
-        return isCached ? updatedMinecraftUserDTO : null;
+    public MinecraftUserDTO update(UUID player, UpdateMinecraftUserDTO minecraftUserDTO) {
+        return fetch.update(player, minecraftUserDTO);
     }
 
     public boolean withDrawBalance(UUID player, BigDecimal amount) {
-        MinecraftUserDTO minecraftUser = get(player, false);
+        MinecraftUserDTO minecraftUser = get(player);
         if(minecraftUser == null) return false;
 
         BigDecimal oldAmount = BigDecimal.valueOf(minecraftUser.getQuanta());
@@ -76,21 +62,23 @@ public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecra
             return false;
         }
 
-        minecraftUser.setQuanta(newAmount.floatValue());
+        UpdateMinecraftUserDTO update = new UpdateMinecraftUserDTO();
+        update.setQuanta(newAmount.floatValue());
 
-        return update(player, minecraftUser) != null;
+        return update(player, update) != null;
     }
 
     public boolean depositBalance(UUID player, BigDecimal amount) {
-        MinecraftUserDTO minecraftUser = get(player, false);
+        MinecraftUserDTO minecraftUser = get(player);
         if(minecraftUser == null) return false;
 
         BigDecimal oldAmount = BigDecimal.valueOf(minecraftUser.getQuanta());
         BigDecimal newAmount = oldAmount.add(amount).setScale(2, RoundingMode.HALF_EVEN);
 
-        minecraftUser.setQuanta(newAmount.floatValue());
+        UpdateMinecraftUserDTO update = new UpdateMinecraftUserDTO();
+        update.setQuanta(newAmount.floatValue());
 
-        return update(player, minecraftUser) != null;
+        return update(player, update) != null;
     }
 
 }
