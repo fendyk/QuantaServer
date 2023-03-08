@@ -7,7 +7,12 @@ public class LandDTO {
     String name;
     ArrayList<String> memberIDs;
     String ownerId;
-    ArrayList<LocationDTO> homes;
+    ArrayList<TaggedLocationDTO> homes;
+
+    public LandDTO() {
+        memberIDs = new ArrayList<>();
+        homes = new ArrayList<>();
+    }
 
     public String getId() {
         return id;
@@ -41,11 +46,11 @@ public class LandDTO {
         this.ownerId = ownerId;
     }
 
-    public ArrayList<LocationDTO> getHomes() {
+    public ArrayList<TaggedLocationDTO> getHomes() {
         return homes;
     }
 
-    public void setHomes(ArrayList<LocationDTO> homes) {
+    public void setHomes(ArrayList<TaggedLocationDTO> homes) {
         this.homes = homes;
     }
 }

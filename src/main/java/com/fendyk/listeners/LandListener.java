@@ -30,7 +30,6 @@ public class LandListener implements RedisPubSubListener<String, String> {
 
     @Override
     public void message(String channel, String message) {
-        /*
         if (!channel.equals("land")) {
             return;
         }
@@ -51,18 +50,17 @@ public class LandListener implements RedisPubSubListener<String, String> {
             return;
         }
 
-        try {
-            for (ChunkDTO chunkDTO : chunks) {
+        for (ChunkDTO chunkDTO : chunks) {
+            Bukkit.getScheduler().runTask(server, () -> {
                 Chunk chunk = Objects.requireNonNull(Bukkit.getWorld(worldName))
                         .getChunkAt(chunkDTO.getX(), chunkDTO.getZ());
-                WorldguardSyncManager.syncChunkWithRegion(chunk, chunkDTO, land);
-            }
-        } catch (StorageException e) {
-            Bukkit.getLogger().log(Level.SEVERE, "Failed to sync chunk with region", e);
-            // Handle the exception gracefully
+                try {
+                    WorldguardSyncManager.syncChunkWithRegion(chunk, chunkDTO, land);
+                } catch (StorageException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
-
-         */
     }
 
     @Override

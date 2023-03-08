@@ -13,8 +13,13 @@ public class MinecraftUserDTO {
     String userId;
     Date authorizeExpireDate;
     Float quanta;
-    ArrayList<LocationDTO> homes;
+    ArrayList<TaggedLocationDTO> homes;
     ArrayList<String> memberLandIDs;
+
+    public MinecraftUserDTO() {
+        this.homes = new ArrayList<>();
+        this.memberLandIDs = new ArrayList<>();
+    }
 
     public String getId() {
         return id;
@@ -48,11 +53,11 @@ public class MinecraftUserDTO {
         this.quanta = quanta;
     }
 
-    public ArrayList<LocationDTO> getHomes() {
+    public ArrayList<TaggedLocationDTO> getHomes() {
         return homes;
     }
 
-    public void setHomes(ArrayList<LocationDTO> homes) {
+    public void setHomes(ArrayList<TaggedLocationDTO> homes) {
         this.homes = homes;
     }
 

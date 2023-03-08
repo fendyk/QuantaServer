@@ -18,10 +18,7 @@ import xyz.xenondevs.particle.data.ParticleData;
 import xyz.xenondevs.particle.data.color.DustData;
 import xyz.xenondevs.particle.task.TaskManager;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public final class WorldguardSyncManager {
 
@@ -168,16 +165,27 @@ public final class WorldguardSyncManager {
             ); // Updates the region
             server.getRegionManager().addRegion(newRegion); // Dont forget to save the region
         }
+        else {
+            @Nullable ChunkDTO finalChunkDTO = chunkDTO;
 
-        /* Verify if the current region owner is equal to the chunk */
-        for (ProtectedRegion regionChild : set) {
-            if(regionChild.getId().equalsIgnoreCase(chunkDTO.getId())) { // If we found the region with the correct key
+            List<ProtectedRegion> regions = set.stream().filter(r -> !r.getId().equalsIgnoreCase(finalChunkDTO.getId())).toList();
 
-                WorldguardSyncManager.setRegionMembersAndOwner(regionChild,
-                        landDTO.getOwnerId(),
-                        landDTO.getMemberIDs()
-                ); // Updates the region
+            // If we find a region that is not matching our requirements, remove it.
+            if(regions.size() > 0) {
+                regions.forEach(r -> {
+                    server.getRegionManager().removeRegion(r.getId());
+                });
             }
+
+            // Now Find any id matching ours
+            Optional<ProtectedRegion> region = set.stream().filter(r -> r.getId().equalsIgnoreCase(finalChunkDTO.getId())).findFirst();
+
+            if(region.isEmpty()) return;
+
+            WorldguardSyncManager.setRegionMembersAndOwner(region.get(),
+                    landDTO.getOwnerId(),
+                    landDTO.getMemberIDs()
+            ); // Updates the region
         }
 
         server.getRegionManager().save(); // Dont forget to save the region

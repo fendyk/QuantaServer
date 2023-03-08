@@ -1,16 +1,31 @@
 package com.fendyk.DTOs.updates;
 
 import com.fendyk.DTOs.LocationDTO;
+import com.fendyk.DTOs.TaggedLocationDTO;
 
 import java.util.ArrayList;
 
 public class UpdateLandDTO {
 
+    public static class MemberDTO {
+        String id;
+        public MemberDTO(String id) {
+            this.id = id;
+        }
+    }
+
     String name;
-    ArrayList<String> connectMembers;
-    ArrayList<String> disconnectMembers;
-    ArrayList<LocationDTO> pushHomes;
-    ArrayList<LocationDTO> spliceHomes;
+    ArrayList<MemberDTO> connectMembers;
+    ArrayList<MemberDTO> disconnectMembers;
+    ArrayList<TaggedLocationDTO> pushHomes;
+    ArrayList<String> spliceHomes;
+
+    public UpdateLandDTO() {
+        this.connectMembers = new ArrayList<>();
+        this.disconnectMembers = new ArrayList<>();
+        this.pushHomes = new ArrayList<>();
+        this.spliceHomes = new ArrayList<>();
+    }
 
     public String getName() {
         return name;
@@ -20,35 +35,35 @@ public class UpdateLandDTO {
         this.name = name;
     }
 
-    public ArrayList<String> getConnectMembers() {
+    public ArrayList<MemberDTO> getConnectMembers() {
         return connectMembers;
     }
 
-    public void setConnectMembers(ArrayList<String> connectMembers) {
+    public void setConnectMembers(ArrayList<MemberDTO> connectMembers) {
         this.connectMembers = connectMembers;
     }
 
-    public ArrayList<String> getDisconnectMembers() {
+    public ArrayList<MemberDTO> getDisconnectMembers() {
         return disconnectMembers;
     }
 
-    public void setDisconnectMembers(ArrayList<String> disconnectMembers) {
+    public void setDisconnectMembers(ArrayList<MemberDTO> disconnectMembers) {
         this.disconnectMembers = disconnectMembers;
     }
 
-    public ArrayList<LocationDTO> getPushHomes() {
+    public ArrayList<TaggedLocationDTO> getPushHomes() {
         return pushHomes;
     }
 
-    public void setPushHomes(ArrayList<LocationDTO> pushHomes) {
+    public void setPushHomes(ArrayList<TaggedLocationDTO> pushHomes) {
         this.pushHomes = pushHomes;
     }
 
-    public ArrayList<LocationDTO> getSpliceHomes() {
+    public ArrayList<String> getSpliceHomes() {
         return spliceHomes;
     }
 
-    public void setSpliceHomes(ArrayList<LocationDTO> spliceHomes) {
+    public void setSpliceHomes(ArrayList<String> spliceHomes) {
         this.spliceHomes = spliceHomes;
     }
 }

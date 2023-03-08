@@ -6,26 +6,17 @@ import com.fendyk.Main;
 import com.fendyk.clients.FetchAPI;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import org.bukkit.Bukkit;
+
 import java.util.UUID;
 
-public class FetchLand extends FetchAPI<UUID, LandDTO, UpdateLandDTO> {
+public class FetchLand extends FetchAPI<String, LandDTO, UpdateLandDTO> {
 
     public FetchLand(Main server, String url, boolean inDebugMode, String apiKey) {
         super(server, url, inDebugMode, apiKey);
     }
 
     @Override
-    public LandDTO get(UUID key) {
-        Request request = this.requestBuilder
-                .url(url + "/lands/" + key.toString())
-                .get()
-                .build();
-        return Main.gson.fromJson(
-                fetchFromApi(request, "fetchLandByOwner"),
-                LandDTO.class
-        );
-    }
-
     public LandDTO get(String key) {
         Request request = this.requestBuilder
                 .url(url + "/lands/" + key)
@@ -51,8 +42,9 @@ public class FetchLand extends FetchAPI<UUID, LandDTO, UpdateLandDTO> {
     }
 
     @Override
-    public LandDTO update(UUID key, UpdateLandDTO data) {
-        RequestBody body = RequestBody.create(data.toString(), JSON);
+    public LandDTO update(String key, UpdateLandDTO data) {
+        Bukkit.getLogger().info(Main.gson.toJson(data));
+        RequestBody body = RequestBody.create(Main.gson.toJson(data), JSON);
         Request request = this.requestBuilder
                 .url(url + "/lands/" + key)
                 .patch(body)
@@ -64,7 +56,7 @@ public class FetchLand extends FetchAPI<UUID, LandDTO, UpdateLandDTO> {
     }
 
     @Override
-    public LandDTO delete(UUID key) {
+    public LandDTO delete(String key) {
         return null;
     }
 }

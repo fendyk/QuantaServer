@@ -4,6 +4,7 @@ import com.fendyk.API;
 import com.fendyk.DTOs.ChunkDTO;
 import com.fendyk.DTOs.LandDTO;
 import com.fendyk.DTOs.MinecraftUserDTO;
+import com.fendyk.DTOs.TaggedLocationDTO;
 import com.fendyk.clients.ClientAPI;
 import com.fendyk.clients.fetch.FetchLand;
 import com.fendyk.clients.redis.RedisLand;
@@ -15,6 +16,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -34,7 +36,7 @@ public class LandAPI extends ClientAPI<FetchLand, RedisLand> {
      * @return The new land if created or null if something went wrong.
      * @throws Exception When something goes wrong lol
      */
-    public LandDTO create(UUID owner, String name, Chunk chunk) throws Exception {
+    public LandDTO create(UUID owner, String name, Chunk chunk, Location location) throws Exception {
 
         /* Get references */
         ChunkAPI chunkAPI = api.getChunkAPI();
@@ -54,10 +56,13 @@ public class LandAPI extends ClientAPI<FetchLand, RedisLand> {
             if(chunkDTO == null) throw new Exception("Could not create chunk when creating land");
         }
 
+        TaggedLocationDTO taggedLocationDTO = new TaggedLocationDTO("spawn", location);
+
         /* Create the actual land */
         LandDTO landDTO = new LandDTO();
         landDTO.setName(name);
         landDTO.setOwnerId(owner.toString());
+        landDTO.getHomes().add(taggedLocationDTO);
 
         landDTO = fetch.create(landDTO);
 

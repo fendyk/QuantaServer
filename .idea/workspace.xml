@@ -4,28 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Fix land not claiming">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/updates/UpdateLandDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/BlacklistedChunkAPI.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisBlacklistedChunk.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/LandListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/PlayerJoinListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/PlayerMoveListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/PlayerQuitListener.java" afterDir="false" />
+    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Fix land not syncing">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/TaggedLocationDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/API.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/API.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/ChunkDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/ChunkDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/LandDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/LandDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/LocationDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/LocationDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/MinecraftUserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/MinecraftUserDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/updates/UpdateLandDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/updates/UpdateLandDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/LandAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/LandAPI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/fetch/FetchLand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/fetch/FetchLand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/EconomyCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/EconomyCommands.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/redis/AuthenticationListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/AuthenticationListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/redis/ChunkListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/ChunkListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/redis/minecraft/BlockBreakListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/BlockBreakListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/redis/minecraft/ChunkLoadListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/ChunkLoadListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/redis/minecraft/EntityDeathListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/EntityDeathListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/LandListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/LandListener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/managers/WorldguardSyncManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/managers/WorldguardSyncManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -220,7 +211,10 @@
       <workItem from="1677963846336" duration="11013000" />
       <workItem from="1677978836799" duration="4579000" />
       <workItem from="1678016950681" duration="18273000" />
-      <workItem from="1678047224931" duration="7500000" />
+      <workItem from="1678047224931" duration="7830000" />
+      <workItem from="1678131452898" duration="5390000" />
+      <workItem from="1678213791119" duration="8929000" />
+      <workItem from="1678285106082" duration="602000" />
     </task>
     <task id="LOCAL-00001" summary="feat: redis">
       <created>1675545393878</created>
@@ -383,7 +377,14 @@
       <option name="project" value="LOCAL" />
       <updated>1677984859524</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="Fix land not syncing">
+      <created>1678055169250</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1678055169250</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -424,6 +425,7 @@
     <MESSAGE value="Fix land not creating" />
     <MESSAGE value="Update particles now showing colors based on condition" />
     <MESSAGE value="Fix land not claiming" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix land not claiming" />
+    <MESSAGE value="Fix land not syncing" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix land not syncing" />
   </component>
 </project>

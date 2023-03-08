@@ -1,9 +1,7 @@
 package com.fendyk.commands;
 
 import com.fendyk.API;
-import com.fendyk.DTOs.ChunkDTO;
-import com.fendyk.DTOs.LandDTO;
-import com.fendyk.DTOs.MinecraftUserDTO;
+import com.fendyk.DTOs.*;
 import com.fendyk.DTOs.updates.UpdateLandDTO;
 import com.fendyk.Main;
 import com.fendyk.clients.apis.MinecraftUserAPI;
@@ -16,10 +14,7 @@ import dev.jorel.commandapi.CommandPermission;
 import dev.jorel.commandapi.arguments.BooleanArgument;
 import dev.jorel.commandapi.arguments.PlayerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -49,7 +44,7 @@ public class LandCommands {
                             }
 
                             try {
-                                LandDTO landDTO = api.getLandAPI().create(player.getUniqueId(), name, chunk);
+                                LandDTO landDTO = api.getLandAPI().create(player.getUniqueId(), name, chunk, player.getLocation());
                                 player.sendMessage("Your land has been created");
                                 WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(16, 185, 129, 15));
                                 ParticleEffect.FIREWORKS_SPARK.display(player.getLocation());
@@ -60,12 +55,143 @@ public class LandCommands {
                         })
 
                 )
+                .withSubcommand(new CommandAPICommand("homes")
+                        .executes((sender, args) -> {
+                            Player player = (Player) sender;
+                            UUID uuid = player.getUniqueId();
+
+                            LandDTO landDTO = api.getLandAPI().getRedis().get(uuid.toString());
+                            if(landDTO == null) {
+                                player.sendMessage("Could not find your land");
+                                return;
+                            }
+
+                            if(landDTO.getHomes() == null || landDTO.getHomes().isEmpty()) {
+                                player.sendMessage("Could not find any homes yet. Maybe it's time to add one? Type /land homes add <name>");
+                                return;
+                            }
+
+                            for(TaggedLocationDTO home : landDTO.getHomes()) {
+                                LocationDTO loc = home.getLocation();
+                                player.sendMessage(home.getName() + ": ("  + loc.getX() + "," + loc.getY() + "," + loc.getZ() + ")");
+                            }
+                        })
+                        .withSubcommand(new CommandAPICommand("goto")
+                                .withArguments(new StringArgument("name"))
+                                .executes((sender, args) -> {
+                                    Player player = (Player) sender;
+                                    String name = (String) args[0];
+                                    UUID uuid = player.getUniqueId();
+                                    World world = Bukkit.getWorld(server.getTomlConfig().getString("worldName"));
+
+                                    LandDTO landDTO = api.getLandAPI().getRedis().get(uuid.toString());
+                                    if(landDTO == null) {
+                                        player.sendMessage("Could not find your land");
+                                        return;
+                                    }
+
+                                    Optional<TaggedLocationDTO> taggedLocationDTO = landDTO.getHomes().stream().filter(t -> t.getName().equals(name)).findFirst();
+
+                                    if(taggedLocationDTO.isEmpty()) {
+                                        player.sendMessage("Could not find any home matching the name: " + name);
+                                        return;
+                                    }
+
+                                    LocationDTO loc = taggedLocationDTO.get().getLocation();
+
+                                    player.teleport(new Location(world, loc.getX(), loc.getY(), loc.getZ(), (float) loc.getYaw(), (float) loc.getPitch()));
+                                    player.sendMessage(player.getName() + " You have been teleported to " + name);
+                                })
+                        )
+                        .withSubcommand(new CommandAPICommand("add")
+                                .withArguments(new StringArgument("name"))
+                                .executes((sender, args) -> {
+                                    Player player = (Player) sender;
+                                    String name = (String) args[0];
+                                    UUID uuid = player.getUniqueId();
+
+                                    UpdateLandDTO updateLandDTO = new UpdateLandDTO();
+                                    LandDTO landDTO = api.getLandAPI().getRedis().get(uuid.toString());
+                                    if(landDTO == null) {
+                                        player.sendMessage("Could not find your land");
+                                        return;
+                                    }
+                                    else if(landDTO.getHomes() != null && landDTO.getHomes().stream().filter(taggedLocationDTO ->  taggedLocationDTO.getName().equals(name)).count() > 1 ) {
+                                        player.sendMessage("You've already set a home with the name " + name);
+                                        return;
+                                    }
+
+                                    LocationDTO locationDTO = new LocationDTO(player.getLocation());
+                                    TaggedLocationDTO taggedLocationDTO = new TaggedLocationDTO();
+                                    taggedLocationDTO.setName(name);
+                                    taggedLocationDTO.setLocation(locationDTO);
+
+                                    updateLandDTO.getPushHomes().add(taggedLocationDTO);
+                                    LandDTO result = api.getLandAPI().getFetch().update(landDTO.getId(), updateLandDTO);
+
+                                    if(result == null) {
+                                        player.sendMessage("Could not update your land's home.");
+                                        return;
+                                    }
+
+                                    player.sendMessage(name + " has been added to your land's homes");
+                                })
+                        )
+                        .withSubcommand(new CommandAPICommand("remove")
+                                .withArguments(new StringArgument("name"))
+                                .executes((sender, args) -> {
+                                    Player player = (Player) sender;
+                                    String name = (String) args[0];
+                                    UUID uuid = player.getUniqueId();
+
+                                    UpdateLandDTO updateLandDTO = new UpdateLandDTO();
+                                    LandDTO landDTO = api.getLandAPI().getRedis().get(uuid.toString());
+                                    if(landDTO == null) {
+                                        player.sendMessage("Could not find your land");
+                                        return;
+                                    }
+                                    else if(landDTO.getHomes() != null && landDTO.getHomes().stream().noneMatch(taggedLocationDTO -> taggedLocationDTO.getName().equals(name))) {
+                                        player.sendMessage("Could not find a home with the name: " + name);
+                                        return;
+                                    }
+
+                                    updateLandDTO.getSpliceHomes().add(name);
+                                    LandDTO result = api.getLandAPI().getFetch().update(landDTO.getId(), updateLandDTO);
+
+                                    if(result == null) {
+                                        player.sendMessage("Could not update your land's home.");
+                                        return;
+                                    }
+
+                                    player.sendMessage(name + " has been removed from your land's homes");
+                                })
+                        )
+                )
                 .withSubcommand(new CommandAPICommand("members")
+                        .executes((sender, args) -> {
+                            Player player = (Player) sender;
+                            UUID uuid = player.getUniqueId();
+
+                            LandDTO landDTO = api.getLandAPI().getRedis().get(uuid.toString());
+                            if(landDTO == null) {
+                                player.sendMessage("Could not find your land");
+                                return;
+                            }
+
+                            if(landDTO.getMemberIDs() == null || landDTO.getMemberIDs().isEmpty()) {
+                                player.sendMessage("Could not find any homes yet. Maybe it's time to add one? Type /land homes set");
+                                return;
+                            }
+
+                            for(String member : landDTO.getMemberIDs()) {
+                                player.sendMessage(Bukkit.getOfflinePlayer(UUID.fromString(member)).getName() + " is a member of your land");
+                            }
+                        })
                         .withSubcommand(new CommandAPICommand("add")
                                 .withArguments(new PlayerArgument("member"))
                                 .executes((sender, args) -> {
                                     Player player = (Player) sender;
-                                    OfflinePlayer newMember = (OfflinePlayer) sender;
+                                    OfflinePlayer newMember = (OfflinePlayer) args[0];
                                     UUID uuid = player.getUniqueId();
                                     UUID memberUuid = newMember.getUniqueId();
 
@@ -75,19 +201,29 @@ public class LandCommands {
                                         player.sendMessage("Could not find your land");
                                         return;
                                     }
+                                    else if(landDTO.getMemberIDs() != null && landDTO.getMemberIDs().contains(memberUuid.toString())) {
+                                        player.sendMessage("Player is already a member");
+                                        return;
+                                    }
 
-                                    updateLandDTO.getConnectMembers().add(memberUuid.toString());
-                                    api.getLandAPI().getFetch().update(uuid, updateLandDTO);
-                                    player.sendMessage("has been added as a member to your land");
+                                    updateLandDTO.getConnectMembers().add(new UpdateLandDTO.MemberDTO(memberUuid.toString()));
+                                    LandDTO result = api.getLandAPI().getFetch().update(landDTO.getId(), updateLandDTO);
+
+                                    if(result == null) {
+                                        player.sendMessage("Could not update your land member.");
+                                        return;
+                                    }
+
+                                    player.sendMessage(newMember.getName() + " has been added as a member to your land");
                                 })
                         )
                         .withSubcommand(new CommandAPICommand("remove")
                                 .withArguments(new PlayerArgument("member"))
                                 .executes((sender, args) -> {
                                     Player player = (Player) sender;
-                                    OfflinePlayer newMember = (OfflinePlayer) sender;
+                                    OfflinePlayer oldMember = (OfflinePlayer) args[0];
                                     UUID uuid = player.getUniqueId();
-                                    UUID memberUuid = newMember.getUniqueId();
+                                    UUID memberUuid = oldMember.getUniqueId();
 
                                     UpdateLandDTO updateLandDTO = new UpdateLandDTO();
                                     LandDTO landDTO = api.getLandAPI().getRedis().get(uuid.toString());
@@ -95,10 +231,20 @@ public class LandCommands {
                                         player.sendMessage("Could not find your land");
                                         return;
                                     }
+                                    else if(landDTO.getMemberIDs() != null && !landDTO.getMemberIDs().contains(memberUuid.toString())) {
+                                        player.sendMessage("Player is not a member");
+                                        return;
+                                    }
 
-                                    updateLandDTO.getDisconnectMembers().add(memberUuid.toString());
-                                    api.getLandAPI().getFetch().update(uuid, updateLandDTO);
-                                    player.sendMessage("has been added as a member to your land");
+                                    updateLandDTO.getDisconnectMembers().add(new UpdateLandDTO.MemberDTO(memberUuid.toString()));
+                                    LandDTO result = api.getLandAPI().getFetch().update(landDTO.getId(), updateLandDTO);
+
+                                    if(result == null) {
+                                        player.sendMessage("Could not update your land member.");
+                                        return;
+                                    }
+
+                                    player.sendMessage(oldMember.getName() + " has been removed from your land");
                                 })
                         )
                 )
