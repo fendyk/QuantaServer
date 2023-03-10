@@ -3,9 +3,13 @@ package com.fendyk.managers;
 import com.fendyk.DTOs.ChunkDTO;
 import com.fendyk.DTOs.LandDTO;
 import com.fendyk.Main;
+import com.fendyk.utilities.ChunkUtils;
 import com.fendyk.utilities.Vector2;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.domains.DefaultDomain;
+import com.sk89q.worldguard.protection.flags.Flag;
+import com.sk89q.worldguard.protection.flags.Flags;
+import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -40,45 +44,32 @@ public final class WorldguardSyncManager {
         return chunks;
     }
 
-    public static boolean areChunksAdjacent(Chunk chunk1, Chunk chunk2) {
-        World world = chunk1.getWorld();
+    public static void initializeSpawn(int chunkCount, int minYHeight, int maxYHeight) throws StorageException {
+        int radius = ChunkUtils.getRadiusInChunks(chunkCount);
+        Location[] areaCorners = ChunkUtils.getAreaCorners(radius);
+        BlockVector3 topLeft = BlockVector3.at(areaCorners[0].getX(), minYHeight, areaCorners[0].getZ());
+        BlockVector3 topBottomRight = BlockVector3.at(areaCorners[3].getX(), maxYHeight, areaCorners[3].getZ());
 
-        int chunk1X = chunk1.getX();
-        int chunk1Z = chunk1.getZ();
-        int chunk2X = chunk2.getX();
-        int chunk2Z = chunk2.getZ();
+        Set<ProtectedRegion> set = server.getRegionManager().getApplicableRegions(
+                BlockVector3.at(0, 0, 0)
+        ).getRegions();
+        Optional<ProtectedRegion> optionalRegion = set.stream().filter(r -> !r.getId().equalsIgnoreCase("spawn")).findFirst();
+        ProtectedRegion region;
 
-        // Check if the chunks are adjacent horizontally
-        if (Math.abs(chunk1X - chunk2X) <= 1 && chunk1Z == chunk2Z) {
-            // Check if the neighboring chunks are loaded
-            if (world.isChunkLoaded(chunk2X + 1, chunk2Z) && world.isChunkLoaded(chunk2X - 1, chunk2Z)) {
-                // Get the neighboring chunks
-                Chunk eastChunk = world.getChunkAt(chunk2X + 1, chunk2Z);
-                Chunk westChunk = world.getChunkAt(chunk2X - 1, chunk2Z);
+        // Remove region if present since we cannot update bounds with Worldguard API
+        optionalRegion.ifPresent(protectedRegion -> server.getRegionManager().removeRegion(protectedRegion.getId()));
 
-                // Check if chunk1 is adjacent to either of the neighboring chunks
-                if (chunk1.equals(eastChunk) || chunk1.equals(westChunk)) {
-                    return true;
-                }
-            }
-        }
+        region = new ProtectedCuboidRegion("spawn", topLeft, topBottomRight);
+        region.setFlag(Flags.MOB_SPAWNING, StateFlag.State.DENY);
+        region.setFlag(Flags.PVP, StateFlag.State.DENY);
+        region.setFlag(Flags.LEAF_DECAY, StateFlag.State.DENY);
+        region.setFlag(Flags.FIRE_SPREAD, StateFlag.State.DENY);
+        region.setFlag(Flags.FALL_DAMAGE, StateFlag.State.DENY);
+        region.setFlag(Flags.HUNGER_DRAIN, StateFlag.State.DENY);
+        region.setFlag(Flags.FALL_DAMAGE, StateFlag.State.DENY);
 
-        // Check if the chunks are adjacent vertically
-        if (Math.abs(chunk1Z - chunk2Z) <= 1 && chunk1X == chunk2X) {
-            // Check if the neighboring chunks are loaded
-            if (world.isChunkLoaded(chunk2X, chunk2Z + 1) && world.isChunkLoaded(chunk2X, chunk2Z - 1)) {
-                // Get the neighboring chunks
-                Chunk northChunk = world.getChunkAt(chunk2X, chunk2Z + 1);
-                Chunk southChunk = world.getChunkAt(chunk2X, chunk2Z - 1);
-
-                // Check if chunk1 is adjacent to either of the neighboring chunks
-                if (chunk1.equals(northChunk) || chunk1.equals(southChunk)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        server.getRegionManager().addRegion(region);
+        server.getRegionManager().save();
     }
 
     public static List<Location> getChunkBounds(Chunk chunk, double height) {

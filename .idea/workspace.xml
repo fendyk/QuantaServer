@@ -4,21 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Add redeem reward and more stuff">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/BlacklistedBlockDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/BlacklistedBlockAPI.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/ConfirmCommandAPI.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/fetch/FetchBlacklistedBlock.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisBlacklistedBlock.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/BlockPlaceListener.java" afterDir="false" />
+    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Add blacklist blocks to chunks">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/ChunkUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/ChunkDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/ChunkDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/updates/UpdateChunkDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/updates/UpdateChunkDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/BlacklistedChunkAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/BlacklistedChunkAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/ChunkAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/ChunkAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/BlockBreakListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/BlockBreakListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisBlacklistedChunk.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisBlacklistedChunk.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/managers/WorldguardSyncManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/managers/WorldguardSyncManager.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -220,7 +211,7 @@
       <workItem from="1678363516663" duration="218000" />
       <workItem from="1678363790445" duration="6461000" />
       <workItem from="1678402581965" duration="1946000" />
-      <workItem from="1678464825917" duration="5579000" />
+      <workItem from="1678464825917" duration="10197000" />
     </task>
     <task id="LOCAL-00001" summary="feat: redis">
       <created>1675545393878</created>
@@ -404,7 +395,14 @@
       <option name="project" value="LOCAL" />
       <updated>1678316291176</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="Add blacklist blocks to chunks">
+      <created>1678473548788</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1678473548788</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -422,7 +420,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="remove: old messaging channels" />
     <MESSAGE value="feat: new commands added" />
     <MESSAGE value="fix: withdraw not working properly" />
     <MESSAGE value="feat: play to earn" />
@@ -447,6 +444,7 @@
     <MESSAGE value="Fix land not syncing" />
     <MESSAGE value="Update homes now working and added a pay command" />
     <MESSAGE value="Add redeem reward and more stuff" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add redeem reward and more stuff" />
+    <MESSAGE value="Add blacklist blocks to chunks" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add blacklist blocks to chunks" />
   </component>
 </project>

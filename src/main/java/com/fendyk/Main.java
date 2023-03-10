@@ -13,6 +13,7 @@ import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import de.leonhard.storage.Toml;
 import net.luckperms.api.LuckPerms;
@@ -80,6 +81,17 @@ public class Main extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new BlockBreakListener(this), this);
         getServer().getPluginManager().registerEvents(new BlockPlaceListener(this), this);
 
+        // Initialize spawn region
+        org.bukkit.World world = Bukkit.getWorld(config.getString("worldName"));
+        try {
+            WorldguardSyncManager.initializeSpawn(
+                    Math.toIntExact(api.getBlacklistedChunkAPI().getRedis().hLen()),
+                    world != null ? world.getMinHeight() : -64,
+                    world != null ? world.getMaxHeight() : 319
+            );
+        } catch (StorageException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void setupWorldGuard() {

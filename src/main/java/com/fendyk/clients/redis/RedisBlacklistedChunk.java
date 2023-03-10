@@ -54,5 +54,9 @@ public class RedisBlacklistedChunk extends RedisAPI<Vector2, Boolean> {
         return result != null && result.equalsIgnoreCase("true");
     }
 
+    public Long hLen() {
+        return syncCommands.hlen("blacklistedchunks");
+    }
+
 
 }
