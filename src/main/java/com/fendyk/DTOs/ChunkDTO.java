@@ -1,5 +1,9 @@
 package com.fendyk.DTOs;
 
+import com.fendyk.clients.redis.RedisBlacklistedBlock;
+
+import java.util.ArrayList;
+
 public class ChunkDTO {
 
     String id;
@@ -8,6 +12,16 @@ public class ChunkDTO {
     int x;
     int z;
     String landId;
+
+    ArrayList<BlacklistedBlockDTO> blacklistedBlocks;
+
+    public ChunkDTO() {
+        this.blacklistedBlocks = new ArrayList<>();
+    }
+
+    public ArrayList<BlacklistedBlockDTO> getBlacklistedBlocks() {
+        return blacklistedBlocks;
+    }
 
     public String getId() {
         return id;

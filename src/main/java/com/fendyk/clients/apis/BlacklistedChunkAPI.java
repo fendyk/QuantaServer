@@ -48,5 +48,14 @@ public class BlacklistedChunkAPI extends ClientAPI<Class<?>, RedisBlacklistedChu
         return dx <= radius && dz <= radius;
     }
 
+    /**
+     * Is the chunk blacklisted?
+     * @param chunk
+     * @return
+     */
+    public boolean isBlacklisted(Chunk chunk) {
+        return redis.hGet(new Vector2(chunk.getX(), chunk.getZ()));
+    }
+
 
 }

@@ -1,6 +1,7 @@
 package com.fendyk.clients.apis;
 
 import com.fendyk.API;
+import com.fendyk.DTOs.BlacklistedBlockDTO;
 import com.fendyk.DTOs.ChunkDTO;
 import com.fendyk.DTOs.updates.UpdateChunkDTO;
 import com.fendyk.clients.ClientAPI;
@@ -9,6 +10,7 @@ import com.fendyk.clients.redis.RedisChunk;
 import com.fendyk.utilities.Vector2;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bukkit.Chunk;
+import org.bukkit.block.Block;
 import org.jetbrains.annotations.Nullable;
 
 public class ChunkAPI extends ClientAPI<FetchChunk, RedisChunk> {
@@ -42,5 +44,12 @@ public class ChunkAPI extends ClientAPI<FetchChunk, RedisChunk> {
         return update(chunk,updateChunkDTO) != null;
     }
 
+    public static boolean isBlacklistedBlock(ChunkDTO chunkDTO, Block block) {
+        return chunkDTO.getBlacklistedBlocks().stream().anyMatch(item ->
+            item.getX() == block.getX() &&
+                    item.getY() == block.getY() &&
+                    item.getZ() == block.getZ()
+        );
+    }
 
 }

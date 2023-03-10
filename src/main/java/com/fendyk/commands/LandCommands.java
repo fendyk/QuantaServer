@@ -38,7 +38,7 @@ public class LandCommands {
                             String name = (String) args[0];
                             Chunk chunk = player.getChunk();
 
-                            if(api.getBlacklistedChunkAPI().getRedis().hGet(new Vector2(chunk.getX(), chunk.getZ()))) {
+                            if(api.getBlacklistedChunkAPI().isBlacklisted(chunk)) {
                                 player.sendMessage("The chunk you're currently standing on is considered 'blacklisted' and not claimable.");
                                 return;
                             }
