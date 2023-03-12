@@ -9,7 +9,11 @@ import com.fendyk.DTOs.updates.UpdateChunkDTO;
 import com.fendyk.Main;
 import com.fendyk.clients.apis.ChunkAPI;
 import com.fendyk.configs.EarningsConfig;
+import com.fendyk.managers.ActivityBossbarManager;
 import com.fendyk.managers.ActivityEarningsManager;
+import com.fendyk.managers.ActivitySoundManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -52,12 +56,9 @@ public class BlockBreakListener implements Listener {
         if(item.containsEnchantment(Enchantment.SILK_TOUCH)) return;
 
         // Check if Material is supported
-        if(!config.getMaterials().containsKey(material.name())) return;
+        if(!config.getMaterialEarnings().containsKey(material)) return;
 
         ChunkDTO chunkDTO = server.getApi().getChunkAPI().get(chunk);
-
-        Bukkit.getLogger().info(String.valueOf(chunkDTO != null));
-        Bukkit.getLogger().info(String.valueOf(ChunkAPI.isBlacklistedBlock(chunkDTO, block)));
 
         if(chunkDTO != null) {
             if(ChunkAPI.isBlacklistedBlock(chunkDTO, block)) {
@@ -98,7 +99,12 @@ public class BlockBreakListener implements Listener {
         api.getMinecraftUserAPI().depositBalance(player.getUniqueId(), new BigDecimal(amount));
         api.getActivitiesAPI().getFetch().update(player.getUniqueId(), updateActivitiesDTO);
 
-        player.sendMessage("You have mined an " + material.name() + " and received " + amount + " quanta");
+        player.sendMessage(
+                Component.text("+ " + String.format("%.2f", amount) + " $QTA")
+                        .color(NamedTextColor.GREEN)
+        );
+        ActivityBossbarManager.showBossBar(player, activity, ActivityBossbarManager.Type.MINING);
+        ActivitySoundManager.play(player);
     }
 
 }

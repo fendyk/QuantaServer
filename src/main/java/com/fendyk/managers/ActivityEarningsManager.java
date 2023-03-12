@@ -17,8 +17,8 @@ public class ActivityEarningsManager {
      * @return the new earnings
      */
     public static double getEarningsFromPvp(int dailyKills, int workers) {
-        final double reward = earningsConfig.getPlayerKillEarnings();
-        final double threshold = earningsConfig.getPlayerKillThreshold();
+        final double reward = earningsConfig.getPvpEarnings();
+        final double threshold = earningsConfig.getPvpThreshold();
         final int citizens = Math.min(workers, maxWorkers);
 
         double root = Math.max(threshold - Math.min(1, dailyKills + 1), 1);
@@ -51,8 +51,8 @@ public class ActivityEarningsManager {
      * @return the new earnings
      */
     public static double getEarningsFromMining(Material ore, int dailyOreMined, int workers) {
-        final double reward = earningsConfig.getMaterialEarnings(ore);
-        final double threshold = earningsConfig.getMaterialThreshold(ore);
+        final double reward = earningsConfig.getMaterialEarnings().get(ore);
+        final double threshold = earningsConfig.getMaterialThreshold().get(ore);
         final int citizens = Math.min(workers, maxWorkers);
 
         double root = Math.max(threshold - Math.min(1, dailyOreMined + 1), 1);
@@ -68,8 +68,8 @@ public class ActivityEarningsManager {
      * @return the new earnings
      */
     public static double getEarningsFromPve(EntityType type, int dailyPveKills, int workers) {
-        final double reward = earningsConfig.getEntityEarnings(type);
-        final double threshold = earningsConfig.getEntityThreshold(type);
+        final double reward = earningsConfig.getEntityEarnings().get(type);
+        final double threshold = earningsConfig.getEntityThreshold().get(type);
         final int citizens = Math.min(workers, maxWorkers);
 
         double root = Math.max(threshold - Math.min(1, dailyPveKills + 1), 1);

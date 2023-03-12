@@ -6,20 +6,30 @@ import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Map;
 
 public class EarningsConfig {
 
     Toml config;
+    final double timeEarnings;
+    final double timeThreshold;
+    final double pvpEarnings;
+    final double pvpThreshold;
+    HashMap<EntityType, Double> entityEarnings = new HashMap<>();
+    HashMap<EntityType, Double> entityThreshold = new HashMap<>();
+    HashMap<Material, Double> materialEarnings = new HashMap<>();
+    HashMap<Material, Double> materialThreshold = new HashMap<>();
+
 
     public EarningsConfig() {
         config = new Toml("earnings", "plugins/QuantaServer");
 
-        config.setDefault("timeEarnings", .5);
-        config.setDefault("timeThreshold", 1);
+        timeEarnings = config.getOrSetDefault("timeEarnings", .5);
+        timeThreshold = config.getOrSetDefault("timeThreshold", 1);
 
-        config.setDefault("pvpEarnings", 3);
-        config.setDefault("pvpThreshold", 2.5);
+        pvpEarnings = config.getOrSetDefault("pvpEarnings", 3);
+        pvpThreshold = config.getOrSetDefault("pvpThreshold", 2.5);
 
         if(config.get("materials") == null) {
             // Make default
@@ -43,6 +53,9 @@ public class EarningsConfig {
             double threshold = config.getDouble("materials." + name +  ".threshold");
             Bukkit.getLogger().info("Earnings set to: " + earnings);
             Bukkit.getLogger().info("threshold set to: " + threshold);
+
+            materialEarnings.put(Material.getMaterial(name.toString()), earnings);
+            materialThreshold.put(Material.getMaterial(name.toString()), threshold);
         });
 
         config.getMap("entities").forEach((name, second) -> {
@@ -51,83 +64,41 @@ public class EarningsConfig {
             double threshold = config.getDouble("entities." + name +  ".threshold");
             Bukkit.getLogger().info("Earnings set to: " + earnings);
             Bukkit.getLogger().info("threshold set to: " + threshold);
+
+            entityEarnings.put(EntityType.valueOf(name.toString()), earnings);
+            entityThreshold.put(EntityType.valueOf(name.toString()), threshold);
         });
     }
 
-    public Map<?, ?> getEntities() {
-        return config.getMap("entities");
-    }
-
-    public Map<?, ?> getMaterials() {
-        return config.getMap("materials");
-    }
-
-    /**
-     * Returns the material earnings
-     * @param entity
-     * @return BigDecimal
-     */
-    public double getEntityEarnings(EntityType entity) {
-        return config.getDouble("entities." + entity.name() +  ".earnings");
-    }
-
-    /**
-     * Returns the material Threshold
-     * @param entity
-     * @return BigDecimal
-     */
-    public double getEntityThreshold(EntityType entity) {
-        return config.getDouble("entities." + entity.name() +  ".threshold");
-    }
-
-    /**
-     * Returns the material earnings
-     * @param material
-     * @return BigDecimal
-     */
-    public double getMaterialEarnings(Material material) {
-        return config.getDouble("materials." + material.name() +  ".earnings");
-    }
-
-    /**
-     * Returns the material earnings
-     * @param material
-     * @return BigDecimal
-     */
-    public double getMaterialThreshold(Material material) {
-        return config.getDouble("materials." + material.name() +  ".threshold");
-    }
-
-    /**
-     * Returns the pvp earnings
-     * @return BigDecimal
-     */
-    public double getPlayerKillEarnings() {
-        return config.getDouble("pvpEarnings");
-    }
-
-    /**
-     * Returns the pvp earnings
-     * @return BigDecimal
-     */
-    public double getPlayerKillThreshold() {
-        return config.getDouble("pvpThreshold");
-    }
-
-    /**
-     * Returns the pvp earnings
-     * @return BigDecimal
-     */
-    public double getTimeThreshold() {
-        return config.getDouble("timeThreshold");
-    }
-
-    /**
-     * Returns the pvp earnings
-     * @return BigDecimal
-     */
     public double getTimeEarnings() {
-        return config.getDouble("timeEarnings");
+        return timeEarnings;
     }
 
+    public double getTimeThreshold() {
+        return timeThreshold;
+    }
+
+    public double getPvpEarnings() {
+        return pvpEarnings;
+    }
+
+    public double getPvpThreshold() {
+        return pvpThreshold;
+    }
+
+    public HashMap<EntityType, Double> getEntityEarnings() {
+        return entityEarnings;
+    }
+
+    public HashMap<EntityType, Double> getEntityThreshold() {
+        return entityThreshold;
+    }
+
+    public HashMap<Material, Double> getMaterialEarnings() {
+        return materialEarnings;
+    }
+
+    public HashMap<Material, Double> getMaterialThreshold() {
+        return materialThreshold;
+    }
 }

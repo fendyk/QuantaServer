@@ -6,6 +6,7 @@ import com.fendyk.commands.LandCommands;
 import com.fendyk.commands.RewardCommands;
 import com.fendyk.configs.EarningsConfig;
 import com.fendyk.listeners.minecraft.*;
+import com.fendyk.managers.ActivityBossbarManager;
 import com.fendyk.managers.ActivityEarningsManager;
 import com.fendyk.managers.WorldguardSyncManager;
 import com.google.gson.*;
@@ -16,6 +17,7 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import de.leonhard.storage.Toml;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import org.bukkit.Bukkit;
@@ -24,11 +26,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.*;
 
 public class Main extends JavaPlugin implements Listener {
 
+    static Main instance;
     API api;
     public static Gson gson = new Gson();
     EarningsConfig earningsConfig;
@@ -41,10 +45,13 @@ public class Main extends JavaPlugin implements Listener {
 
     RegionManager regionManager;
     LuckPerms luckPermsApi;
+    BukkitAudiences adventure;
 
     @Override
     public void onEnable() {
+        instance = this;
         frozenPlayers = new ArrayList<>();
+        this.adventure = BukkitAudiences.create(this);
 
         config = new Toml("config", "plugins/QuantaServer");
         config.setDefault("isInDebugMode", false);
@@ -53,6 +60,7 @@ public class Main extends JavaPlugin implements Listener {
         config.setDefault("worldName", "overworld");
 
         WorldguardSyncManager.server = this;
+        ActivityBossbarManager.watch(); // Watch for changes
 
         // Configs
         earningsConfig = new EarningsConfig();
@@ -94,11 +102,31 @@ public class Main extends JavaPlugin implements Listener {
         }
     }
 
+    @Override
+    public void onDisable() {
+        if(this.adventure != null) {
+            this.adventure.close();
+            this.adventure = null;
+        }
+    }
+
+
+    public @NonNull BukkitAudiences adventure() {
+        if(this.adventure == null) {
+            throw new IllegalStateException("Tried to access Adventure when the plugin was disabled!");
+        }
+        return this.adventure;
+    }
+
     private void setupWorldGuard() {
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
         String worldName = config.getString("worldName");
         World world = BukkitAdapter.adapt(Objects.requireNonNull(Bukkit.getWorld(worldName)));
         this.regionManager = container.get(world);
+    }
+
+    public static Main getInstance() {
+        return instance;
     }
 
     public LuckPerms getLuckPermsApi() {
@@ -113,17 +141,6 @@ public class Main extends JavaPlugin implements Listener {
         return regionManager;
     }
 
-    public Toml getTomlConfig() {
-        return this.config;
-    }
-
-    @Override
-    public void onDisable() {
-    }
-
-    @EventHandler
-    public void onPlayerJoinEvent(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-    }
+    public Toml getTomlConfig() {return this.config;}
 
 }

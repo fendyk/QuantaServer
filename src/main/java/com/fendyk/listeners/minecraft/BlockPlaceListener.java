@@ -29,7 +29,7 @@ public class BlockPlaceListener implements Listener {
         EarningsConfig config = server.getEarningsConfig();
 
         // If material is supported.
-        if(config.getMaterials().containsKey(material.name())) {
+        if(config.getMaterialEarnings().containsKey(material)) {
 
             // Verify if the chunk is blacklisted
             if(server.getApi().getBlacklistedChunkAPI().isBlacklisted(chunk)) return;

@@ -6,7 +6,12 @@ import com.fendyk.DTOs.ActivityDTO;
 import com.fendyk.DTOs.updates.UpdateActivitiesDTO;
 import com.fendyk.Main;
 import com.fendyk.configs.EarningsConfig;
+import com.fendyk.managers.ActivityBossbarManager;
 import com.fendyk.managers.ActivityEarningsManager;
+import com.fendyk.managers.ActivitySoundManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -29,7 +34,7 @@ public class EntityDeathListener implements Listener {
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
         Entity killed = event.getEntity();
-        Entity killer = event.getEntity().getKiller();
+        Player killer = event.getEntity().getKiller();
 
         EarningsConfig config = server.getEarningsConfig();
         API api = server.getApi();
@@ -67,9 +72,14 @@ public class EntityDeathListener implements Listener {
             api.getMinecraftUserAPI().depositBalance(killer.getUniqueId(), new BigDecimal(amount));
             api.getActivitiesAPI().getFetch().update(killer.getUniqueId(), updateActivitiesDTO);
 
-            killer.sendMessage("You have killed " + killed.getName() + " and received " + amount + " quanta");
+            ActivityBossbarManager.showBossBar(killer, activity, ActivityBossbarManager.Type.PVP);
+            ActivitySoundManager.play(killer);
+            killer.sendMessage(
+                    Component.text("+ " + String.format("%.2f", amount) + " $QTA")
+                            .color(NamedTextColor.GREEN)
+            );
         }
-        else if(config.getEntities().containsKey(killed.getType().name())) {
+        else if(config.getEntityEarnings().containsKey(killed.getType())) {
             double amount = 0;
             if(activitiesDTO != null) {
                 Optional<ActivityDTO> pvpActivity = activitiesDTO.getPve().stream().filter(activity1 -> activity1.getName().equals(killed.getType().name())).findFirst();
@@ -95,7 +105,12 @@ public class EntityDeathListener implements Listener {
             api.getMinecraftUserAPI().depositBalance(killer.getUniqueId(), new BigDecimal(amount));
             api.getActivitiesAPI().getFetch().update(killer.getUniqueId(), updateActivitiesDTO);
 
-            killer.sendMessage("You have killed an " + killed.getType() + " and received " + amount + " quanta");
+            ActivityBossbarManager.showBossBar(killer, activity, ActivityBossbarManager.Type.PVE);
+            ActivitySoundManager.play(killer);
+            killer.sendMessage(
+                    Component.text("+ " + String.format("%.2f", amount) + " $QTA")
+                            .color(NamedTextColor.GREEN)
+            );
         }
     }
 
