@@ -36,7 +36,7 @@ public class PlayerJoinListener implements Listener {
         boolean hasCitizenRank = inheritedGroups.stream().anyMatch(g -> g.getName().equals("citizen"));
         boolean hasHeroRank = inheritedGroups.stream().anyMatch(g -> g.getName().equals("hero"));
 
-        if(hasDefaultRank) {
+        if(hasDefaultRank && !player.isOp()) {
             player.teleport(new Location(world, 0,173,0));
             server.getFrozenPlayers().add(player.getUniqueId());
             player.sendMessage("You've been frozen because you're not authorized to the server.");

@@ -44,7 +44,7 @@ public class BlockBreakListener implements Listener {
         Block block = event.getBlock();
         Chunk chunk = block.getChunk();
         Material material = block.getType();
-        ItemStack item = player.getInventory().getItemInMainHand();
+        ItemStack itemStack = player.getInventory().getItemInMainHand();
         Location location = block.getLocation();
         API api = server.getApi();
         EarningsConfig config = server.getEarningsConfig();
@@ -53,7 +53,7 @@ public class BlockBreakListener implements Listener {
         if(player.getGameMode() != GameMode.SURVIVAL && !player.isOp()) return;
 
         // If the player uses silk touch, we simply deny
-        if(item.containsEnchantment(Enchantment.SILK_TOUCH)) return;
+        if(itemStack.containsEnchantment(Enchantment.SILK_TOUCH)) return;
 
         // Check if Material is supported
         if(!config.getMaterialEarnings().containsKey(material)) return;
@@ -97,13 +97,17 @@ public class BlockBreakListener implements Listener {
         updateActivitiesDTO.setMining(activities);
 
         api.getMinecraftUserAPI().depositBalance(player.getUniqueId(), new BigDecimal(amount));
-        api.getActivitiesAPI().getFetch().update(player.getUniqueId(), updateActivitiesDTO);
+        ActivitiesDTO updatedActivities = api.getActivitiesAPI().getFetch().update(player.getUniqueId(), updateActivitiesDTO);
 
         player.sendMessage(
                 Component.text("+ " + String.format("%.2f", amount) + " $QTA")
                         .color(NamedTextColor.GREEN)
         );
-        ActivityBossbarManager.showBossBar(player, activity, ActivityBossbarManager.Type.MINING);
+
+        if(updatedActivities != null) {
+            Optional<ActivityDTO> optional = updatedActivities.getMining().stream().filter(item -> item.getName().equalsIgnoreCase(material.name())).findFirst();
+            optional.ifPresent(activityDTO -> ActivityBossbarManager.showBossBar(player, activityDTO, ActivityBossbarManager.Type.MINING));
+        }
         ActivitySoundManager.play(player);
     }
 

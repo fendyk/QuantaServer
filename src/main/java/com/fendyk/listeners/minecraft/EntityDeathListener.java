@@ -70,7 +70,7 @@ public class EntityDeathListener implements Listener {
             updateActivitiesDTO.setPvp(activities);
 
             api.getMinecraftUserAPI().depositBalance(killer.getUniqueId(), new BigDecimal(amount));
-            api.getActivitiesAPI().getFetch().update(killer.getUniqueId(), updateActivitiesDTO);
+            ActivitiesDTO updatedActivities = api.getActivitiesAPI().getFetch().update(killer.getUniqueId(), updateActivitiesDTO);
 
             ActivityBossbarManager.showBossBar(killer, activity, ActivityBossbarManager.Type.PVP);
             ActivitySoundManager.play(killer);
@@ -78,6 +78,11 @@ public class EntityDeathListener implements Listener {
                     Component.text("+ " + String.format("%.2f", amount) + " $QTA")
                             .color(NamedTextColor.GREEN)
             );
+
+            if(updatedActivities != null) {
+                Optional<ActivityDTO> optional = updatedActivities.getPvp().stream().filter(item -> item.getName().equalsIgnoreCase(killed.getUniqueId().toString())).findFirst();
+                optional.ifPresent(activityDTO -> ActivityBossbarManager.showBossBar(killer, activityDTO, ActivityBossbarManager.Type.PVP));
+            }
         }
         else if(config.getEntityEarnings().containsKey(killed.getType())) {
             double amount = 0;
@@ -103,7 +108,7 @@ public class EntityDeathListener implements Listener {
             updateActivitiesDTO.setPve(activities);
 
             api.getMinecraftUserAPI().depositBalance(killer.getUniqueId(), new BigDecimal(amount));
-            api.getActivitiesAPI().getFetch().update(killer.getUniqueId(), updateActivitiesDTO);
+            ActivitiesDTO updatedActivities = api.getActivitiesAPI().getFetch().update(killer.getUniqueId(), updateActivitiesDTO);
 
             ActivityBossbarManager.showBossBar(killer, activity, ActivityBossbarManager.Type.PVE);
             ActivitySoundManager.play(killer);
@@ -111,6 +116,11 @@ public class EntityDeathListener implements Listener {
                     Component.text("+ " + String.format("%.2f", amount) + " $QTA")
                             .color(NamedTextColor.GREEN)
             );
+
+            if(updatedActivities != null) {
+                Optional<ActivityDTO> optional = updatedActivities.getPve().stream().filter(item -> item.getName().equalsIgnoreCase(killed.getType().name())).findFirst();
+                optional.ifPresent(activityDTO -> ActivityBossbarManager.showBossBar(killer, activityDTO, ActivityBossbarManager.Type.PVE));
+            }
         }
     }
 

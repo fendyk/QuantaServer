@@ -31,11 +31,16 @@ public class ActivityBossbarManager {
                 UUID uuid = entry.getKey();
                 HashMap<Type, Long> expires = entry.getValue();
 
-                expires.replaceAll((k, v) -> v -1);
+                expires.replaceAll((k, v) -> v - 2);
+
+                Bukkit.getLogger().info("expires size: " + expires.size());
 
                 expires.entrySet().removeIf(entry2 -> {
                     Type type = entry2.getKey();
                     Long seconds = entry2.getValue();
+
+                    Bukkit.getLogger().info("type " + type);
+                    Bukkit.getLogger().info("seconds " + seconds);
                     if(seconds <= 0) { // Hide the bossbar
                         main.adventure().player(uuid).hideBossBar(bossBars.get(uuid).get(type));
                         return true;
@@ -44,15 +49,21 @@ public class ActivityBossbarManager {
                 });
             }
 
-        }, 20L, 100L);
+        }, 0, 40L);
     }
 
     public static void showBossBar(Player player, ActivityDTO activityDTO, Type type) {
         UUID uuid = player.getUniqueId();
         Audience audience = main.adventure().player(uuid);
 
-        final Component name = Component.text("Activity BossBar");
-        final BossBar bossBar = BossBar.bossBar(name, getDecimalPercentFromActivity(activityDTO), getColorByType(type), BossBar.Overlay.PROGRESS);
+        final float[] percentAndThreshold = getPercentAndThresholdFromActivity(activityDTO);
+        final float percent = percentAndThreshold[0];
+        final float threshold = percentAndThreshold[1];
+        final BossBar.Color color = getColorByType(type);
+        final Component name = Component.text(type + " Activity Progression ( " + activityDTO.getQuantity() + " / " + threshold + " )");
+
+        Bukkit.getLogger().info("progression " + percent);
+        Bukkit.getLogger().info("color " + color.toString());
 
         bossBars.entrySet().stream().filter(item -> item.getKey().equals(player.getUniqueId()))
                 .findFirst()
@@ -60,15 +71,20 @@ public class ActivityBossbarManager {
                     item.getValue().entrySet().stream().filter(item2 -> item2.getKey() == type)
                             .findFirst()
                             .ifPresentOrElse((item2) -> {
-                                // Update stuff here
-                                item2.getValue().progress(getDecimalPercentFromActivity(activityDTO));
+                                // Update stuff here (and show it to audience)
+                                BossBar bossBar = item2.getValue();
+                                bossBar.progress(percent);
+                                bossBar.name(name);
+                                audience.showBossBar(bossBar);
                             }, () -> {
                                 // Otherwise we just put the new bossbar.
+                                final BossBar bossBar = BossBar.bossBar(name, percent, color, BossBar.Overlay.PROGRESS);
                                 item.getValue().put(type, bossBar);
                                 audience.showBossBar(bossBar);
                             });
                 }, () -> {
                     HashMap<Type, BossBar> playerBossBars = new HashMap<>();
+                    final BossBar bossBar = BossBar.bossBar(name, percent, color, BossBar.Overlay.PROGRESS);
                     playerBossBars.put(type, bossBar);
                     bossBars.put(uuid, playerBossBars);
                     audience.showBossBar(bossBar);
@@ -102,26 +118,49 @@ public class ActivityBossbarManager {
         };
     }
 
-    public static float getDecimalPercentFromActivity(ActivityDTO activityDTO) {
+    public static float[] getPercentAndThresholdFromActivity(ActivityDTO activityDTO) {
+        float[] result = new float[2];
         final double quantity = activityDTO.getQuantity();
         final String name = activityDTO.getName();
         EarningsConfig earningsConfig = main.getEarningsConfig();
 
         if(name.equalsIgnoreCase("SECONDS")) {
-            return (float) (quantity / earningsConfig.getTimeThreshold());
+            float threshold = (float) earningsConfig.getTimeThreshold();
+            result[0] = (float) (quantity / threshold);
+            result[1] = threshold;
         }
 
         if(UUIDChecker.isValidUuid(name)) {
-            return (float) (quantity / earningsConfig.getPvpThreshold());
+            float threshold = (float) earningsConfig.getPvpThreshold();
+            result[0] = (float) (quantity / threshold);
+            result[1] = threshold;
         }
 
         Optional<Map.Entry<EntityType, Double>> optionalEntityThreshold = earningsConfig.getEntityThreshold().entrySet().stream().filter(item -> item.getKey().toString().equalsIgnoreCase(name)).findFirst();
         if(optionalEntityThreshold.isPresent()) {
-            return (float) (quantity / optionalEntityThreshold.get().getValue());
+
+            Bukkit.getLogger().info("entitytype " + optionalEntityThreshold.get().getKey());
+            Bukkit.getLogger().info("threshold " + optionalEntityThreshold.get().getValue());
+            Bukkit.getLogger().info("percent " + (float) (quantity / optionalEntityThreshold.get().getValue()));
+
+            float threshold = optionalEntityThreshold.get().getValue().floatValue();
+            result[0] = (float) (quantity / threshold);
+            result[1] = threshold;
         }
 
         Optional<Map.Entry<Material, Double>> optionalMaterialThreshold = earningsConfig.getMaterialThreshold().entrySet().stream().filter(item -> item.getKey().toString().equalsIgnoreCase(name)).findFirst();
-        return optionalMaterialThreshold.map(materialDoubleEntry -> (float) (quantity / materialDoubleEntry.getValue())).orElse(0F);
+        if(optionalMaterialThreshold.isPresent()) {
+
+            Bukkit.getLogger().info("entitytype " + optionalMaterialThreshold.get().getKey());
+            Bukkit.getLogger().info("threshold " + optionalMaterialThreshold.get().getValue());
+            Bukkit.getLogger().info("percent " + (float) (quantity / optionalMaterialThreshold.get().getValue()));
+
+            float threshold = optionalMaterialThreshold.get().getValue().floatValue();
+            result[0] = (float) (quantity / threshold);
+            result[1] = threshold;
+        }
+
+        return result;
     }
 
 
