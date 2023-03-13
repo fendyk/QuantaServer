@@ -9,13 +9,12 @@ import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import java.util.*;
 
-public class ActivityBossbarManager {
+public class ActivityBossBarManager {
 
     public enum Type {
         MINING, PVE, PVP, TIME
@@ -30,17 +29,11 @@ public class ActivityBossbarManager {
             for (Map.Entry<UUID, HashMap<Type, Long>> entry : bossBarsExpiresInSeconds.entrySet()) {
                 UUID uuid = entry.getKey();
                 HashMap<Type, Long> expires = entry.getValue();
-
-                expires.replaceAll((k, v) -> v - 2);
-
-                Bukkit.getLogger().info("expires size: " + expires.size());
-
+                expires.replaceAll((k, v) -> v - 4);
                 expires.entrySet().removeIf(entry2 -> {
                     Type type = entry2.getKey();
                     Long seconds = entry2.getValue();
 
-                    Bukkit.getLogger().info("type " + type);
-                    Bukkit.getLogger().info("seconds " + seconds);
                     if(seconds <= 0) { // Hide the bossbar
                         main.adventure().player(uuid).hideBossBar(bossBars.get(uuid).get(type));
                         return true;
@@ -49,7 +42,7 @@ public class ActivityBossbarManager {
                 });
             }
 
-        }, 0, 40L);
+        }, 0, 80L);
     }
 
     public static void showBossBar(Player player, ActivityDTO activityDTO, Type type) {
@@ -57,13 +50,10 @@ public class ActivityBossbarManager {
         Audience audience = main.adventure().player(uuid);
 
         final float[] percentAndThreshold = getPercentAndThresholdFromActivity(activityDTO);
-        final float percent = percentAndThreshold[0];
+        final float percent = Math.min(percentAndThreshold[0], 1);
         final float threshold = percentAndThreshold[1];
         final BossBar.Color color = getColorByType(type);
-        final Component name = Component.text(type + " Activity Progression ( " + activityDTO.getQuantity() + " / " + threshold + " )");
-
-        Bukkit.getLogger().info("progression " + percent);
-        Bukkit.getLogger().info("color " + color.toString());
+        final Component name = Component.text(activityDTO.getName() + " Progression ( " + Math.round(activityDTO.getQuantity()) + " / " + Math.round(threshold) + " )");
 
         bossBars.entrySet().stream().filter(item -> item.getKey().equals(player.getUniqueId()))
                 .findFirst()
@@ -97,7 +87,7 @@ public class ActivityBossbarManager {
                             .findFirst()
                             .ifPresentOrElse((item2) -> {
                                 // Update stuff here
-                                item2.setValue(item2.getValue() + 10L);
+                                item2.setValue(10L);
                             }, () -> {
                                 // Otherwise we just put the new bossbar.
                                 item.getValue().put(type, 10L);
@@ -138,11 +128,6 @@ public class ActivityBossbarManager {
 
         Optional<Map.Entry<EntityType, Double>> optionalEntityThreshold = earningsConfig.getEntityThreshold().entrySet().stream().filter(item -> item.getKey().toString().equalsIgnoreCase(name)).findFirst();
         if(optionalEntityThreshold.isPresent()) {
-
-            Bukkit.getLogger().info("entitytype " + optionalEntityThreshold.get().getKey());
-            Bukkit.getLogger().info("threshold " + optionalEntityThreshold.get().getValue());
-            Bukkit.getLogger().info("percent " + (float) (quantity / optionalEntityThreshold.get().getValue()));
-
             float threshold = optionalEntityThreshold.get().getValue().floatValue();
             result[0] = (float) (quantity / threshold);
             result[1] = threshold;
@@ -150,11 +135,6 @@ public class ActivityBossbarManager {
 
         Optional<Map.Entry<Material, Double>> optionalMaterialThreshold = earningsConfig.getMaterialThreshold().entrySet().stream().filter(item -> item.getKey().toString().equalsIgnoreCase(name)).findFirst();
         if(optionalMaterialThreshold.isPresent()) {
-
-            Bukkit.getLogger().info("entitytype " + optionalMaterialThreshold.get().getKey());
-            Bukkit.getLogger().info("threshold " + optionalMaterialThreshold.get().getValue());
-            Bukkit.getLogger().info("percent " + (float) (quantity / optionalMaterialThreshold.get().getValue()));
-
             float threshold = optionalMaterialThreshold.get().getValue().floatValue();
             result[0] = (float) (quantity / threshold);
             result[1] = threshold;
@@ -163,6 +143,11 @@ public class ActivityBossbarManager {
         return result;
     }
 
+    public static HashMap<UUID, HashMap<Type, BossBar>> getBossBars() {
+        return bossBars;
+    }
 
-
+    public static HashMap<UUID, HashMap<Type, Long>> getBossBarsExpiresInSeconds() {
+        return bossBarsExpiresInSeconds;
+    }
 }

@@ -31,6 +31,14 @@ public class BlockPlaceListener implements Listener {
         // If material is supported.
         if(config.getMaterialEarnings().containsKey(material)) {
 
+            // If we're not in the 'normal world', disable block place at ALL times
+            // Cannot earn
+            if(!player.getWorld().getName().equalsIgnoreCase(server.getServerConfig().getWorldName())) {
+                player.sendMessage("You're only allowed to place ore blocks in the world.");
+                event.setCancelled(true);
+                return;
+            }
+
             // Verify if the chunk is blacklisted
             if(server.getApi().getBlacklistedChunkAPI().isBlacklisted(chunk)) return;
 

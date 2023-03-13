@@ -31,7 +31,7 @@ public class AuthenticationListener implements RedisPubSubListener<String, Strin
         UUID uuid = UUID.fromString(data.get("uuid").getAsString());
         String eventName = data.get("event").getAsString();
         Player player = Bukkit.getPlayer(uuid);
-        World world = Bukkit.getWorld(server.getTomlConfig().getString("worldName"));
+        World world = Bukkit.getWorld(server.getServerConfig().getWorldName());
     }
 
     @Override

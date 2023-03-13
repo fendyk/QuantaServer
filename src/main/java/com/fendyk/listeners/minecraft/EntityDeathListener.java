@@ -6,7 +6,7 @@ import com.fendyk.DTOs.ActivityDTO;
 import com.fendyk.DTOs.updates.UpdateActivitiesDTO;
 import com.fendyk.Main;
 import com.fendyk.configs.EarningsConfig;
-import com.fendyk.managers.ActivityBossbarManager;
+import com.fendyk.managers.ActivityBossBarManager;
 import com.fendyk.managers.ActivityEarningsManager;
 import com.fendyk.managers.ActivitySoundManager;
 import net.kyori.adventure.text.Component;
@@ -72,7 +72,7 @@ public class EntityDeathListener implements Listener {
             api.getMinecraftUserAPI().depositBalance(killer.getUniqueId(), new BigDecimal(amount));
             ActivitiesDTO updatedActivities = api.getActivitiesAPI().getFetch().update(killer.getUniqueId(), updateActivitiesDTO);
 
-            ActivityBossbarManager.showBossBar(killer, activity, ActivityBossbarManager.Type.PVP);
+            ActivityBossBarManager.showBossBar(killer, activity, ActivityBossBarManager.Type.PVP);
             ActivitySoundManager.play(killer);
             killer.sendMessage(
                     Component.text("+ " + String.format("%.2f", amount) + " $QTA")
@@ -81,7 +81,7 @@ public class EntityDeathListener implements Listener {
 
             if(updatedActivities != null) {
                 Optional<ActivityDTO> optional = updatedActivities.getPvp().stream().filter(item -> item.getName().equalsIgnoreCase(killed.getUniqueId().toString())).findFirst();
-                optional.ifPresent(activityDTO -> ActivityBossbarManager.showBossBar(killer, activityDTO, ActivityBossbarManager.Type.PVP));
+                optional.ifPresent(activityDTO -> ActivityBossBarManager.showBossBar(killer, activityDTO, ActivityBossBarManager.Type.PVP));
             }
         }
         else if(config.getEntityEarnings().containsKey(killed.getType())) {
@@ -110,7 +110,7 @@ public class EntityDeathListener implements Listener {
             api.getMinecraftUserAPI().depositBalance(killer.getUniqueId(), new BigDecimal(amount));
             ActivitiesDTO updatedActivities = api.getActivitiesAPI().getFetch().update(killer.getUniqueId(), updateActivitiesDTO);
 
-            ActivityBossbarManager.showBossBar(killer, activity, ActivityBossbarManager.Type.PVE);
+            ActivityBossBarManager.showBossBar(killer, activity, ActivityBossBarManager.Type.PVE);
             ActivitySoundManager.play(killer);
             killer.sendMessage(
                     Component.text("+ " + String.format("%.2f", amount) + " $QTA")
@@ -119,7 +119,7 @@ public class EntityDeathListener implements Listener {
 
             if(updatedActivities != null) {
                 Optional<ActivityDTO> optional = updatedActivities.getPve().stream().filter(item -> item.getName().equalsIgnoreCase(killed.getType().name())).findFirst();
-                optional.ifPresent(activityDTO -> ActivityBossbarManager.showBossBar(killer, activityDTO, ActivityBossbarManager.Type.PVE));
+                optional.ifPresent(activityDTO -> ActivityBossBarManager.showBossBar(killer, activityDTO, ActivityBossBarManager.Type.PVE));
             }
         }
     }

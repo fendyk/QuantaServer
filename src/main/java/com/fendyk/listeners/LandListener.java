@@ -39,7 +39,7 @@ public class LandListener implements RedisPubSubListener<String, String> {
 
         JsonObject data = JsonParser.parseString(message).getAsJsonObject();
         String eventName = data.get("event").getAsString();
-        String worldName = server.getTomlConfig().getString("worldName");
+        String worldName = server.getServerConfig().getWorldName();
         JsonArray chunksObject = data.getAsJsonArray("chunks");
         JsonObject landObject = data.getAsJsonObject("land");
 

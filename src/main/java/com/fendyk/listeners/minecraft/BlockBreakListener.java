@@ -9,7 +9,7 @@ import com.fendyk.DTOs.updates.UpdateChunkDTO;
 import com.fendyk.Main;
 import com.fendyk.clients.apis.ChunkAPI;
 import com.fendyk.configs.EarningsConfig;
-import com.fendyk.managers.ActivityBossbarManager;
+import com.fendyk.managers.ActivityBossBarManager;
 import com.fendyk.managers.ActivityEarningsManager;
 import com.fendyk.managers.ActivitySoundManager;
 import net.kyori.adventure.text.Component;
@@ -40,6 +40,8 @@ public class BlockBreakListener implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) throws IOException {
+        if(event.isCancelled()) return;
+
         Player player = event.getPlayer();
         Block block = event.getBlock();
         Chunk chunk = block.getChunk();
@@ -100,13 +102,13 @@ public class BlockBreakListener implements Listener {
         ActivitiesDTO updatedActivities = api.getActivitiesAPI().getFetch().update(player.getUniqueId(), updateActivitiesDTO);
 
         player.sendMessage(
-                Component.text("+ " + String.format("%.2f", amount) + " $QTA")
+                Component.text("+" + String.format("%.4f", amount) + " $QTA")
                         .color(NamedTextColor.GREEN)
         );
 
         if(updatedActivities != null) {
             Optional<ActivityDTO> optional = updatedActivities.getMining().stream().filter(item -> item.getName().equalsIgnoreCase(material.name())).findFirst();
-            optional.ifPresent(activityDTO -> ActivityBossbarManager.showBossBar(player, activityDTO, ActivityBossbarManager.Type.MINING));
+            optional.ifPresent(activityDTO -> ActivityBossBarManager.showBossBar(player, activityDTO, ActivityBossBarManager.Type.MINING));
         }
         ActivitySoundManager.play(player);
     }

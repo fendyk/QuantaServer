@@ -1,13 +1,12 @@
 package com.fendyk;
 
-import com.fendyk.commands.ActivityCommands;
-import com.fendyk.commands.EconomyCommands;
-import com.fendyk.commands.LandCommands;
-import com.fendyk.commands.RewardCommands;
+import com.fendyk.commands.*;
 import com.fendyk.configs.EarningsConfig;
+import com.fendyk.configs.ServerConfig;
 import com.fendyk.listeners.minecraft.*;
-import com.fendyk.managers.ActivityBossbarManager;
+import com.fendyk.managers.ActivityBossBarManager;
 import com.fendyk.managers.ActivityEarningsManager;
+import com.fendyk.managers.ConfirmCommandManager;
 import com.fendyk.managers.WorldguardSyncManager;
 import com.google.gson.*;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -36,7 +35,7 @@ public class Main extends JavaPlugin implements Listener {
     API api;
     public static Gson gson = new Gson();
     EarningsConfig earningsConfig;
-    Toml config;
+    ServerConfig serverConfig;
 
     public EarningsConfig getEarningsConfig() {return earningsConfig;}
     public API getApi() {return api;}
@@ -53,23 +52,19 @@ public class Main extends JavaPlugin implements Listener {
         frozenPlayers = new ArrayList<>();
         this.adventure = BukkitAudiences.create(this);
 
-        config = new Toml("config", "plugins/QuantaServer");
-        config.setDefault("isInDebugMode", false);
-        config.setDefault("apiUrl", "<your apiUrl here>");
-        config.setDefault("redisUrl", "redis://password@localhost:6379/0");
-        config.setDefault("worldName", "overworld");
-
         WorldguardSyncManager.server = this;
-        ActivityBossbarManager.watch(); // Watch for changes
+        ActivityBossBarManager.watch(); // Watch for changes
+        ConfirmCommandManager.watch(); // Watch for changes
 
         // Configs
         earningsConfig = new EarningsConfig();
         ActivityEarningsManager.earningsConfig = earningsConfig;
 
         // Instantiate api
-        api = new API(this, config);
+        api = new API(this);
 
         // Commands
+        new ConfirmCommands();
         new EconomyCommands(api);
         new LandCommands(this);
         new ActivityCommands(api);
@@ -90,7 +85,7 @@ public class Main extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new BlockPlaceListener(this), this);
 
         // Initialize spawn region
-        org.bukkit.World world = Bukkit.getWorld(config.getString("worldName"));
+        org.bukkit.World world = Bukkit.getWorld(serverConfig.getWorldName());
         try {
             WorldguardSyncManager.initializeSpawn(
                     Math.toIntExact(api.getBlacklistedChunkAPI().getRedis().hLen()),
@@ -120,7 +115,7 @@ public class Main extends JavaPlugin implements Listener {
 
     private void setupWorldGuard() {
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-        String worldName = config.getString("worldName");
+        String worldName = serverConfig.getWorldName();
         World world = BukkitAdapter.adapt(Objects.requireNonNull(Bukkit.getWorld(worldName)));
         this.regionManager = container.get(world);
     }
@@ -141,6 +136,5 @@ public class Main extends JavaPlugin implements Listener {
         return regionManager;
     }
 
-    public Toml getTomlConfig() {return this.config;}
-
+    public ServerConfig getServerConfig() {return serverConfig;}
 }

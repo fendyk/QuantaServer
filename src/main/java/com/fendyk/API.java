@@ -8,6 +8,7 @@ import com.fendyk.clients.fetch.FetchChunk;
 import com.fendyk.clients.fetch.FetchLand;
 import com.fendyk.clients.fetch.FetchMinecraftUser;
 import com.fendyk.clients.redis.*;
+import com.fendyk.configs.ServerConfig;
 import com.fendyk.listeners.AuthenticationListener;
 import com.fendyk.listeners.ChunkListener;
 import com.fendyk.listeners.LandListener;
@@ -32,14 +33,15 @@ public class API {
     FetchAPI<String, Object,  Object> fetchAPI;
     RedisAPI<String, Object> redisAPI;
 
-    public API(Main server, Toml config) {
+    public API(Main server) {
         this.server = server;
-        this.inDebugMode = config.getOrSetDefault("isInDebugMode", false);
-        this.worldName = config.getOrSetDefault("worldName", "overworld");
+        ServerConfig serverConfig = server.getServerConfig();
+        this.inDebugMode = serverConfig.isInDebugMode();
+        this.worldName = serverConfig.getWorldName();
 
-        String redisUrl = config.getOrSetDefault("redisUrl", "<url>");
-        String apiUrl = config.getOrSetDefault("apiUrl", "<url>");
-        String jwtToken = config.getOrSetDefault("jwtToken", "<token>");
+        String redisUrl = serverConfig.getRedisUrl();
+        String apiUrl = serverConfig.getApiUrl();
+        String jwtToken = serverConfig.getJwtToken();
 
         this.client = RedisClient.create(redisUrl);
 

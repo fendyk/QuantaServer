@@ -26,7 +26,7 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        World world = Bukkit.getWorld(server.getTomlConfig().getString("worldName"));
+        World world = Bukkit.getWorld(server.getServerConfig().getWorldName());
 
         User luckPermsUser = server.getLuckPermsApi().getPlayerAdapter(Player.class).getUser(player);
 

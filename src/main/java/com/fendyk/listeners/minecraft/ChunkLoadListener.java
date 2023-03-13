@@ -33,7 +33,7 @@ public class ChunkLoadListener implements Listener {
         this.server = server;
         this.checkedChunks = new HashMap<>();
 
-        this.worldName = server.getTomlConfig().getString("worldName");
+        this.worldName = server.getServerConfig().getWorldName();
     }
 
     /**

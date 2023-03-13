@@ -32,7 +32,7 @@ public class ChunkListener implements RedisPubSubListener<String, String> {
         Bukkit.getLogger().info("Chunk");
         Bukkit.getLogger().info(channel + ", " + message);
 
-        World world = Bukkit.getWorld(server.getTomlConfig().getString("worldName"));
+        World world = Bukkit.getWorld(server.getServerConfig().getWorldName());
         JsonObject data = JsonParser.parseString(message).getAsJsonObject();
         String eventName = data.get("event").getAsString();
         JsonObject chunkObject = data.getAsJsonObject("chunk");

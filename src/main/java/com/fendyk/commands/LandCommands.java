@@ -5,6 +5,7 @@ import com.fendyk.DTOs.*;
 import com.fendyk.DTOs.updates.UpdateLandDTO;
 import com.fendyk.Main;
 import com.fendyk.clients.apis.MinecraftUserAPI;
+import com.fendyk.managers.ConfirmCommandManager;
 import com.fendyk.managers.WorldguardSyncManager;
 import com.fendyk.utilities.Vector2;
 import com.google.gson.JsonElement;
@@ -33,13 +34,18 @@ public class LandCommands {
         new CommandAPICommand("land")
                 .withSubcommand(new CommandAPICommand("create")
                         .withArguments(new StringArgument("name"))
-                        .executes((sender, args) -> {
-                            Player player = (Player) sender;
+                        .executesPlayer((player, args) -> {
                             String name = (String) args[0];
                             Chunk chunk = player.getChunk();
 
                             if(api.getBlacklistedChunkAPI().isBlacklisted(chunk)) {
                                 player.sendMessage("The chunk you're currently standing on is considered 'blacklisted' and not claimable.");
+                                return;
+                            }
+
+                            // Verify confirmation of command
+                            if(!ConfirmCommandManager.isConfirmed(player)) {
+                                ConfirmCommandManager.requestCommandConfirmation(player, "land create " + name, 999, 60L);
                                 return;
                             }
 
@@ -82,7 +88,7 @@ public class LandCommands {
                                     Player player = (Player) sender;
                                     String name = (String) args[0];
                                     UUID uuid = player.getUniqueId();
-                                    World world = Bukkit.getWorld(server.getTomlConfig().getString("worldName"));
+                                    World world = Bukkit.getWorld(server.getServerConfig().getWorldName());
 
                                     LandDTO landDTO = api.getLandAPI().getRedis().get(uuid.toString());
                                     if(landDTO == null) {
@@ -269,9 +275,10 @@ public class LandCommands {
                         )
                         .withSubcommand(new CommandAPICommand("claim")
                                 //.withRequirement(sender -> api.getLandAPI()( ((Player) sender).getUniqueId() ) != null)
-                                .executes((sender, args) -> {
-                                    Player player = (Player) sender;
+                                .executesPlayer((player, args) -> {
                                     Chunk chunk = player.getChunk();
+
+                                    // TODO: Validate for worldName
 
                                     if(api.getBlacklistedChunkAPI().getRedis().hGet(new Vector2(chunk.getX(), chunk.getZ()))) {
                                         player.sendMessage("The chunk you're currently standing on is considered 'blacklisted' and not claimable.");
@@ -326,9 +333,15 @@ public class LandCommands {
                                         return;
                                     }
 
+                                    // Verify confirmation of command
+                                    if(!ConfirmCommandManager.isConfirmed(player)) {
+                                        ConfirmCommandManager.requestCommandConfirmation(player, "land chunk claim", 500, 60L);
+                                        return;
+                                    }
+
                                     boolean isClaimed = api.getChunkAPI().claim(chunk,landDTO.getId());
                                     if(!isClaimed) {
-                                        player.sendMessage("Could not claim chunk .");
+                                        player.sendMessage("Could not claim chunk.");
                                         return;
                                     }
 
