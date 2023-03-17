@@ -5,6 +5,7 @@ import com.fendyk.DTOs.ChunkDTO;
 import com.fendyk.DTOs.updates.UpdateChunkDTO;
 import com.fendyk.Main;
 import com.fendyk.configs.EarningsConfig;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -39,24 +40,28 @@ public class BlockPlaceListener implements Listener {
                 return;
             }
 
-            // Verify if the chunk is blacklisted
-            if(server.getApi().getBlacklistedChunkAPI().isBlacklisted(chunk)) return;
+            Bukkit.getScheduler().runTaskAsynchronously(server, () -> {
 
-            // Find the chunk
-            ChunkDTO chunkDTO = server.getApi().getChunkAPI().get(chunk);
+                // Verify if the chunk is blacklisted
+                if (server.getApi().getBlacklistedChunkAPI().isBlacklisted(chunk)) return;
 
-            // Create chunk if not found
-            if(chunkDTO == null) {
-                chunkDTO = server.getApi().getChunkAPI().create(chunk, true);
+                // Find the chunk
+                ChunkDTO chunkDTO = server.getApi().getChunkAPI().get(chunk);
 
-                if(chunkDTO == null) return;
-            }
+                // Create chunk if not found
+                if (chunkDTO == null) {
+                    chunkDTO = server.getApi().getChunkAPI().create(chunk, true);
 
-            // Blacklist block by updating and pushing block location into chunk
-            BlacklistedBlockDTO b = new BlacklistedBlockDTO(block.getX(), block.getY(), block.getZ());
-            UpdateChunkDTO update = new UpdateChunkDTO();
-            update.getPushBlacklistedBlocks().add(b);
-            server.getApi().getChunkAPI().update(chunk, update);
+                    if (chunkDTO == null) return;
+                }
+
+                // Blacklist block by updating and pushing block location into chunk
+                BlacklistedBlockDTO b = new BlacklistedBlockDTO(block.getX(), block.getY(), block.getZ());
+                UpdateChunkDTO update = new UpdateChunkDTO();
+                update.getPushBlacklistedBlocks().add(b);
+                server.getApi().getChunkAPI().update(chunk, update);
+
+            });
 
         }
     }

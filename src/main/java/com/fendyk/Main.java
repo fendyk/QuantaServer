@@ -57,6 +57,7 @@ public class Main extends JavaPlugin implements Listener {
         ConfirmCommandManager.watch(); // Watch for changes
 
         // Configs
+        serverConfig = new ServerConfig(this);
         earningsConfig = new EarningsConfig();
         ActivityEarningsManager.earningsConfig = earningsConfig;
 

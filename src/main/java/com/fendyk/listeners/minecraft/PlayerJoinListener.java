@@ -3,6 +3,11 @@ package com.fendyk.listeners.minecraft;
 import com.fendyk.DTOs.MinecraftUserDTO;
 import com.fendyk.DTOs.SubscriptionRewardDTO;
 import com.fendyk.Main;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.title.Title;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
 import org.bukkit.Bukkit;
@@ -23,10 +28,12 @@ public class PlayerJoinListener implements Listener {
     public PlayerJoinListener(Main server) {
         this.server = server;
     }
+
     @EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         World world = Bukkit.getWorld(server.getServerConfig().getWorldName());
+        Audience audience = server.adventure().player(player);
 
         User luckPermsUser = server.getLuckPermsApi().getPlayerAdapter(Player.class).getUser(player);
 
@@ -47,8 +54,6 @@ public class PlayerJoinListener implements Listener {
 
         MinecraftUserDTO minecraftUserDTO = server.getApi().getMinecraftUserAPI().get(player.getUniqueId());
 
-        Bukkit.getLogger().info("HIII");
-
         // Verify if user still has a reward that needs to be claimed
         if(minecraftUserDTO != null) {
             Bukkit.getLogger().info("Found it");
@@ -58,6 +63,46 @@ public class PlayerJoinListener implements Listener {
             if(subscriptions.size() > 0) {
                 player.sendMessage("You have unclaimed rewards awaiting to be redeemed. To claim your reward, type /claim");
             }
+        }
+
+        // If player joins first time
+        if(!player.hasPlayedBefore()) {
+            // Finally show a title saying welcome!
+            final Component mainTitle = Component.text("Welcome to QuantumCity,", NamedTextColor.AQUA);
+            final Component subtitle = Component.text(player.getName(), NamedTextColor.WHITE);
+
+            // Creates a simple title with the default values for fade-in, stay on screen and fade-out durations
+            final Title title = Title.title(mainTitle, subtitle);
+
+            // Send the title to your audience
+            audience.showTitle(title);
+
+            // Set join message
+            final TextComponent msg = Component.text()
+                    .color(NamedTextColor.AQUA)
+                    .append(Component.text(player.getName() + " -> has joined the server for the first time, say hi!"))
+                    .build();
+
+            event.joinMessage(msg);
+        }
+        else {
+            // Finally show a title saying welcome!
+            final Component mainTitle = Component.text("Welcome back,", NamedTextColor.AQUA);
+            final Component subtitle = Component.text(player.getName(), NamedTextColor.WHITE);
+
+            // Creates a simple title with the default values for fade-in, stay on screen and fade-out durations
+            final Title title = Title.title(mainTitle, subtitle);
+
+            // Send the title to your audience
+            audience.showTitle(title);
+
+            // Set join message
+            final TextComponent msg = Component.text()
+                    .color(NamedTextColor.GRAY)
+                    .append(Component.text(player.getName() + " -> has joined the server."))
+                    .build();
+
+            event.joinMessage(msg);
         }
 
     }

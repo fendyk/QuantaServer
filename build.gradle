@@ -1,5 +1,6 @@
 plugins {
     id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id("org.jetbrains.kotlin.jvm") version "1.8.20-RC"
     id 'java'
 }
 
@@ -12,11 +13,12 @@ repositories {
     maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
     maven { url "https://maven.enginehub.org/repo/" }
     maven { url "https://repo.clojars.org/"}
+    maven{
+        url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
+    }
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
     compileOnly("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
 
     implementation "com.github.puregero:multilib:1.1.12"
@@ -31,7 +33,6 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10.1'
 
     compileOnly "dev.jorel:commandapi-core:8.7.0"
-    implementation 'com.vdurmont:emoji-java:5.1.1'
 
     implementation 'com.github.Simplix-Softworks:SimplixStorage:3.1.9'
 
@@ -41,7 +42,27 @@ dependencies {
 
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.7'
     compileOnly 'net.luckperms:api:5.4'
+    compileOnly 'me.clip:placeholderapi:2.11.2'
 
+}
+
+sourceSets {
+    main {
+        kotlin {
+            srcDirs += 'src/main/java'
+            srcDirs += 'src/main/kotlin'
+            srcDirs += 'src/main/kotlin/quantaServer' // Add the new package here
+        }
+    }
+}
+
+shadowJar {
+    archiveBaseName.set('QuantaServer-all')
+    archiveVersion.set('1.0.0')
+    archiveClassifier.set('all')
+    dependencies {
+        exclude(dependency('org.jetbrains.kotlin:kotlin-stdlib'))
+    }
 }
 
 java {

@@ -60,57 +60,58 @@ public class BlockBreakListener implements Listener {
         // Check if Material is supported
         if(!config.getMaterialEarnings().containsKey(material)) return;
 
-        ChunkDTO chunkDTO = server.getApi().getChunkAPI().get(chunk);
+        Bukkit.getScheduler().runTaskAsynchronously(server, () -> {
+            ChunkDTO chunkDTO = server.getApi().getChunkAPI().get(chunk);
 
-        if(chunkDTO != null) {
-            if(ChunkAPI.isBlacklistedBlock(chunkDTO, block)) {
-                UpdateChunkDTO update = new UpdateChunkDTO();
-                update.getSpliceBlacklistedBlocks().add(new BlacklistedBlockDTO(block));
-                server.getApi().getChunkAPI().update(chunk, update);
-                return;
+            if (chunkDTO != null) {
+                if (ChunkAPI.isBlacklistedBlock(chunkDTO, block)) {
+                    UpdateChunkDTO update = new UpdateChunkDTO();
+                    update.getSpliceBlacklistedBlocks().add(new BlacklistedBlockDTO(block));
+                    server.getApi().getChunkAPI().update(chunk, update);
+                    return;
+                }
             }
-        }
 
-        ActivitiesDTO activitiesDTO = server.getApi().getActivitiesAPI().getRedis().get(player.getUniqueId());
-        double amount = 0;
+            ActivitiesDTO activitiesDTO = server.getApi().getActivitiesAPI().getRedis().get(player.getUniqueId());
+            double amount = 0;
 
-        if(activitiesDTO == null) {
-            amount = ActivityEarningsManager.getEarningsFromMining(material, 1, 1);
-        }
-        else {
-            Optional<ActivityDTO> pvpActivity = activitiesDTO.getMining().stream().filter(activity1 -> activity1.getName().equals(material.name())).findFirst();
-
-            if(pvpActivity.isPresent()) {
-                amount = pvpActivity.map(
-                        activityDTO -> ActivityEarningsManager.getEarningsFromMining(material, (int) activityDTO.getQuantity(), 1)).get();
-            }
-            else {
+            if (activitiesDTO == null) {
                 amount = ActivityEarningsManager.getEarningsFromMining(material, 1, 1);
+            } else {
+                Optional<ActivityDTO> pvpActivity = activitiesDTO.getMining().stream().filter(activity1 -> activity1.getName().equals(material.name())).findFirst();
+
+                if (pvpActivity.isPresent()) {
+                    amount = pvpActivity.map(
+                            activityDTO -> ActivityEarningsManager.getEarningsFromMining(material, (int) activityDTO.getQuantity(), 1)).get();
+                } else {
+                    amount = ActivityEarningsManager.getEarningsFromMining(material, 1, 1);
+                }
             }
-        }
 
-        UpdateActivitiesDTO updateActivitiesDTO = new UpdateActivitiesDTO();
-        ArrayList<ActivityDTO> activities = new ArrayList<>();
-        ActivityDTO activity = new ActivityDTO();
-        activity.setName(material.name());
-        activity.setEarnings(amount);
-        activity.setQuantity(1);
-        activities.add(activity);
-        updateActivitiesDTO.setMining(activities);
+            UpdateActivitiesDTO updateActivitiesDTO = new UpdateActivitiesDTO();
+            ArrayList<ActivityDTO> activities = new ArrayList<>();
+            ActivityDTO activity = new ActivityDTO();
+            activity.setName(material.name());
+            activity.setEarnings(amount);
+            activity.setQuantity(1);
+            activities.add(activity);
+            updateActivitiesDTO.setMining(activities);
 
-        api.getMinecraftUserAPI().depositBalance(player.getUniqueId(), new BigDecimal(amount));
-        ActivitiesDTO updatedActivities = api.getActivitiesAPI().getFetch().update(player.getUniqueId(), updateActivitiesDTO);
+            api.getMinecraftUserAPI().depositBalance(player.getUniqueId(), new BigDecimal(amount));
+            ActivitiesDTO updatedActivities = api.getActivitiesAPI().getFetch().update(player.getUniqueId(), updateActivitiesDTO);
 
-        player.sendMessage(
-                Component.text("+" + String.format("%.4f", amount) + " $QTA")
-                        .color(NamedTextColor.GREEN)
-        );
+            player.sendMessage(
+                    Component.text("+" + String.format("%.4f", amount) + " $QTA")
+                            .color(NamedTextColor.GREEN)
+            );
 
-        if(updatedActivities != null) {
-            Optional<ActivityDTO> optional = updatedActivities.getMining().stream().filter(item -> item.getName().equalsIgnoreCase(material.name())).findFirst();
-            optional.ifPresent(activityDTO -> ActivityBossBarManager.showBossBar(player, activityDTO, ActivityBossBarManager.Type.MINING));
-        }
-        ActivitySoundManager.play(player);
+            if (updatedActivities != null) {
+                Optional<ActivityDTO> optional = updatedActivities.getMining().stream().filter(item -> item.getName().equalsIgnoreCase(material.name())).findFirst();
+                optional.ifPresent(activityDTO -> ActivityBossBarManager.showBossBar(player, activityDTO, ActivityBossBarManager.Type.MINING));
+            }
+            ActivitySoundManager.play(player);
+
+        });
     }
 
 }
