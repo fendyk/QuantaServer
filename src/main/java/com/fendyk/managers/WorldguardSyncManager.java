@@ -26,8 +26,7 @@ import java.util.*;
 
 public final class WorldguardSyncManager {
 
-
-    public static Main server;
+    static Main main = Main.getInstance();
 
     public static List<Chunk> getNeighboringChunks(Chunk chunk) {
         List<Chunk> chunks = new ArrayList<>();
@@ -50,14 +49,14 @@ public final class WorldguardSyncManager {
         BlockVector3 topLeft = BlockVector3.at(areaCorners[0].getX(), minYHeight, areaCorners[0].getZ());
         BlockVector3 topBottomRight = BlockVector3.at(areaCorners[3].getX(), maxYHeight, areaCorners[3].getZ());
 
-        Set<ProtectedRegion> set = server.getRegionManager().getApplicableRegions(
+        Set<ProtectedRegion> set = main.getRegionManager().getApplicableRegions(
                 BlockVector3.at(0, 0, 0)
         ).getRegions();
         Optional<ProtectedRegion> optionalRegion = set.stream().filter(r -> !r.getId().equalsIgnoreCase("spawn")).findFirst();
         ProtectedRegion region;
 
         // Remove region if present since we cannot update bounds with Worldguard API
-        optionalRegion.ifPresent(protectedRegion -> server.getRegionManager().removeRegion(protectedRegion.getId()));
+        optionalRegion.ifPresent(protectedRegion -> main.getRegionManager().removeRegion(protectedRegion.getId()));
 
         region = new ProtectedCuboidRegion("spawn", topLeft, topBottomRight);
         region.setFlag(Flags.MOB_SPAWNING, StateFlag.State.DENY);
@@ -68,8 +67,8 @@ public final class WorldguardSyncManager {
         region.setFlag(Flags.HUNGER_DRAIN, StateFlag.State.DENY);
         region.setFlag(Flags.FALL_DAMAGE, StateFlag.State.DENY);
 
-        server.getRegionManager().addRegion(region);
-        server.getRegionManager().save();
+        main.getRegionManager().addRegion(region);
+        main.getRegionManager().save();
     }
 
     public static List<Location> getChunkBounds(Chunk chunk, double height) {
@@ -123,21 +122,21 @@ public final class WorldguardSyncManager {
         /* If it's cached, we're going to do stuff with it. */
         if(chunkDTO == null) {
             /* To avoid unnecessary calls to the api, first check if we already CACHED the chunk  */
-            boolean isCached = server.getApi().getChunkAPI().getRedis().exists(new Vector2(chunk.getX(), chunk.getZ()));
+            boolean isCached = main.getApi().getChunkAPI().getRedis().exists(new Vector2(chunk.getX(), chunk.getZ()));
             if(!isCached) return;
-            chunkDTO = server.getApi().getChunkAPI().get(chunk);
+            chunkDTO = main.getApi().getChunkAPI().get(chunk);
             if(chunkDTO == null) return; // Could not find so no need for check
         }
 
         /* Find the land by landID */
         if(landDTO == null) {
-            landDTO = server.getApi().getLandAPI().getRedis().get(chunkDTO.getLandId());
+            landDTO = main.getApi().getLandAPI().getRedis().get(chunkDTO.getLandId());
             if(landDTO == null) return;
         }
 
         /* Find the region */
         Location center = WorldguardSyncManager.getChunkCenter(chunk);
-        Set<ProtectedRegion> set = server.getRegionManager().getApplicableRegions(
+        Set<ProtectedRegion> set = main.getRegionManager().getApplicableRegions(
                 BlockVector3.at(center.x(), center.y(), center.z())
         ).getRegions();
 
@@ -154,7 +153,7 @@ public final class WorldguardSyncManager {
                     landDTO.getOwnerId(),
                     landDTO.getMemberIDs()
             ); // Updates the region
-            server.getRegionManager().addRegion(newRegion); // Dont forget to save the region
+            main.getRegionManager().addRegion(newRegion); // Dont forget to save the region
         }
         else {
             @Nullable ChunkDTO finalChunkDTO = chunkDTO;
@@ -164,7 +163,7 @@ public final class WorldguardSyncManager {
             // If we find a region that is not matching our requirements, remove it.
             if(regions.size() > 0) {
                 regions.forEach(r -> {
-                    server.getRegionManager().removeRegion(r.getId());
+                    main.getRegionManager().removeRegion(r.getId());
                 });
             }
 
@@ -179,7 +178,7 @@ public final class WorldguardSyncManager {
             ); // Updates the region
         }
 
-        server.getRegionManager().save(); // Dont forget to save the region
+        main.getRegionManager().save(); // Dont forget to save the region
         Bukkit.getLogger().info(chunk.getX() + "/" + chunk.getZ() + " is synced");
     }
 
@@ -193,7 +192,7 @@ public final class WorldguardSyncManager {
         }
         int task = TaskManager.startWorldTask(packets, 5, chunk.getWorld());
 
-        Bukkit.getScheduler().runTaskLaterAsynchronously(server, () -> {
+        Bukkit.getScheduler().runTaskLaterAsynchronously(main, () -> {
             // code to execute after 10 seconds goes here
             TaskManager.getTaskManager().stopTask(task);
         }, 600L); // 30 seconds

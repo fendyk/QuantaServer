@@ -32,7 +32,7 @@ dependencies {
     implementation "net.kyori:adventure-platform-bukkit:4.2.0"
     implementation 'com.google.code.gson:gson:2.10.1'
 
-    compileOnly "dev.jorel:commandapi-core:8.7.0"
+    compileOnly "dev.jorel:commandapi-core:8.8.0"
 
     implementation 'com.github.Simplix-Softworks:SimplixStorage:3.1.9'
 

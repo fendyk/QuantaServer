@@ -3,6 +3,7 @@ package com.fendyk.listeners.minecraft;
 import com.fendyk.DTOs.MinecraftUserDTO;
 import com.fendyk.DTOs.SubscriptionRewardDTO;
 import com.fendyk.Main;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -104,6 +105,9 @@ public class PlayerJoinListener implements Listener {
 
             event.joinMessage(msg);
         }
+
+        // Set Placeholder api values
+        PlaceholderAPI.setPlaceholders(player, "%quantum_balance%");
 
     }
 

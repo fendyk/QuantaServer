@@ -3,6 +3,7 @@ package com.fendyk;
 import com.fendyk.commands.*;
 import com.fendyk.configs.EarningsConfig;
 import com.fendyk.configs.ServerConfig;
+import com.fendyk.expansions.QuantaExpansion;
 import com.fendyk.listeners.minecraft.*;
 import com.fendyk.managers.ActivityBossBarManager;
 import com.fendyk.managers.ActivityEarningsManager;
@@ -15,15 +16,12 @@ import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
-import de.leonhard.storage.Toml;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -45,16 +43,18 @@ public class Main extends JavaPlugin implements Listener {
     RegionManager regionManager;
     LuckPerms luckPermsApi;
     BukkitAudiences adventure;
+    public Main() {
+        instance = this;
+    }
 
     @Override
     public void onEnable() {
-        instance = this;
         frozenPlayers = new ArrayList<>();
         this.adventure = BukkitAudiences.create(this);
 
-        WorldguardSyncManager.server = this;
-        ActivityBossBarManager.watch(); // Watch for changes
-        ConfirmCommandManager.watch(); // Watch for changes
+        // Watch for changes
+        ActivityBossBarManager.watch();
+        ConfirmCommandManager.watch();
 
         // Configs
         serverConfig = new ServerConfig(this);
@@ -65,8 +65,9 @@ public class Main extends JavaPlugin implements Listener {
         api = new API(this);
 
         // Commands
+        new EconomyCommands();
         new ConfirmCommands();
-        new EconomyCommands(api);
+        new QuantaCommands();
         new LandCommands(this);
         new ActivityCommands(api);
         new RewardCommands(this);
@@ -84,6 +85,9 @@ public class Main extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new ChunkLoadListener(this), this);
         getServer().getPluginManager().registerEvents(new BlockBreakListener(this), this);
         getServer().getPluginManager().registerEvents(new BlockPlaceListener(this), this);
+
+        // PlaceholderAPI expansion
+        new QuantaExpansion().register();
 
         // Initialize spawn region
         org.bukkit.World world = Bukkit.getWorld(serverConfig.getWorldName());
