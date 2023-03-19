@@ -81,8 +81,8 @@ public class BlockBreakListener implements Listener {
                 Optional<ActivityDTO> pvpActivity = activitiesDTO.getMining().stream().filter(activity1 -> activity1.getName().equals(material.name())).findFirst();
 
                 if (pvpActivity.isPresent()) {
-                    amount = pvpActivity.map(
-                            activityDTO -> ActivityEarningsManager.getEarningsFromMining(material, (int) activityDTO.getQuantity(), 1)).get();
+                    Bukkit.getLogger().info("-=-=-=-=-=-=- quantity: " + pvpActivity.get().getQuantity());
+                    amount = ActivityEarningsManager.getEarningsFromMining(material, (int) pvpActivity.get().getQuantity() + 1, 1);
                 } else {
                     amount = ActivityEarningsManager.getEarningsFromMining(material, 1, 1);
                 }
@@ -100,8 +100,8 @@ public class BlockBreakListener implements Listener {
             api.getMinecraftUserAPI().depositBalance(player.getUniqueId(), new BigDecimal(amount));
             ActivitiesDTO updatedActivities = api.getActivitiesAPI().getFetch().update(player.getUniqueId(), updateActivitiesDTO);
 
-            player.sendMessage(
-                    Component.text("+" + String.format("%.4f", amount) + " $QTA")
+            player.sendActionBar(
+                    Component.text("+" + String.format("%.8f", amount) + " $QTA")
                             .color(NamedTextColor.GREEN)
             );
 

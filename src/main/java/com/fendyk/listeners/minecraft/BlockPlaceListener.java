@@ -26,8 +26,10 @@ public class BlockPlaceListener implements Listener {
         Block block = event.getBlock();
         Chunk chunk = block.getChunk();
         Material material = block.getType();
-
         EarningsConfig config = server.getEarningsConfig();
+
+        // Ignore if player is Operator
+        if(player.isOp()) return;
 
         // If material is supported.
         if(config.getMaterialEarnings().containsKey(material)) {

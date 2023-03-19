@@ -43,12 +43,12 @@ public class EntityDeathListener implements Listener {
         if(killer == null) return;
 
         Bukkit.getScheduler().runTaskAsynchronously(server, () -> {
-            ActivitiesDTO activitiesDTO = server.getApi().getActivitiesAPI().getRedis().get(killer.getUniqueId());
             UpdateActivitiesDTO updateActivitiesDTO = new UpdateActivitiesDTO();
             ArrayList<ActivityDTO> activities = new ArrayList<>();
             ActivityDTO activity = new ActivityDTO();
 
             if(killed instanceof Player) {
+                ActivitiesDTO activitiesDTO = server.getApi().getActivitiesAPI().getRedis().get(killer.getUniqueId());
                 double amount = 0;
                 if(activitiesDTO != null) {
                     Optional<ActivityDTO> pvpActivity = activitiesDTO.getPvp().stream().filter(activity1 -> activity1.getName().equals(killed.getUniqueId().toString())).findFirst();
@@ -72,11 +72,11 @@ public class EntityDeathListener implements Listener {
                 updateActivitiesDTO.setPvp(activities);
 
                 api.getMinecraftUserAPI().depositBalance(killer.getUniqueId(), new BigDecimal(amount));
-                ActivitiesDTO updatedActivities = api.getActivitiesAPI().getFetch().update(killer.getUniqueId(), updateActivitiesDTO);
+                ActivitiesDTO updatedActivities = api.getActivitiesAPI().update(killer, updateActivitiesDTO);
 
                 ActivityBossBarManager.showBossBar(killer, activity, ActivityBossBarManager.Type.PVP);
                 ActivitySoundManager.play(killer);
-                killer.sendMessage(
+                killer.sendActionBar(
                         Component.text("+ " + String.format("%.2f", amount) + " $QTA")
                                 .color(NamedTextColor.GREEN)
                 );
@@ -87,17 +87,12 @@ public class EntityDeathListener implements Listener {
                 }
             }
             else if(config.getEntityEarnings().containsKey(killed.getType())) {
+                ActivitiesDTO activitiesDTO = server.getApi().getActivitiesAPI().getRedis().get(killer.getUniqueId());
                 double amount = 0;
                 if(activitiesDTO != null) {
-                    Optional<ActivityDTO> pvpActivity = activitiesDTO.getPve().stream().filter(activity1 -> activity1.getName().equals(killed.getType().name())).findFirst();
-
-                    if(pvpActivity.isPresent()) {
-                        amount = pvpActivity.map(
-                                activityDTO -> ActivityEarningsManager.getEarningsFromPve(killed.getType(), (int) activityDTO.getQuantity(), 1)).get();
-                    }
-                    else {
-                        amount = ActivityEarningsManager.getEarningsFromPve(killed.getType(), 1, 1);
-                    }
+                    Optional<ActivityDTO> pvpActivity = activitiesDTO.getPve().stream().filter(item -> item.getName().equalsIgnoreCase(killed.getType().name())).findFirst();
+                    amount = pvpActivity.map(activityDTO -> ActivityEarningsManager.getEarningsFromPve(killed.getType(), (int) activityDTO.getQuantity(), 1))
+                            .orElseGet(() -> ActivityEarningsManager.getEarningsFromPve(killed.getType(), 1, 1));
                 }
                 else {
                     amount = ActivityEarningsManager.getEarningsFromPve(killed.getType(), 1, 1);
@@ -110,12 +105,12 @@ public class EntityDeathListener implements Listener {
                 updateActivitiesDTO.setPve(activities);
 
                 api.getMinecraftUserAPI().depositBalance(killer.getUniqueId(), new BigDecimal(amount));
-                ActivitiesDTO updatedActivities = api.getActivitiesAPI().getFetch().update(killer.getUniqueId(), updateActivitiesDTO);
+                ActivitiesDTO updatedActivities = api.getActivitiesAPI().update(killer, updateActivitiesDTO);
 
                 ActivityBossBarManager.showBossBar(killer, activity, ActivityBossBarManager.Type.PVE);
                 ActivitySoundManager.play(killer);
-                killer.sendMessage(
-                        Component.text("+ " + String.format("%.2f", amount) + " $QTA")
+                killer.sendActionBar(
+                        Component.text("+ " + String.format("%.2f", amount) + " $QTA has been added to your account.")
                                 .color(NamedTextColor.GREEN)
                 );
 

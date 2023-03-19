@@ -59,7 +59,6 @@ public class Main extends JavaPlugin implements Listener {
         // Configs
         serverConfig = new ServerConfig(this);
         earningsConfig = new EarningsConfig();
-        ActivityEarningsManager.earningsConfig = earningsConfig;
 
         // Instantiate api
         api = new API(this);

@@ -1,6 +1,9 @@
 package com.fendyk.listeners.minecraft;
 
 import com.fendyk.Main;
+import com.fendyk.managers.ChunkManager;
+import com.fendyk.utilities.ChunkUtils;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,10 +22,21 @@ public class PlayerMoveListener implements Listener {
     public void onPlayerMove(PlayerMoveEvent e) {
         Player player = e.getPlayer();
         UUID uuid = player.getUniqueId();
-        if (!server.getFrozenPlayers().contains(uuid)) {
+        if (server.getFrozenPlayers().contains(uuid)) {
+            e.setCancelled(true);
             return;
         }
-        e.setCancelled(true);
+
+        Chunk currentChunk = player.getChunk();
+        Chunk recentChunk = ChunkManager.getCurrentPlayerLocationChunks().getOrDefault(player.getUniqueId(), currentChunk);
+
+        // If not the same
+        if(!ChunkUtils.isSameChunk(currentChunk, recentChunk)) {
+            ChunkManager.getCurrentPlayerLocationChunks().put(uuid, currentChunk);
+
+
+            // Do stuff
+        }
     }
 
 }

@@ -1,18 +1,19 @@
 package com.fendyk.expansions;
 
+import com.fendyk.DTOs.LandDTO;
 import com.fendyk.Main;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.math.BigDecimal;
+public class LandExpansion extends PlaceholderExpansion {
 
-public class QuantaExpansion extends PlaceholderExpansion {
     Main main = Main.getInstance();
+
     @Override
     public @NotNull String getIdentifier() {
-        return "quantum";
+        return "quantum_land";
     }
 
     @Override
@@ -31,12 +32,11 @@ public class QuantaExpansion extends PlaceholderExpansion {
     }
 
     @Override
-    public @Nullable String onRequest(@NotNull OfflinePlayer player, @NotNull String params) {
-        if(params.equalsIgnoreCase("eco_balance")) {
-            BigDecimal amount = main.getApi().getMinecraftUserAPI().getPlayerBalance(player.getUniqueId());
-            return amount != null ? String.format("%.2f", amount) : "undefined";
+    public @Nullable String onRequest(OfflinePlayer player, @NotNull String params) {
+        if(params.equalsIgnoreCase("current_land_name")) {
+            LandDTO landDTO = main.getApi().getLandAPI().get(player.getUniqueId());
+            return landDTO != null ? landDTO.getName() : "Not claimed";
         }
-
         return null;
     }
 }

@@ -107,7 +107,8 @@ public class PlayerJoinListener implements Listener {
         }
 
         // Set Placeholder api values
-        PlaceholderAPI.setPlaceholders(player, "%quantum_balance%");
+        PlaceholderAPI.setPlaceholders(player, "%quantum_eco_balance%");
+        //PlaceholderAPI.setPlaceholders(player, "%quantum_land_standing%");
 
     }
 

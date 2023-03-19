@@ -65,4 +65,22 @@ public class LandAPI extends ClientAPI<FetchLand, RedisLand> {
         return landDTO;
     }
 
+    /**
+     * Gets the land via land's id
+     * @param id
+     * @return LandDTO or null if not found
+     */
+    public LandDTO get(String id) {
+        return this.getRedis().get(id);
+    }
+
+    /**
+     * Gets the land via player's uuid
+     * @param player
+     * @return LandDTO or null if not found
+     */
+    public LandDTO get(UUID player) {
+        return this.getRedis().get(player.toString());
+    }
+
 }

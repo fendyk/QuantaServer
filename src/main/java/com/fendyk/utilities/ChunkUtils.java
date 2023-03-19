@@ -1,8 +1,7 @@
 package com.fendyk.utilities;
 
+import org.bukkit.Chunk;
 import org.bukkit.Location;
-
-import java.util.ArrayList;
 
 public class ChunkUtils {
 
@@ -34,6 +33,16 @@ public class ChunkUtils {
     public static int getRadiusInChunks(int chunkCount) {
         double radius = Math.sqrt(chunkCount / Math.PI);
         return (int) Math.ceil(radius);
+    }
+
+    /**
+     * Verifies if both chunks are the same by validating their coordinates.
+     * @param chunk1
+     * @param chunk2
+     * @return
+     */
+    public static boolean isSameChunk(Chunk chunk1, Chunk chunk2) {
+        return chunk1.getX() == chunk2.getX() && chunk1.getZ() == chunk2.getZ();
     }
 
 }
