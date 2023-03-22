@@ -11,7 +11,6 @@ import com.fendyk.managers.ActivityEarningsManager;
 import com.fendyk.managers.ActivitySoundManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -20,7 +19,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -71,7 +69,7 @@ public class EntityDeathListener implements Listener {
                 activities.add(activity);
                 updateActivitiesDTO.setPvp(activities);
 
-                api.getMinecraftUserAPI().depositBalance(killer.getUniqueId(), new BigDecimal(amount));
+                api.getMinecraftUserAPI().depositBalance(killer, new BigDecimal(amount));
                 ActivitiesDTO updatedActivities = api.getActivitiesAPI().update(killer, updateActivitiesDTO);
 
                 ActivityBossBarManager.showBossBar(killer, activity, ActivityBossBarManager.Type.PVP);
@@ -104,7 +102,7 @@ public class EntityDeathListener implements Listener {
                 activities.add(activity);
                 updateActivitiesDTO.setPve(activities);
 
-                api.getMinecraftUserAPI().depositBalance(killer.getUniqueId(), new BigDecimal(amount));
+                api.getMinecraftUserAPI().depositBalance(killer, new BigDecimal(amount));
                 ActivitiesDTO updatedActivities = api.getActivitiesAPI().update(killer, updateActivitiesDTO);
 
                 ActivityBossBarManager.showBossBar(killer, activity, ActivityBossBarManager.Type.PVE);

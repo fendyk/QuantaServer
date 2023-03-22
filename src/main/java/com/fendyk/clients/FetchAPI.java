@@ -1,24 +1,28 @@
 package com.fendyk.clients;
 
-import com.fendyk.Log;
+import com.fendyk.utilities.Log;
 import com.fendyk.Main;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonParser;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import okhttp3.*;
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public abstract class FetchAPI<K, DTO, UpdateDTO> {
     protected final boolean inDebugMode;
     protected Main server;
-    protected OkHttpClient client =  new OkHttpClient();
-    protected final MediaType JSON = MediaType.get("application/json; charset=utf-8");
+    protected OkHttpClient client = new OkHttpClient.Builder()
+            .readTimeout(30, TimeUnit.SECONDS)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .build();
+    protected static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     protected final String url;
     protected final String authHeader = "Authorization";
     protected Request.Builder requestBuilder;
@@ -30,19 +34,10 @@ public abstract class FetchAPI<K, DTO, UpdateDTO> {
         this.requestBuilder = new Request.Builder()
                 .addHeader(authHeader, "Bearer " + authKey);
     }
-    void logDebug(Response res, String responseBody, String requestBody, String name) {
-        Bukkit.getLogger().info("-----------------------------------");
-        Bukkit.getLogger().info("Name: " + name);
-        Bukkit.getLogger().info("ResponseCode: " + res.code());
-        Bukkit.getLogger().info("Message: " + res.message());
-        Bukkit.getLogger().info("Request:" + requestBody);
-        Bukkit.getLogger().info("Response:" + responseBody);
-        Bukkit.getLogger().info("-----------------------------------");
-    }
-
 
     /**
      * Fetches from api
+     *
      * @param request
      * @param name
      * @return
@@ -50,37 +45,34 @@ public abstract class FetchAPI<K, DTO, UpdateDTO> {
     @Nullable
     protected JsonElement fetchFromApi(Request request, String name) {
         try (Response response = client.newCall(request).execute()) {
-            if(response.code() == 204) {
-                Bukkit.getLogger().info(Log.Info("Response empty (204) at:" + name));
-                if(inDebugMode) logDebug(response,
-                        JsonNull.INSTANCE.toString(),
-                        request.body() != null ? request.body().toString() : null,
-                        name
-                );
-                return null; // Return empty
-            }
-            else if(response.code() != 200) {
-                Bukkit.getLogger().info(Log.Error("Response not ok (" + response.code() + ") at:" + name));
-                if(inDebugMode) logDebug(response,
-                        response.body() != null ? response.body().string() : null,
-                        request.body() != null ? request.body().toString() : null,
-                        name
-                );
-                return null;
+            if (inDebugMode) {
+                Log.info("");
+                Log.info("FETCH: fetchFromApi is called at: " + name);
+                Log.info("Request URL: " + request.url());
+                Log.info("Response Code: " + response.code());
+                Log.info("Response Message: " + response.message());
+                Log.info("");
             }
 
-            /* If no 'body' found we simpy return a JsonNull */
-            if(response.body() == null) {
-                return null; // Return empty
+            if (!response.isSuccessful()) {
+                throw new IOException("Unexpected response code: " + response.code());
             }
 
-            String json = response.body().string();
-            if(inDebugMode) logDebug(response, json, request.body() != null ? request.body().toString() : null, name);
-            return JsonParser.parseString(json);
+            try (ResponseBody body = response.body()) {
+                if (body == null) return null;
+                String json = body.string();
+                if (inDebugMode) {
+                    Log.info("Response Body: " + json);
+                }
+                return JsonParser.parseString(json);
+            }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            Log.error("Error in fetchFromApi: " + e.getMessage());
+            Log.error("Stacktrace: " + Arrays.toString(e.getStackTrace()));
+            return null;
         }
     }
+
 
     @Nullable
     public abstract DTO get(K key);

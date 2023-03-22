@@ -32,7 +32,7 @@ public class QuantaCommands {
                         .executes((sender, args) -> {
                             Player player = (Player) args[0];
                             Double amount = (Double) args[1];
-                            boolean success = main.getApi().getMinecraftUserAPI().depositBalance(player.getUniqueId(), new BigDecimal(amount));
+                            boolean success = main.getApi().getMinecraftUserAPI().depositBalance(player, new BigDecimal(amount));
                             if(!success) {
                                 player.sendMessage("Something went wrong when depositing. Please try again.");
                                 return;
@@ -48,7 +48,7 @@ public class QuantaCommands {
                         .executes((sender, args) -> {
                             Player player = (Player) args[0];
                             Double amount = (Double) args[1];
-                            boolean success = main.getApi().getMinecraftUserAPI().withDrawBalance(player.getUniqueId(), new BigDecimal(amount));
+                            boolean success = main.getApi().getMinecraftUserAPI().withDrawBalance(player, new BigDecimal(amount));
                             if(!success) {
                                 player.sendMessage("Something went wrong when withdrawing. Please try again.");
                                 return;

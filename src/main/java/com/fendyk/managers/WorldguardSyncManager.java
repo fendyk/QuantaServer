@@ -4,6 +4,7 @@ import com.fendyk.DTOs.ChunkDTO;
 import com.fendyk.DTOs.LandDTO;
 import com.fendyk.Main;
 import com.fendyk.utilities.ChunkUtils;
+import com.fendyk.utilities.Log;
 import com.fendyk.utilities.Vector2;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.domains.DefaultDomain;
@@ -117,7 +118,7 @@ public final class WorldguardSyncManager {
     }
 
     public static void syncChunkWithRegion(Chunk chunk, @Nullable ChunkDTO chunkDTO, @Nullable LandDTO landDTO) throws StorageException {
-        Bukkit.getLogger().info(chunk.getX() + "/" + chunk.getZ() + " is trying to sync with region");
+        Log.info(chunk.getX() + "/" + chunk.getZ() + " is trying to sync with region");
 
         /* If it's cached, we're going to do stuff with it. */
         if(chunkDTO == null) {
@@ -179,7 +180,7 @@ public final class WorldguardSyncManager {
         }
 
         main.getRegionManager().save(); // Dont forget to save the region
-        Bukkit.getLogger().info(chunk.getX() + "/" + chunk.getZ() + " is synced");
+        Log.success(chunk.getX() + "/" + chunk.getZ() + " is synced");
     }
 
     public static void showParticleEffectAtChunk(Chunk chunk, Location location, ParticleData particleData) {

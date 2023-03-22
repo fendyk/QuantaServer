@@ -10,6 +10,8 @@ import com.fendyk.clients.redis.RedisMinecraftUser;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
@@ -41,7 +43,6 @@ public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecra
      */
     @Nullable
     public MinecraftUserDTO get(UUID player) {
-        Bukkit.getLogger().info("api: " +player.toString());
         return redis.get(player);
     }
 
@@ -54,8 +55,9 @@ public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecra
         return fetch.update(player, minecraftUserDTO);
     }
 
-    public boolean withDrawBalance(UUID player, BigDecimal amount) {
-        MinecraftUserDTO minecraftUser = get(player);
+    public boolean withDrawBalance(OfflinePlayer player, BigDecimal amount) {
+        UUID uuid = player.getUniqueId();
+        MinecraftUserDTO minecraftUser = get(uuid);
         if(minecraftUser == null) return false;
 
         BigDecimal oldAmount = BigDecimal.valueOf(minecraftUser.getQuanta());
@@ -67,7 +69,7 @@ public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecra
 
         UpdateMinecraftUserDTO update = new UpdateMinecraftUserDTO();
         update.setQuanta(newAmount.floatValue());
-        return update(player, update) != null;
+        return update(uuid, update) != null;
     }
 
     /**
@@ -76,8 +78,9 @@ public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecra
      * @param amount
      * @return
      */
-    public boolean depositBalance(UUID player, BigDecimal amount) {
-        MinecraftUserDTO minecraftUser = get(player);
+    public boolean depositBalance(OfflinePlayer player, BigDecimal amount) {
+        UUID uuid = player.getUniqueId();
+        MinecraftUserDTO minecraftUser = get(uuid);
         if(minecraftUser == null) return false;
 
         BigDecimal oldAmount = BigDecimal.valueOf(minecraftUser.getQuanta());
@@ -85,7 +88,7 @@ public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecra
 
         UpdateMinecraftUserDTO update = new UpdateMinecraftUserDTO();
         update.setQuanta(newAmount.floatValue());
-        return update(player, update) != null;
+        return update(uuid, update) != null;
     }
 
 }

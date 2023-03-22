@@ -45,7 +45,7 @@ public class RewardCommands {
                                 server.getApi().getMinecraftUserAPI().update(player.getUniqueId(), update);
                             }
 
-                            server.getApi().getMinecraftUserAPI().depositBalance(player.getUniqueId(), new BigDecimal(quanta));
+                            server.getApi().getMinecraftUserAPI().depositBalance(player, new BigDecimal(quanta));
                             server.getServer().dispatchCommand(Bukkit.getConsoleSender(), "/crate key give <player> <keyId> [amount]");
 
                             player.sendMessage("You've received " + quanta + " $QUANTA.");

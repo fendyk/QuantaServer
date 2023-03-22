@@ -5,6 +5,7 @@ import com.sk89q.minecraft.util.commands.Command;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.DoubleArgument;
 import dev.jorel.commandapi.arguments.PlayerArgument;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -19,7 +20,7 @@ public class EconomyCommands {
                 .withArguments(new DoubleArgument("amount"))
                 .executes((sender, args) -> {
                     Player fromPlayer = (Player) sender;
-                    Player toPlayer = (Player) args[0];
+                    OfflinePlayer toPlayer = (Player) args[0];
                     Double amount = (Double) args[1];
 
                     BigDecimal balance = main.getApi().getMinecraftUserAPI().getPlayerBalance(fromPlayer.getUniqueId());
@@ -33,14 +34,17 @@ public class EconomyCommands {
                         return;
                     }
 
-                    boolean isWithdrawn = main.getApi().getMinecraftUserAPI().withDrawBalance(fromPlayer.getUniqueId(), new BigDecimal(amount));
-                    boolean isDeposited = main.getApi().getMinecraftUserAPI().depositBalance(toPlayer.getUniqueId(), new BigDecimal(amount));
+                    boolean isWithdrawn = main.getApi().getMinecraftUserAPI().withDrawBalance(fromPlayer, new BigDecimal(amount));
+                    boolean isDeposited = main.getApi().getMinecraftUserAPI().depositBalance(toPlayer, new BigDecimal(amount));
                     if(!isWithdrawn || !isDeposited) {
                         fromPlayer.sendMessage("Looks like something went wrong. Maybe you dont have enough $Quanta? If you believe this is an error, contact support.");
                         return;
                     }
                     fromPlayer.sendMessage("Your have payed " + amount + " to " + toPlayer.getName());
-                    toPlayer.sendMessage("Your have received " + amount + " from " + fromPlayer.getName());
+
+                    if(toPlayer.isOnline() && toPlayer.getPlayer() != null) {
+                        toPlayer.getPlayer().sendMessage("Your have received " + amount + " from " + fromPlayer.getName());
+                    }
                 })
                 .register();
     }

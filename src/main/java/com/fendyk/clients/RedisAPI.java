@@ -1,6 +1,6 @@
 package com.fendyk.clients;
 
-import com.fendyk.Log;
+import com.fendyk.utilities.Log;
 import com.fendyk.Main;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
@@ -15,7 +15,6 @@ import org.bukkit.Bukkit;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public abstract class RedisAPI<K, DTO> {
 
@@ -41,7 +40,7 @@ public abstract class RedisAPI<K, DTO> {
         this.syncCommands = connection.sync();
 
         // Add subscriptions
-        if(listeners != null && subscriptions != null) {
+        if (listeners != null && subscriptions != null) {
             this.pubSubConnection = client.connectPubSub();
 
             listeners.forEach((RedisPubSubListener<String, String> k) -> {
@@ -55,47 +54,53 @@ public abstract class RedisAPI<K, DTO> {
             });
         }
 
-        if(!connection.isOpen()) {
-            Bukkit.getLogger().info(Log.Error("Redis connection is not open!"));
-        }
-        else {
-            Bukkit.getLogger().info(Log.Success("Redis connection success!"));
+        if (!connection.isOpen()) {
+            Log.error("Redis connection is not open.");
+        } else {
+            Log.success("Redis connection success!");
         }
 
     }
 
-    public RedisClient getClient() {return this.client;}
+    public RedisClient getClient() {
+        return this.client;
+    }
+
     public StatefulRedisConnection<String, String> getConnection() {
         return connection;
     }
+
     public StatefulRedisPubSubConnection<String, String> getPubSubConnection() {
         return pubSubConnection;
     }
+
     public RedisCommands<String, String> getSyncCommands() {
         return syncCommands;
     }
 
-    public RedisPubSubCommands<String, String> getPubSubCommands() {return pubSubCommands;}
+    public RedisPubSubCommands<String, String> getPubSubCommands() {
+        return pubSubCommands;
+    }
 
     @Nullable
     public abstract DTO get(K key);
+
     public abstract boolean set(K key, DTO data);
 
     public abstract boolean exists(K key);
 
     public JsonElement getCache(String key) {
-        String result = syncCommands.get(key);
-        if(inDebugMode) {
-            Bukkit.getLogger().info("-----------------------------------");
-            Bukkit.getLogger().info("Redis Action GET:");
+        final String result = syncCommands.get(key);
+        if (inDebugMode) {
+            Log.info("");
+            Log.info("REDIS: getCache is called with key: " + key);
 
-            if(result == null || result.length() < 1) {
-                Bukkit.getLogger().info("Result: Redis Result is null or empty");
+            if (result == null || result.length() < 1) {
+                Log.warning("Result is null or length is < 1");
+            } else {
+                Log.info("Result: " + result);
             }
-            else {
-                Bukkit.getLogger().info(result);
-            }
-            Bukkit.getLogger().info("-----------------------------------");
+            Log.info("");
         }
 
         return result == null ? null : result.length() < 1 ? JsonNull.INSTANCE.getAsJsonNull() :
@@ -103,21 +108,26 @@ public abstract class RedisAPI<K, DTO> {
     }
 
     public boolean setCache(String key, String data) {
-        String result = syncCommands.set(key, data);
-        if(inDebugMode) {
-            Bukkit.getLogger().info("Redis Action SET:");
-            Bukkit.getLogger().info(result);
+        final String result = syncCommands.set(key, data);
+        if (inDebugMode) {
+            Log.info("");
+            Log.info("REDIS: setCache is called with key: " + key);
+            Log.info("Result: " + result);
+            Log.info("");
         }
         return result.equals("OK");
     }
 
     public boolean existsInCache(String key) {
-        Long amount = syncCommands.exists(key);
-        if(inDebugMode) {
-            Bukkit.getLogger().info("Redis Action EXISTS:");
-            Bukkit.getLogger().info(amount.toString());
+        final Long amount = syncCommands.exists(key);
+        final boolean exists = amount > 0;
+        if (inDebugMode) {
+            Log.info("");
+            Log.info("REDIS: existsInCache: " + key);
+            Log.info("Result: " + exists);
+            Log.info("");
         }
-        return amount > 0;
+        return exists;
     }
 
 }

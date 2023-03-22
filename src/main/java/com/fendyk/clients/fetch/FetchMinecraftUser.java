@@ -7,6 +7,7 @@ import com.fendyk.clients.FetchAPI;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 
+import java.io.IOException;
 import java.util.UUID;
 
 public class FetchMinecraftUser extends FetchAPI<UUID, MinecraftUserDTO, UpdateMinecraftUserDTO> {

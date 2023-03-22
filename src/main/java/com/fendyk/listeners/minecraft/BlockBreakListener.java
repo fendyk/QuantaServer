@@ -73,19 +73,14 @@ public class BlockBreakListener implements Listener {
             }
 
             ActivitiesDTO activitiesDTO = server.getApi().getActivitiesAPI().getRedis().get(player.getUniqueId());
-            double amount = 0;
+            double amount;
 
             if (activitiesDTO == null) {
                 amount = ActivityEarningsManager.getEarningsFromMining(material, 1, 1);
             } else {
                 Optional<ActivityDTO> pvpActivity = activitiesDTO.getMining().stream().filter(activity1 -> activity1.getName().equals(material.name())).findFirst();
-
-                if (pvpActivity.isPresent()) {
-                    Bukkit.getLogger().info("-=-=-=-=-=-=- quantity: " + pvpActivity.get().getQuantity());
-                    amount = ActivityEarningsManager.getEarningsFromMining(material, (int) pvpActivity.get().getQuantity() + 1, 1);
-                } else {
-                    amount = ActivityEarningsManager.getEarningsFromMining(material, 1, 1);
-                }
+                amount = pvpActivity.map(activityDTO -> ActivityEarningsManager.getEarningsFromMining(material, (int) activityDTO.getQuantity() + 1, 1))
+                        .orElseGet(() -> ActivityEarningsManager.getEarningsFromMining(material, 1, 1));
             }
 
             UpdateActivitiesDTO updateActivitiesDTO = new UpdateActivitiesDTO();
@@ -97,7 +92,7 @@ public class BlockBreakListener implements Listener {
             activities.add(activity);
             updateActivitiesDTO.setMining(activities);
 
-            api.getMinecraftUserAPI().depositBalance(player.getUniqueId(), new BigDecimal(amount));
+            api.getMinecraftUserAPI().depositBalance(player, new BigDecimal(amount));
             ActivitiesDTO updatedActivities = api.getActivitiesAPI().getFetch().update(player.getUniqueId(), updateActivitiesDTO);
 
             player.sendActionBar(
