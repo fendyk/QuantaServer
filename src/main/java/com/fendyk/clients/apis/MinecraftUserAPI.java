@@ -3,25 +3,29 @@ package com.fendyk.clients.apis;
 import com.fendyk.API;
 import com.fendyk.DTOs.MinecraftUserDTO;
 import com.fendyk.DTOs.updates.UpdateMinecraftUserDTO;
-import com.fendyk.Main;
 import com.fendyk.clients.ClientAPI;
 import com.fendyk.clients.fetch.FetchMinecraftUser;
 import com.fendyk.clients.redis.RedisMinecraftUser;
-import me.clip.placeholderapi.PlaceholderAPI;
-import org.apache.commons.lang3.ObjectUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.HashMap;
+import java.util.Set;
 import java.util.UUID;
 
 public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecraftUser> {
 
     public MinecraftUserAPI(API api, FetchMinecraftUser fetch, RedisMinecraftUser redis) {
         super(api, fetch, redis);
+    }
+
+    static HashMap<UUID, MinecraftUserDTO> cachedMinecraftUsers = new HashMap<>();
+
+    public enum RequestType {
+        CACHE, REDIS
     }
 
     /**
@@ -43,7 +47,18 @@ public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecra
      */
     @Nullable
     public MinecraftUserDTO get(UUID player) {
-        return redis.get(player);
+        MinecraftUserDTO dto = redis.get(player);
+        cachedMinecraftUsers.put(player, dto);
+        return dto;
+    }
+
+    /**
+     * Returns the cached player, pure for UI/Visuals that require loads of updates only.
+     * @param player
+     * @return
+     */
+    public MinecraftUserDTO getCached(Player player) {
+        return cachedMinecraftUsers.get(player.getUniqueId());
     }
 
     /**
@@ -52,7 +67,9 @@ public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecra
      * @return
      */
     public MinecraftUserDTO update(UUID player, UpdateMinecraftUserDTO minecraftUserDTO) {
-        return fetch.update(player, minecraftUserDTO);
+        MinecraftUserDTO dto = fetch.update(player, minecraftUserDTO);
+        cachedMinecraftUsers.put(player, dto);
+        return dto;
     }
 
     public boolean withDrawBalance(OfflinePlayer player, BigDecimal amount) {

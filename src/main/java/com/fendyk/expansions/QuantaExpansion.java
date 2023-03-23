@@ -33,8 +33,10 @@ public class QuantaExpansion extends PlaceholderExpansion {
     @Override
     public @Nullable String onRequest(@NotNull OfflinePlayer player, @NotNull String params) {
         if(params.equalsIgnoreCase("eco_balance")) {
-            BigDecimal amount = main.getApi().getMinecraftUserAPI().getPlayerBalance(player.getUniqueId());
-            return amount != null ? String.format("%.2f", amount) : "undefined";
+            if(player.isOnline() && player.getPlayer() != null) {
+                Float amount = main.getApi().getMinecraftUserAPI().getCached(player.getPlayer()).getQuanta();
+                return amount != null ? String.format("%.2f", amount) : "undefined";
+            }
         }
 
         return null;
