@@ -13,7 +13,7 @@ import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 import org.jetbrains.annotations.Nullable;
 
-public class ChunkAPI extends ClientAPI<FetchChunk, RedisChunk> {
+public class ChunkAPI extends ClientAPI<FetchChunk, RedisChunk, String, ChunkDTO> {
 
     public ChunkAPI(API api, FetchChunk fetch, RedisChunk redis) {
         super(api, fetch, redis);

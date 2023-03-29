@@ -10,14 +10,12 @@ import com.fendyk.Main;
 import com.fendyk.clients.apis.ChunkAPI;
 import com.fendyk.configs.EarningsConfig;
 import com.fendyk.managers.ActivityBossBarManager;
-import com.fendyk.managers.ActivityEarningsManager;
+import com.fendyk.utilities.ActivityEarnings;
 import com.fendyk.managers.ActivitySoundManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Container;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -76,11 +74,11 @@ public class BlockBreakListener implements Listener {
             double amount;
 
             if (activitiesDTO == null) {
-                amount = ActivityEarningsManager.getEarningsFromMining(material, 1, 1);
+                amount = ActivityEarnings.getEarningsFromMining(material, 1, 1);
             } else {
                 Optional<ActivityDTO> pvpActivity = activitiesDTO.getMining().stream().filter(activity1 -> activity1.getName().equals(material.name())).findFirst();
-                amount = pvpActivity.map(activityDTO -> ActivityEarningsManager.getEarningsFromMining(material, (int) activityDTO.getQuantity() + 1, 1))
-                        .orElseGet(() -> ActivityEarningsManager.getEarningsFromMining(material, 1, 1));
+                amount = pvpActivity.map(activityDTO -> ActivityEarnings.getEarningsFromMining(material, (int) activityDTO.getQuantity() + 1, 1))
+                        .orElseGet(() -> ActivityEarnings.getEarningsFromMining(material, 1, 1));
             }
 
             UpdateActivitiesDTO updateActivitiesDTO = new UpdateActivitiesDTO();

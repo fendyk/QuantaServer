@@ -11,7 +11,7 @@ import org.bukkit.World;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlacklistedChunkAPI extends ClientAPI<Class<?>, RedisBlacklistedChunk> {
+public class BlacklistedChunkAPI extends ClientAPI<Class<?>, RedisBlacklistedChunk, Class<?>, Class<?>> {
 
     public BlacklistedChunkAPI(API api, Class<?> fetch, RedisBlacklistedChunk redis) {
         super(api, null, redis);

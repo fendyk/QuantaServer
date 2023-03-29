@@ -1,11 +1,15 @@
 package com.fendyk.managers;
 
 import com.fendyk.Main;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class ConfirmCommandManager {
 
@@ -43,10 +47,13 @@ public class ConfirmCommandManager {
         }, 0, 80L);
     }
 
+    /**
+     * Checks if the player's command is unchecked
+     * @param player
+     * @return
+     */
     public static boolean isConfirmed(Player player) {
-        return unconfirmedStates.entrySet().stream().anyMatch(
-                item -> item.getKey().equals(player.getUniqueId()) && item.getValue()
-        );
+        return unconfirmedStates.entrySet().stream().noneMatch(item -> item.getKey().equals(player.getUniqueId()) && item.getValue());
     }
 
     public static void requestCommandConfirmation(Player player, String command, double quanta, long timeInSeconds) {
@@ -55,23 +62,59 @@ public class ConfirmCommandManager {
         unconfirmedCommands.put(uuid, command);
         unconfirmedExpiresInSeconds.put(uuid, timeInSeconds);
 
-        player.sendMessage("You are required to confirm the command before proceeding");
-        player.sendMessage("");
-        player.sendMessage("Command: " + command);
-        player.sendMessage("Cost:" + quanta + " $QTA");
-        player.sendMessage("Time left:" + quanta + " $QTA");
-        player.sendMessage("");
-        player.sendMessage("To confirm your purchase, type /confirm");
+        Component message = Component.empty()
+                .append(Component.newline())
+                .append(Component.text("You are required to confirm the command before proceeding")
+                        .color(NamedTextColor.GOLD)
+                        .decoration(TextDecoration.BOLD, true)
+                )
+                .append(Component.newline())
+                .append(Component.newline())
+                .append(Component.text("Command: ")
+                        .color(NamedTextColor.AQUA)
+                        .append(Component.text("/" + command)
+                                .color(NamedTextColor.WHITE)
+                        )
+                )
+                .append(Component.newline())
+                .append(Component.text("Cost: ")
+                        .color(NamedTextColor.GREEN)
+                        .append(Component.text(quanta + " $QTA")
+                                .color(NamedTextColor.YELLOW)
+                        )
+                )
+                .append(Component.newline())
+                .append(Component.text("Time Left: ")
+                        .color(NamedTextColor.RED)
+                        .append(Component.text(timeInSeconds + " seconds")
+                                .color(NamedTextColor.YELLOW)
+                        )
+                )
+                .append(Component.newline())
+                .append(Component.newline())
+                .append(Component.text("To confirm your purchase, type ")
+                        .color(NamedTextColor.AQUA)
+                        .append(Component.text("/confirm")
+                                .color(NamedTextColor.GOLD)
+                                .decoration(TextDecoration.BOLD, true)
+                        )
+                )
+                .append(Component.newline());
+
+        player.sendMessage(message);
     }
 
     public static void confirmedCommand(Player player) {
-        UUID uuid = player.getUniqueId();
-        if(!unconfirmedCommands.containsKey(uuid)) {
-            player.sendMessage("It looks like you have not confirmed your command in time and has been expired.");
-            return;
-        }
-        unconfirmedStates.put(uuid, true);
-        player.performCommand(unconfirmedCommands.get(uuid));
+            UUID uuid = player.getUniqueId();
+            if(!unconfirmedCommands.containsKey(uuid)) {
+                player.sendMessage("It looks like you have not confirmed your command in time and has been expired.");
+                return;
+            }
+            unconfirmedStates.put(uuid, true);
+            player.performCommand(unconfirmedCommands.get(uuid));
+            unconfirmedStates.remove(uuid);
+            unconfirmedCommands.remove(uuid);
+            unconfirmedExpiresInSeconds.remove(uuid);
     }
 
 }

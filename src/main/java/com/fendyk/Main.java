@@ -2,11 +2,11 @@ package com.fendyk;
 
 import com.fendyk.commands.*;
 import com.fendyk.configs.EarningsConfig;
+import com.fendyk.configs.PricesConfig;
 import com.fendyk.configs.ServerConfig;
 import com.fendyk.expansions.QuantaExpansion;
 import com.fendyk.listeners.minecraft.*;
 import com.fendyk.managers.ActivityBossBarManager;
-import com.fendyk.managers.ActivityEarningsManager;
 import com.fendyk.managers.ConfirmCommandManager;
 import com.fendyk.managers.WorldguardSyncManager;
 import com.google.gson.*;
@@ -16,7 +16,6 @@ import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
@@ -34,6 +33,7 @@ public class Main extends JavaPlugin implements Listener {
     public static Gson gson = new Gson();
     EarningsConfig earningsConfig;
     ServerConfig serverConfig;
+    PricesConfig pricesConfig;
 
     public EarningsConfig getEarningsConfig() {return earningsConfig;}
     public API getApi() {return api;}
@@ -57,13 +57,15 @@ public class Main extends JavaPlugin implements Listener {
         ConfirmCommandManager.watch();
 
         // Configs
-        serverConfig = new ServerConfig(this);
+        serverConfig = new ServerConfig();
         earningsConfig = new EarningsConfig();
+        pricesConfig = new PricesConfig();
 
         // Instantiate api
         api = new API(this);
 
         // Commands
+        new SpawnCommands();
         new EconomyCommands();
         new ConfirmCommands();
         new QuantaCommands();
@@ -127,18 +129,15 @@ public class Main extends JavaPlugin implements Listener {
     public static Main getInstance() {
         return instance;
     }
-
     public LuckPerms getLuckPermsApi() {
         return luckPermsApi;
     }
-
     public List<UUID> getFrozenPlayers() {
         return frozenPlayers;
     }
-
     public RegionManager getRegionManager() {
         return regionManager;
     }
-
     public ServerConfig getServerConfig() {return serverConfig;}
+    public PricesConfig getPricesConfig() {return pricesConfig;}
 }

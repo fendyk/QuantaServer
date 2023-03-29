@@ -18,13 +18,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 public class PlayerJoinListener implements Listener {
+
+    Main main = Main.getInstance();
     Main server;
     public PlayerJoinListener(Main server) {
         this.server = server;
@@ -106,8 +105,15 @@ public class PlayerJoinListener implements Listener {
             event.joinMessage(msg);
         }
 
+        // Retrieve data (From redis) for using it as caching purposes later
+        main.getApi().getActivitiesAPI().get(player);
+
         // Set Placeholder api values
         PlaceholderAPI.setPlaceholders(player, "%quantum_eco_balance%");
+        PlaceholderAPI.setPlaceholders(player, "%quantum_activities_mining_daily_earned%");
+        PlaceholderAPI.setPlaceholders(player, "%quantum_activities_pve_daily_earned%");
+        PlaceholderAPI.setPlaceholders(player, "%quantum_activities_mining_daily_quantity%");
+        PlaceholderAPI.setPlaceholders(player, "%quantum_activities_pve_daily_quantity%");
         //PlaceholderAPI.setPlaceholders(player, "%quantum_land_standing%");
 
     }

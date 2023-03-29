@@ -10,10 +10,17 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class ActivitiesAPI extends ClientAPI<FetchActivities, RedisActivities> {
+public class ActivitiesAPI extends ClientAPI<FetchActivities, RedisActivities, UUID, ActivitiesDTO> {
 
     public ActivitiesAPI(API api, FetchActivities fetch, RedisActivities redis) {
         super(api, fetch, redis);
+    }
+
+    public ActivitiesDTO get(Player player) {
+        UUID uuid = player.getUniqueId();
+        ActivitiesDTO dto = redis.get(uuid);
+        cachedRecords.put(player.getUniqueId(), dto);
+        return dto;
     }
 
     /**

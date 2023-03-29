@@ -13,7 +13,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import java.util.UUID;
 
-public class LandAPI extends ClientAPI<FetchLand, RedisLand> {
+public class LandAPI extends ClientAPI<FetchLand, RedisLand, String, LandDTO> {
 
     public LandAPI(API api, FetchLand fetch, RedisLand redis) {
         super(api, fetch, redis);
@@ -62,6 +62,8 @@ public class LandAPI extends ClientAPI<FetchLand, RedisLand> {
         /* Claim the chunk */
         chunkAPI.claim(chunk, landDTO.getId());
 
+        cachedRecords.put(landDTO.getId(), landDTO);
+
         return landDTO;
     }
 
@@ -71,7 +73,9 @@ public class LandAPI extends ClientAPI<FetchLand, RedisLand> {
      * @return LandDTO or null if not found
      */
     public LandDTO get(String id) {
-        return this.getRedis().get(id);
+        LandDTO dto = getRedis().get(id);
+        cachedRecords.put(id, dto);
+        return dto;
     }
 
     /**
@@ -80,7 +84,9 @@ public class LandAPI extends ClientAPI<FetchLand, RedisLand> {
      * @return LandDTO or null if not found
      */
     public LandDTO get(UUID player) {
-        return this.getRedis().get(player.toString());
+        LandDTO dto =  getRedis().get(player.toString());
+        cachedRecords.put(player.toString(), dto);
+        return dto;
     }
 
 }

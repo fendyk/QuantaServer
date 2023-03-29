@@ -1,5 +1,6 @@
 package com.fendyk.configs;
 
+import com.fendyk.utilities.Log;
 import de.leonhard.storage.Toml;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -47,8 +48,8 @@ public class EarningsConfig {
             config.setDefault("entities.SKELETON.threshold", 2D);
         }
 
-        config.getMap("materials").forEach((name, second) -> {
-            Bukkit.getLogger().info("adding ore " + name.toString() + " to the Economy: " + second.toString());
+        config.getMap("materials").forEach((name, data) -> {
+            Log.info("Adding Ore '" + name.toString() + "' to the server.");
             double earnings = config.getDouble("materials." + name +  ".earnings");
             double threshold = config.getDouble("materials." + name +  ".threshold");
             Bukkit.getLogger().info("Earnings set to: " + earnings);
@@ -58,8 +59,8 @@ public class EarningsConfig {
             materialThreshold.put(Material.getMaterial(name.toString()), threshold);
         });
 
-        config.getMap("entities").forEach((name, second) -> {
-            Bukkit.getLogger().info("adding entity " + name.toString() + " to the Economy: " + second.toString());
+        config.getMap("entities").forEach((name, data) -> {
+            Log.info("Adding Entity '" + name.toString() + "' to the server.");
             double earnings = config.getDouble("entities." + name +  ".earnings");
             double threshold = config.getDouble("entities." + name +  ".threshold");
             Bukkit.getLogger().info("Earnings set to: " + earnings);

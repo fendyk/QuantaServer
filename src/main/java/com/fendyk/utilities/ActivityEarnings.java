@@ -1,12 +1,11 @@
-package com.fendyk.managers;
+package com.fendyk.utilities;
 
 import com.fendyk.Main;
 import com.fendyk.configs.EarningsConfig;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 
-public class ActivityEarningsManager {
+public class ActivityEarnings {
 
     // We will never be able to have more than total supply
     public final static int maxWorkers = 3;

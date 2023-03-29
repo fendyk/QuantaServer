@@ -13,19 +13,12 @@ import org.jetbrains.annotations.Nullable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.UUID;
 
-public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecraftUser> {
+public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecraftUser, UUID, MinecraftUserDTO> {
 
     public MinecraftUserAPI(API api, FetchMinecraftUser fetch, RedisMinecraftUser redis) {
         super(api, fetch, redis);
-    }
-
-    static HashMap<UUID, MinecraftUserDTO> cachedMinecraftUsers = new HashMap<>();
-
-    public enum RequestType {
-        CACHE, REDIS
     }
 
     /**
@@ -48,7 +41,7 @@ public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecra
     @Nullable
     public MinecraftUserDTO get(UUID player) {
         MinecraftUserDTO dto = redis.get(player);
-        cachedMinecraftUsers.put(player, dto);
+        cachedRecords.put(player, dto);
         return dto;
     }
 
@@ -58,7 +51,7 @@ public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecra
      * @return
      */
     public MinecraftUserDTO getCached(Player player) {
-        return cachedMinecraftUsers.get(player.getUniqueId());
+        return getCached(player.getUniqueId());
     }
 
     /**
@@ -68,7 +61,7 @@ public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecra
      */
     public MinecraftUserDTO update(UUID player, UpdateMinecraftUserDTO minecraftUserDTO) {
         MinecraftUserDTO dto = fetch.update(player, minecraftUserDTO);
-        cachedMinecraftUsers.put(player, dto);
+        cachedRecords.put(player, dto);
         return dto;
     }
 

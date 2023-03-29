@@ -7,7 +7,7 @@ import com.fendyk.DTOs.updates.UpdateActivitiesDTO;
 import com.fendyk.Main;
 import com.fendyk.configs.EarningsConfig;
 import com.fendyk.managers.ActivityBossBarManager;
-import com.fendyk.managers.ActivityEarningsManager;
+import com.fendyk.utilities.ActivityEarnings;
 import com.fendyk.managers.ActivitySoundManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -53,14 +53,14 @@ public class EntityDeathListener implements Listener {
 
                     if(pvpActivity.isPresent()) {
                         amount = pvpActivity.map(
-                                activityDTO ->  ActivityEarningsManager.getEarningsFromPvp((int) activityDTO.getQuantity(), 1)).get();
+                                activityDTO ->  ActivityEarnings.getEarningsFromPvp((int) activityDTO.getQuantity(), 1)).get();
                     }
                     else {
-                        amount = ActivityEarningsManager.getEarningsFromPvp(1, 1);
+                        amount = ActivityEarnings.getEarningsFromPvp(1, 1);
                     }
                 }
                 else {
-                    amount = ActivityEarningsManager.getEarningsFromPvp(1, 1);
+                    amount = ActivityEarnings.getEarningsFromPvp(1, 1);
                 }
 
                 activity.setName(killed.getUniqueId().toString());
@@ -89,11 +89,11 @@ public class EntityDeathListener implements Listener {
                 double amount = 0;
                 if(activitiesDTO != null) {
                     Optional<ActivityDTO> pvpActivity = activitiesDTO.getPve().stream().filter(item -> item.getName().equalsIgnoreCase(killed.getType().name())).findFirst();
-                    amount = pvpActivity.map(activityDTO -> ActivityEarningsManager.getEarningsFromPve(killed.getType(), (int) activityDTO.getQuantity(), 1))
-                            .orElseGet(() -> ActivityEarningsManager.getEarningsFromPve(killed.getType(), 1, 1));
+                    amount = pvpActivity.map(activityDTO -> ActivityEarnings.getEarningsFromPve(killed.getType(), (int) activityDTO.getQuantity(), 1))
+                            .orElseGet(() -> ActivityEarnings.getEarningsFromPve(killed.getType(), 1, 1));
                 }
                 else {
-                    amount = ActivityEarningsManager.getEarningsFromPve(killed.getType(), 1, 1);
+                    amount = ActivityEarnings.getEarningsFromPve(killed.getType(), 1, 1);
                 }
 
                 activity.setName(killed.getType().name());

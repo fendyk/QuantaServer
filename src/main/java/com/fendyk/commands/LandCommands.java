@@ -34,7 +34,7 @@ public class LandCommands {
                             }
 
                             // Verify confirmation of command
-                            if(!ConfirmCommandManager.isConfirmed(player)) {
+                            if(ConfirmCommandManager.isConfirmed(player)) {
                                 ConfirmCommandManager.requestCommandConfirmation(player, "land create " + name, 999, 60L);
                                 return;
                             }
@@ -324,7 +324,7 @@ public class LandCommands {
                                     }
 
                                     // Verify confirmation of command
-                                    if(!ConfirmCommandManager.isConfirmed(player)) {
+                                    if(ConfirmCommandManager.isConfirmed(player)) {
                                         ConfirmCommandManager.requestCommandConfirmation(player, "land chunk claim", 500, 60L);
                                         return;
                                     }
