@@ -65,6 +65,7 @@ public class Main extends JavaPlugin implements Listener {
         api = new API(this);
 
         // Commands
+        new PreferencesCommands();
         new SpawnCommands();
         new EconomyCommands();
         new ConfirmCommands();
@@ -86,6 +87,7 @@ public class Main extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new ChunkLoadListener(this), this);
         getServer().getPluginManager().registerEvents(new BlockBreakListener(this), this);
         getServer().getPluginManager().registerEvents(new BlockPlaceListener(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerCommandListener(), this);
 
         // PlaceholderAPI expansion
         new QuantaExpansion().register();

@@ -23,7 +23,7 @@ public class SpawnCommands {
                     double distance = playerLocation.distance(spawnLocation);
                     double price = Math.log(distance + 1) * basePrice;
 
-                    if(ConfirmCommandManager.isConfirmed(player)) {
+                    if(!ConfirmCommandManager.isConfirmed(player)) {
                         ConfirmCommandManager.requestCommandConfirmation(player, "spawn", price, 30L);
                         return;
                     }

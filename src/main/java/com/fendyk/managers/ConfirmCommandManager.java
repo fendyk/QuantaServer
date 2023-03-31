@@ -6,7 +6,9 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -53,7 +55,7 @@ public class ConfirmCommandManager {
      * @return
      */
     public static boolean isConfirmed(Player player) {
-        return unconfirmedStates.entrySet().stream().noneMatch(item -> item.getKey().equals(player.getUniqueId()) && item.getValue());
+        return unconfirmedStates.entrySet().stream().anyMatch(item -> item.getKey().equals(player.getUniqueId()) && item.getValue());
     }
 
     public static void requestCommandConfirmation(Player player, String command, double quanta, long timeInSeconds) {
@@ -79,7 +81,7 @@ public class ConfirmCommandManager {
                 .append(Component.newline())
                 .append(Component.text("Cost: ")
                         .color(NamedTextColor.GREEN)
-                        .append(Component.text(quanta + " $QTA")
+                        .append(Component.text(String.format("%.2f", quanta) + " $QTA")
                                 .color(NamedTextColor.YELLOW)
                         )
                 )
@@ -110,8 +112,17 @@ public class ConfirmCommandManager {
                 player.sendMessage("It looks like you have not confirmed your command in time and has been expired.");
                 return;
             }
+
             unconfirmedStates.put(uuid, true);
-            player.performCommand(unconfirmedCommands.get(uuid));
+            String unconfirmedCommand = unconfirmedCommands.get(uuid);
+
+            PlayerCommandPreprocessEvent event = new PlayerCommandPreprocessEvent(player, "/" + unconfirmedCommand);
+            Bukkit.getServer().getPluginManager().callEvent(event);
+
+            if (!event.isCancelled()) {
+                player.performCommand(unconfirmedCommand);
+            }
+
             unconfirmedStates.remove(uuid);
             unconfirmedCommands.remove(uuid);
             unconfirmedExpiresInSeconds.remove(uuid);

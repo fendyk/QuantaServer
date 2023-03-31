@@ -30,7 +30,7 @@ public class Log {
     }
 
     public static void success(String str) {
-        logger.finer(prefix + ": \uD83D\uDD25 " + str);
+        logger.info(prefix + ": \uD83D\uDD25 " + str);
     }
 
 }
