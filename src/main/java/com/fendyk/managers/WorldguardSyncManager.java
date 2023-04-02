@@ -8,19 +8,18 @@ import com.fendyk.utilities.Log;
 import com.fendyk.utilities.Vector2;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.domains.DefaultDomain;
-import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.flags.StateFlag;
+import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.managers.storage.StorageException;
+import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.*;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 import xyz.xenondevs.particle.ParticleBuilder;
 import xyz.xenondevs.particle.ParticleEffect;
 import xyz.xenondevs.particle.data.ParticleData;
-import xyz.xenondevs.particle.data.color.DustData;
 import xyz.xenondevs.particle.task.TaskManager;
 
 import java.util.*;
@@ -44,22 +43,25 @@ public final class WorldguardSyncManager {
         return chunks;
     }
 
-    public static void initializeSpawn(int chunkCount, int minYHeight, int maxYHeight) throws StorageException {
+    public static void initialize(int chunkCount, int minYHeight, int maxYHeight) throws StorageException {
         int radius = ChunkUtils.getRadiusInChunks(chunkCount);
         Location[] areaCorners = ChunkUtils.getAreaCorners(radius);
         BlockVector3 topLeft = BlockVector3.at(areaCorners[0].getX(), minYHeight, areaCorners[0].getZ());
         BlockVector3 topBottomRight = BlockVector3.at(areaCorners[3].getX(), maxYHeight, areaCorners[3].getZ());
 
-        Set<ProtectedRegion> set = main.getRegionManager().getApplicableRegions(
+        RegionManager overworldRegionManager = main.getOverworldRegionManager();
+
+        Set<ProtectedRegion> set = overworldRegionManager.getApplicableRegions(
                 BlockVector3.at(0, 0, 0)
         ).getRegions();
         Optional<ProtectedRegion> optionalRegion = set.stream().filter(r -> !r.getId().equalsIgnoreCase("spawn")).findFirst();
         ProtectedRegion region;
 
         // Remove region if present since we cannot update bounds with Worldguard API
-        optionalRegion.ifPresent(protectedRegion -> main.getRegionManager().removeRegion(protectedRegion.getId()));
+        optionalRegion.ifPresent(protectedRegion -> overworldRegionManager.removeRegion(protectedRegion.getId()));
 
         region = new ProtectedCuboidRegion("spawn", topLeft, topBottomRight);
+        region.setFlag(Flags.BUILD, StateFlag.State.DENY);
         region.setFlag(Flags.MOB_SPAWNING, StateFlag.State.DENY);
         region.setFlag(Flags.PVP, StateFlag.State.DENY);
         region.setFlag(Flags.LEAF_DECAY, StateFlag.State.DENY);
@@ -68,8 +70,16 @@ public final class WorldguardSyncManager {
         region.setFlag(Flags.HUNGER_DRAIN, StateFlag.State.DENY);
         region.setFlag(Flags.FALL_DAMAGE, StateFlag.State.DENY);
 
-        main.getRegionManager().addRegion(region);
-        main.getRegionManager().save();
+        GlobalProtectedRegion globalProtectedRegion = new GlobalProtectedRegion("__global__");
+        globalProtectedRegion.setFlag(Flags.BUILD, StateFlag.State.ALLOW);
+        globalProtectedRegion.setFlag(Flags.BLOCK_PLACE, StateFlag.State.ALLOW);
+        globalProtectedRegion.setFlag(Flags.BLOCK_BREAK, StateFlag.State.ALLOW);
+        globalProtectedRegion.setFlag(Flags.INTERACT, StateFlag.State.ALLOW);
+        globalProtectedRegion.setFlag(Main.BARBARIAN_BUILD, StateFlag.State.DENY); // Set the build flag to deny for the Member rank
+
+        overworldRegionManager.addRegion(globalProtectedRegion);
+        overworldRegionManager.addRegion(region);
+        overworldRegionManager.save();
     }
 
     public static List<Location> getChunkBounds(Chunk chunk, double height) {
@@ -137,7 +147,7 @@ public final class WorldguardSyncManager {
 
         /* Find the region */
         Location center = WorldguardSyncManager.getChunkCenter(chunk);
-        Set<ProtectedRegion> set = main.getRegionManager().getApplicableRegions(
+        Set<ProtectedRegion> set = main.getOverworldRegionManager().getApplicableRegions(
                 BlockVector3.at(center.x(), center.y(), center.z())
         ).getRegions();
 
@@ -154,7 +164,7 @@ public final class WorldguardSyncManager {
                     landDTO.getOwnerId(),
                     landDTO.getMemberIDs()
             ); // Updates the region
-            main.getRegionManager().addRegion(newRegion); // Dont forget to save the region
+            main.getOverworldRegionManager().addRegion(newRegion); // Dont forget to save the region
         }
         else {
             @Nullable ChunkDTO finalChunkDTO = chunkDTO;
@@ -164,7 +174,7 @@ public final class WorldguardSyncManager {
             // If we find a region that is not matching our requirements, remove it.
             if(regions.size() > 0) {
                 regions.forEach(r -> {
-                    main.getRegionManager().removeRegion(r.getId());
+                    main.getOverworldRegionManager().removeRegion(r.getId());
                 });
             }
 
@@ -179,7 +189,7 @@ public final class WorldguardSyncManager {
             ); // Updates the region
         }
 
-        main.getRegionManager().save(); // Dont forget to save the region
+        main.getOverworldRegionManager().save(); // Dont forget to save the region
         Log.success(chunk.getX() + "/" + chunk.getZ() + " is synced");
     }
 

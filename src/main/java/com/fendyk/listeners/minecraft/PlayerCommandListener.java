@@ -4,15 +4,15 @@ import com.fendyk.Main;
 import com.fendyk.configs.PricesConfig;
 import com.fendyk.managers.ConfirmCommandManager;
 import com.fendyk.utilities.Log;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import com.fendyk.utilities.PayableCommand;
+import com.fendyk.utilities.RankConfiguration;
+import com.fendyk.utilities.extentions.LuckPermsExtention;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class PlayerCommandListener implements Listener {
@@ -26,6 +26,7 @@ public class PlayerCommandListener implements Listener {
         // into their chat box, but before the server executes the command
         String command = event.getMessage(); // Get the command entered by the player
         Player player = event.getPlayer(); // Get the player who entered the command
+        String rankName = LuckPermsExtention.getHighestGroup(player);
 
         Log.info("Now: " + command);
 
@@ -40,30 +41,33 @@ public class PlayerCommandListener implements Listener {
 
         int commandIndex = main.getPricesConfig().getCommandIndex(commandName, args);
 
-        if(commandIndex >= 0) {
+        if (commandIndex >= 0) {
             Log.success("Payed command found!");
 
-            double price = pricesConfig.getCommandPrice(commandIndex);
-            long time = pricesConfig.getCommandExpiration(commandIndex);
+            PayableCommand payableCommand = pricesConfig.getCommandByIndex(commandIndex);
+            RankConfiguration configuration = main.getRanksConfig().getRankConfiguration(rankName);
 
-            if(!ConfirmCommandManager.isConfirmed(player)) {
-                ConfirmCommandManager.requestCommandConfirmation(player, command.substring(1), price, time);
+            if(configuration == null || payableCommand == null) {
+                player.sendMessage(ChatColor.RED + "Something went wrong when processing this command as 'payable'.");
                 event.setCancelled(true);
                 return;
             }
 
-            boolean isWithdrawn = main.getApi().getMinecraftUserAPI().withDrawBalance(player, new BigDecimal(price));
+            double price = payableCommand.getPrice();
+            long time = payableCommand.getExpires();
+            double discount = configuration.getDiscountPercentage();
 
-            if(!isWithdrawn) {
-                player.sendMessage(ChatColor.RED + "Could not withdraw money.");
+            if (!ConfirmCommandManager.isConfirmed(player)) {
+                ConfirmCommandManager.requestCommandConfirmation(player, new PayableCommand(
+                        command,
+                        new ArrayList<>(),
+                        price,
+                        time,
+                        discount
+                        )
+                );
                 event.setCancelled(true);
-                return;
             }
-
-            player.sendActionBar(
-                    Component.text("You've purchased the " + commandName + " command for " + String.format("%.4f", price) + " $QTA")
-                            .color(NamedTextColor.GREEN)
-            );
 
         }
 

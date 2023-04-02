@@ -12,8 +12,14 @@ import com.fendyk.configs.EarningsConfig;
 import com.fendyk.managers.ActivityBossBarManager;
 import com.fendyk.utilities.ActivityEarnings;
 import com.fendyk.managers.ActivitySoundManager;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.flags.StateFlag;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.luckperms.api.model.user.User;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
@@ -31,6 +37,7 @@ import java.util.Optional;
 public class BlockBreakListener implements Listener {
 
     Main server;
+    Main main = Main.getInstance();
 
     public BlockBreakListener(Main server) {
         this.server = server;
@@ -45,9 +52,22 @@ public class BlockBreakListener implements Listener {
         Chunk chunk = block.getChunk();
         Material material = block.getType();
         ItemStack itemStack = player.getInventory().getItemInMainHand();
-        Location location = block.getLocation();
         API api = server.getApi();
         EarningsConfig config = server.getEarningsConfig();
+        User user = main.getLuckPermsApi().getUserManager().getUser(player.getUniqueId());
+
+        // If the current user is either barbarian or default, verify the flag.
+        if(user != null && (user.getPrimaryGroup().equalsIgnoreCase("barbarian") || user.getPrimaryGroup().equalsIgnoreCase("default"))) {
+            LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
+            com.sk89q.worldedit.util.Location location1 = BukkitAdapter.adapt(block.getLocation());
+
+            StateFlag.State state = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery().queryState(location1, localPlayer, Main.BARBARIAN_BUILD);
+            if (state == StateFlag.State.DENY) {
+                event.setCancelled(true);
+                player.sendMessage(ChatColor.RED + "You are not allowed to build. You need to be at least a Citizen.");
+                return;
+            }
+        }
 
         // Player can only receive the block IF in survival mode, unless you are operator
         if(player.getGameMode() != GameMode.SURVIVAL && !player.isOp()) return;

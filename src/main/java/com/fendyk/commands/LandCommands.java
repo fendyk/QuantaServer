@@ -33,12 +33,6 @@ public class LandCommands {
                                 return;
                             }
 
-                            // Verify confirmation of command
-                            if(!ConfirmCommandManager.isConfirmed(player)) {
-                                ConfirmCommandManager.requestCommandConfirmation(player, "land create " + name, 999, 60L);
-                                return;
-                            }
-
                             try {
                                 LandDTO landDTO = api.getLandAPI().create(player.getUniqueId(), name, chunk, player.getLocation());
                                 player.sendMessage("Your land has been created");
@@ -320,12 +314,6 @@ public class LandCommands {
 
                                     if(countNeighbours < 1) {
                                         player.sendMessage("You can only claim chunks that are neighbours of you current land.");
-                                        return;
-                                    }
-
-                                    // Verify confirmation of command
-                                    if(!ConfirmCommandManager.isConfirmed(player)) {
-                                        ConfirmCommandManager.requestCommandConfirmation(player, "land chunk claim", 500, 60L);
                                         return;
                                     }
 

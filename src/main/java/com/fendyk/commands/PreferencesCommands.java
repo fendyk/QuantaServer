@@ -18,7 +18,8 @@ public class PreferencesCommands {
                 .withPermission(CommandPermission.OP)
                 .withSubcommand(new CommandAPICommand("reload")
                         .executesPlayer((player, args) -> {
-                            main.getPricesConfig().Initialize();
+                            main.getPricesConfig().initialize();
+                            main.getRanksConfig().initialize();
                             player.sendMessage(ChatColor.GREEN + "Plugin configurations has been reloaded");
                         })
                 )

@@ -3,6 +3,7 @@ package com.fendyk;
 import com.fendyk.commands.*;
 import com.fendyk.configs.EarningsConfig;
 import com.fendyk.configs.PricesConfig;
+import com.fendyk.configs.RanksConfig;
 import com.fendyk.configs.ServerConfig;
 import com.fendyk.expansions.QuantaExpansion;
 import com.fendyk.listeners.minecraft.*;
@@ -13,6 +14,8 @@ import com.google.gson.*;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.protection.flags.StateFlag;
+import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
@@ -27,13 +30,13 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.*;
 
 public class Main extends JavaPlugin implements Listener {
-
     static Main instance;
     API api;
     public static Gson gson = new Gson();
     EarningsConfig earningsConfig;
     ServerConfig serverConfig;
     PricesConfig pricesConfig;
+    RanksConfig ranksConfig;
 
     public EarningsConfig getEarningsConfig() {return earningsConfig;}
     public API getApi() {return api;}
@@ -41,11 +44,14 @@ public class Main extends JavaPlugin implements Listener {
     List<UUID> frozenPlayers;
 
     RegionManager regionManager;
+    FlagRegistry registry;
     LuckPerms luckPermsApi;
     BukkitAudiences adventure;
     public Main() {
         instance = this;
     }
+
+    public static final StateFlag BARBARIAN_BUILD = new StateFlag("barbarian-build", true);
 
     @Override
     public void onEnable() {
@@ -60,6 +66,7 @@ public class Main extends JavaPlugin implements Listener {
         serverConfig = new ServerConfig();
         earningsConfig = new EarningsConfig();
         pricesConfig = new PricesConfig();
+        ranksConfig= new RanksConfig();
 
         // Instantiate api
         api = new API(this);
@@ -95,7 +102,7 @@ public class Main extends JavaPlugin implements Listener {
         // Initialize spawn region
         org.bukkit.World world = Bukkit.getWorld(serverConfig.getWorldName());
         try {
-            WorldguardSyncManager.initializeSpawn(
+            WorldguardSyncManager.initialize(
                     Math.toIntExact(api.getBlacklistedChunkAPI().getRedis().hLen()),
                     world != null ? world.getMinHeight() : -64,
                     world != null ? world.getMaxHeight() : 319
@@ -104,8 +111,13 @@ public class Main extends JavaPlugin implements Listener {
             throw new RuntimeException(e);
         }
     }
-
     @Override
+    public void onLoad() {
+        registry = WorldGuard.getInstance().getFlagRegistry();
+        registry.register(BARBARIAN_BUILD);
+    }
+
+        @Override
     public void onDisable() {
         if(this.adventure != null) {
             this.adventure.close();
@@ -128,6 +140,10 @@ public class Main extends JavaPlugin implements Listener {
         this.regionManager = container.get(world);
     }
 
+
+    public FlagRegistry getFlagRegistry() {
+        return registry;
+    }
     public static Main getInstance() {
         return instance;
     }
@@ -137,9 +153,10 @@ public class Main extends JavaPlugin implements Listener {
     public List<UUID> getFrozenPlayers() {
         return frozenPlayers;
     }
-    public RegionManager getRegionManager() {
+    public RegionManager getOverworldRegionManager() {
         return regionManager;
     }
     public ServerConfig getServerConfig() {return serverConfig;}
     public PricesConfig getPricesConfig() {return pricesConfig;}
+    public RanksConfig getRanksConfig() {return ranksConfig;}
 }

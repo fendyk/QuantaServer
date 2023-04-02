@@ -1,6 +1,7 @@
 package com.fendyk.configs;
 
 import com.fendyk.utilities.Log;
+import com.fendyk.utilities.PayableCommand;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.leonhard.storage.Toml;
@@ -13,27 +14,22 @@ public class PricesConfig {
     Toml config;
     double spawnCommandPrice;
 
-    HashMap<String, Integer> commands;
-    HashMap<Integer, ArrayList<String>> aliases;
-
-    HashMap<Integer, Double> commandPrices;
-    HashMap<Integer, Long> commandTimeInSeconds;
+    HashMap<String, Integer> commandIndexes;
+    HashMap<Integer, PayableCommand> commands;
 
     public PricesConfig() {
-        Initialize();
+        initialize();
     }
 
-    public void Initialize() {
+    public void initialize() {
+        commandIndexes = new HashMap<>();
         commands = new HashMap<>();
-        aliases = new HashMap<>();
-        commandPrices = new HashMap<>();
-        commandTimeInSeconds = new HashMap<>();
 
         config = new Toml("prices", "plugins/QuantaServer");
 
         spawnCommandPrice = config.getOrSetDefault("spawnCommandPrice", 1D);
 
-        if(config.get("commands") == null) {
+        if (config.get("commands") == null) {
             config.setDefault("commands.spawn.command", "/gm");
             config.setDefault("commands.spawn.aliases", new String[]{"gamemode"});
             config.setDefault("commands.spawn.price", 1D);
@@ -57,16 +53,21 @@ public class PricesConfig {
                 Log.info("Adding alias: " + alias + " for " + command);
                 newAliases.add(alias);
             }
-            aliases.put(currIndex, newAliases);
 
-            Double price =  config.getDouble("commands." + name + ".price");
-            Long time =  config.getLong("commands." + name + ".timeInSeconds");
+            double price = config.getDouble("commands." + name + ".price");
+            long time = config.getLong("commands." + name + ".timeInSeconds");
 
             Log.info("Index set to: '" + currIndex);
+            PayableCommand payableCommand = new PayableCommand(
+                    command,
+                    newAliases,
+                    price,
+                    time,
+                    0
+            );
 
-            commands.put(command, currIndex);
-            commandPrices.put(currIndex, price);
-            commandTimeInSeconds.put(currIndex, time);
+            commandIndexes.put(command, currIndex);
+            commands.put(currIndex, payableCommand);
         });
     }
 
@@ -77,13 +78,14 @@ public class PricesConfig {
     /**
      * Check if command exists. Returns 0 or greater if found. Integer is the id for the command.
      * Returns -1 if not found.
+     *
      * @param commandName
      * @param args
      * @return
      */
     public int getCommandIndex(String commandName, String[] args) {
 
-        Optional<Map.Entry<String, Integer>> str = commands.entrySet().stream().filter(item ->  {
+        Optional<Map.Entry<String, Integer>> str = commandIndexes.entrySet().stream().filter(item -> {
             String[] commandParts = item.getKey().split(" ");
             int index = item.getValue();
             String cmdName = commandParts[0];
@@ -119,7 +121,7 @@ public class PricesConfig {
             if (commandName.equalsIgnoreCase(cmdName)) {
                 return true;
             } else {
-                ArrayList<String> aliasList = aliases.get(index);
+                ArrayList<String> aliasList = commands.get(index).getAliases();
                 return aliasList != null && aliasList.contains(commandName);
             }
         }).findFirst();
@@ -131,13 +133,8 @@ public class PricesConfig {
         return -1;
     }
 
-
-    public double getCommandPrice(int index) {
-        return commandPrices.get(index);
-    }
-
-    public long getCommandExpiration(int index) {
-        return commandTimeInSeconds.get(index);
+    public PayableCommand getCommandByIndex(int index) {
+        return commands.get(index);
     }
 
 }

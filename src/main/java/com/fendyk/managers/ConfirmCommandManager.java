@@ -1,10 +1,13 @@
 package com.fendyk.managers;
 
 import com.fendyk.Main;
+import com.fendyk.utilities.Log;
+import com.fendyk.utilities.PayableCommand;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
@@ -18,7 +21,7 @@ public class ConfirmCommandManager {
     static Main main = Main.getInstance();
 
     static HashMap<UUID, Boolean> unconfirmedStates = new HashMap<>();
-    static HashMap<UUID, String> unconfirmedCommands = new HashMap<>();
+    static HashMap<UUID, PayableCommand> unconfirmedPayableCommands = new HashMap<>();
     static HashMap<UUID, Long> unconfirmedExpiresInSeconds = new HashMap<>();
 
     /**
@@ -40,7 +43,7 @@ public class ConfirmCommandManager {
 
                 if(seconds <= 0) {
                     unconfirmedStates.remove(uuid);
-                    unconfirmedCommands.remove(uuid);
+                    unconfirmedPayableCommands.remove(uuid);
                     unconfirmedExpiresInSeconds.remove(uuid);
                     return true;
                 }
@@ -58,11 +61,16 @@ public class ConfirmCommandManager {
         return unconfirmedStates.entrySet().stream().anyMatch(item -> item.getKey().equals(player.getUniqueId()) && item.getValue());
     }
 
-    public static void requestCommandConfirmation(Player player, String command, double quanta, long timeInSeconds) {
+    public static void requestCommandConfirmation(Player player, PayableCommand payableCommand) {
         UUID uuid = player.getUniqueId();
+        String cmd = payableCommand.getCommand();
+        double price = payableCommand.getPrice();
+        long expires = payableCommand.getExpires();
+        double discountPercentage = payableCommand.getDiscountPercentage();
+
         unconfirmedStates.put(uuid, false);
-        unconfirmedCommands.put(uuid, command);
-        unconfirmedExpiresInSeconds.put(uuid, timeInSeconds);
+        unconfirmedPayableCommands.put(uuid, payableCommand);
+        unconfirmedExpiresInSeconds.put(uuid, expires);
 
         Component message = Component.empty()
                 .append(Component.newline())
@@ -74,21 +82,33 @@ public class ConfirmCommandManager {
                 .append(Component.newline())
                 .append(Component.text("Command: ")
                         .color(NamedTextColor.AQUA)
-                        .append(Component.text("/" + command)
+                        .append(Component.text(cmd)
                                 .color(NamedTextColor.WHITE)
                         )
                 )
                 .append(Component.newline())
                 .append(Component.text("Cost: ")
                         .color(NamedTextColor.GREEN)
-                        .append(Component.text(String.format("%.2f", quanta) + " $QTA")
-                                .color(NamedTextColor.YELLOW)
+                        .append(discountPercentage > 0 ?
+                                Component.text(String.format("%.2f", price) + " $QTA")
+                                        .color(NamedTextColor.YELLOW)
+                                        .decoration(TextDecoration.STRIKETHROUGH, true)
+                                        .append(Component.space())
+                                :
+                                Component.empty()
+                        )
+                        .append(discountPercentage > 0 ?
+                                Component.text(" (-" + discountPercentage + "%) " + String.format("%.2f", price * (1 - discountPercentage / 100)) + " $QTA")
+                                        .color(NamedTextColor.YELLOW)
+                                :
+                                Component.text(String.format("%.2f", price) + " $QTA")
+                                        .color(NamedTextColor.YELLOW)
                         )
                 )
                 .append(Component.newline())
                 .append(Component.text("Time Left: ")
                         .color(NamedTextColor.RED)
-                        .append(Component.text(timeInSeconds + " seconds")
+                        .append(Component.text(expires + " seconds")
                                 .color(NamedTextColor.YELLOW)
                         )
                 )
@@ -102,30 +122,39 @@ public class ConfirmCommandManager {
                         )
                 )
                 .append(Component.newline());
-
         player.sendMessage(message);
     }
 
     public static void confirmedCommand(Player player) {
-            UUID uuid = player.getUniqueId();
-            if(!unconfirmedCommands.containsKey(uuid)) {
-                player.sendMessage("It looks like you have not confirmed your command in time and has been expired.");
-                return;
-            }
+        UUID uuid = player.getUniqueId();
+        if(!unconfirmedPayableCommands.containsKey(uuid)) {
+            player.sendMessage("It looks like you have not confirmed your command in time and has been expired.");
+            return;
+        }
+        unconfirmedStates.put(uuid, true);
+        PayableCommand payableCommand = unconfirmedPayableCommands.get(uuid);
+        String cmd = payableCommand.getCommand();
+        double price = payableCommand.getPrice();
+        double discountPercentage = payableCommand.getDiscountPercentage();
+        double discountPrice = price * (1 - discountPercentage / 100);
 
-            unconfirmedStates.put(uuid, true);
-            String unconfirmedCommand = unconfirmedCommands.get(uuid);
+        boolean isWithdrawn = main.getApi().getMinecraftUserAPI().withDrawBalance(player, new BigDecimal(discountPrice));
 
-            PlayerCommandPreprocessEvent event = new PlayerCommandPreprocessEvent(player, "/" + unconfirmedCommand);
-            Bukkit.getServer().getPluginManager().callEvent(event);
+        if(!isWithdrawn) {
+            player.sendMessage(ChatColor.RED + "Could not withdraw money.");
+            return;
+        }
 
-            if (!event.isCancelled()) {
-                player.performCommand(unconfirmedCommand);
-            }
+        player.sendActionBar(
+                Component.text("You've purchased the " + cmd + " command for " + String.format("%.4f", discountPrice) + " $QTA")
+                        .color(NamedTextColor.GREEN)
+        );
 
-            unconfirmedStates.remove(uuid);
-            unconfirmedCommands.remove(uuid);
-            unconfirmedExpiresInSeconds.remove(uuid);
+        player.performCommand(cmd.substring(1));
+
+        unconfirmedStates.remove(uuid);
+        unconfirmedPayableCommands.remove(uuid);
+        unconfirmedExpiresInSeconds.remove(uuid);
     }
 
 }
