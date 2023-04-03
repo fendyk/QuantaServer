@@ -1,17 +1,22 @@
 package com.fendyk.DTOs;
 
 import com.fendyk.clients.redis.RedisBlacklistedBlock;
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class ChunkDTO {
 
     String id;
 
     Boolean isClaimable;
+    Boolean canExpire;
     int x;
     int z;
     String landId;
+
+    String expirationDate;
 
     ArrayList<BlacklistedBlockDTO> blacklistedBlocks;
 
@@ -62,4 +67,8 @@ public class ChunkDTO {
     public void setLandId(String landId) {
         this.landId = landId;
     }
+
+    public Boolean canExpire() {return canExpire;}
+
+    public DateTime getExpirationDate() {return new DateTime(expirationDate);}
 }

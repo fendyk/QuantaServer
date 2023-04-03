@@ -5,7 +5,9 @@ import com.fendyk.DTOs.ChunkDTO;
 import com.fendyk.DTOs.updates.UpdateChunkDTO;
 import com.fendyk.Main;
 import com.fendyk.configs.EarningsConfig;
+import com.fendyk.utilities.extentions.WorldGuardExtension;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -16,6 +18,8 @@ import org.bukkit.event.block.BlockPlaceEvent;
 
 public class BlockPlaceListener implements Listener {
     Main server;
+    Main main = Main.getInstance();
+
     public BlockPlaceListener(Main server) {
         this.server = server;
     }
@@ -27,6 +31,14 @@ public class BlockPlaceListener implements Listener {
         Chunk chunk = block.getChunk();
         Material material = block.getType();
         EarningsConfig config = server.getEarningsConfig();
+
+        // If the current user is either barbarian or default, verify the flag.
+        if(!WorldGuardExtension.hasBarbarianPermissionToBuildAtGlobalLocation(player, block.getLocation())) {
+            event.setCancelled(true);
+            player.sendMessage(ChatColor.RED + "You are not allowed to build. You need to be at least a Citizen.");
+            return;
+        }
+
 
         // Ignore if player is Operator
         if(player.isOp()) return;

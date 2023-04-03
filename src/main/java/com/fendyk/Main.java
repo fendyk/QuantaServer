@@ -1,13 +1,11 @@
 package com.fendyk;
 
 import com.fendyk.commands.*;
-import com.fendyk.configs.EarningsConfig;
-import com.fendyk.configs.PricesConfig;
-import com.fendyk.configs.RanksConfig;
-import com.fendyk.configs.ServerConfig;
+import com.fendyk.configs.*;
 import com.fendyk.expansions.QuantaExpansion;
 import com.fendyk.listeners.minecraft.*;
 import com.fendyk.managers.ActivityBossBarManager;
+import com.fendyk.managers.ChunkManager;
 import com.fendyk.managers.ConfirmCommandManager;
 import com.fendyk.managers.WorldguardSyncManager;
 import com.google.gson.*;
@@ -33,6 +31,8 @@ public class Main extends JavaPlugin implements Listener {
     static Main instance;
     API api;
     public static Gson gson = new Gson();
+
+    MessagesConfig messagesConfig;
     EarningsConfig earningsConfig;
     ServerConfig serverConfig;
     PricesConfig pricesConfig;
@@ -61,8 +61,10 @@ public class Main extends JavaPlugin implements Listener {
         // Watch for changes
         ActivityBossBarManager.watch();
         ConfirmCommandManager.watch();
+        ChunkManager.watch();
 
         // Configs
+        messagesConfig = new MessagesConfig();
         serverConfig = new ServerConfig();
         earningsConfig = new EarningsConfig();
         pricesConfig = new PricesConfig();
@@ -159,4 +161,5 @@ public class Main extends JavaPlugin implements Listener {
     public ServerConfig getServerConfig() {return serverConfig;}
     public PricesConfig getPricesConfig() {return pricesConfig;}
     public RanksConfig getRanksConfig() {return ranksConfig;}
+    public MessagesConfig getMessagesConfig() {return messagesConfig;}
 }

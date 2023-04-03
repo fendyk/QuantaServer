@@ -3,14 +3,20 @@ package com.fendyk.DTOs.updates;
 import com.fendyk.DTOs.BlacklistedBlockDTO;
 import com.fendyk.DTOs.ChunkDTO;
 import com.google.gson.annotations.Expose;
+import org.jetbrains.annotations.Nullable;
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class UpdateChunkDTO {
 
-    boolean isClaimable;
-
+    Boolean isClaimable;
+    Boolean canExpire;
     String landId;
+    String expirationDate;
+    Boolean resetExpirationDate;
+    Boolean resetLandId;
 
     ArrayList<BlacklistedBlockDTO> pushBlacklistedBlocks;
     ArrayList<BlacklistedBlockDTO> spliceBlacklistedBlocks;
@@ -42,5 +48,33 @@ public class UpdateChunkDTO {
 
     public void setLandId(String landId) {
         this.landId = landId;
+    }
+
+    public boolean canExpire() {return canExpire;}
+
+    public void setCanExpire(boolean canExpire) {
+        this.canExpire = canExpire;
+    }
+
+    public DateTime getExpirationDate() {return new DateTime(expirationDate);}
+
+    public void setExpirationDate(@Nullable DateTime expirationDate) {
+        this.expirationDate = expirationDate != null ? expirationDate.toString() : null;
+    }
+
+    public Boolean getResetExpirationDate() {
+        return resetExpirationDate;
+    }
+
+    public void setResetExpirationDate(Boolean resetExpirationDate) {
+        this.resetExpirationDate = resetExpirationDate;
+    }
+
+    public Boolean getResetLandId() {
+        return resetLandId;
+    }
+
+    public void setResetLandId(Boolean resetLandId) {
+        this.resetLandId = resetLandId;
     }
 }

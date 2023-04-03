@@ -5,12 +5,19 @@ import com.fendyk.DTOs.ChunkDTO;
 import com.fendyk.DTOs.LandDTO;
 import com.fendyk.DTOs.MinecraftUserDTO;
 import com.fendyk.DTOs.TaggedLocationDTO;
+import com.fendyk.Main;
 import com.fendyk.clients.ClientAPI;
 import com.fendyk.clients.fetch.FetchLand;
 import com.fendyk.clients.redis.RedisLand;
+import net.luckperms.api.model.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.joda.time.DateTime;
+
+import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
 public class LandAPI extends ClientAPI<FetchLand, RedisLand, String, LandDTO> {
@@ -27,14 +34,18 @@ public class LandAPI extends ClientAPI<FetchLand, RedisLand, String, LandDTO> {
      * @return The new land if created or null if something went wrong.
      * @throws Exception When something goes wrong lol
      */
-    public LandDTO create(UUID owner, String name, Chunk chunk, Location location) throws Exception {
+    public LandDTO create(Player owner, String name, Chunk chunk, Location location) throws Exception {
+        UUID uuid = owner.getUniqueId();
+        User user = Main.getInstance().getLuckPermsApi().getUserManager().getUser(uuid);
+
+        if(user == null) return null;
 
         /* Get references */
         ChunkAPI chunkAPI = api.getChunkAPI();
         MinecraftUserAPI minecraftUserAPI = api.getMinecraftUserAPI();
 
         /* Get user */
-        MinecraftUserDTO minecraftUserDTO = minecraftUserAPI.get(owner);
+        MinecraftUserDTO minecraftUserDTO = minecraftUserAPI.get(uuid);
         if(minecraftUserDTO == null) throw new Exception("Could not find user when creating land");
 
         /* Get chunk */
@@ -54,13 +65,18 @@ public class LandAPI extends ClientAPI<FetchLand, RedisLand, String, LandDTO> {
         landDTO.setName(name);
         landDTO.setOwnerId(owner.toString());
         landDTO.getHomes().add(taggedLocationDTO);
-
         landDTO = fetch.create(landDTO);
 
         if(landDTO == null) throw new Exception("Could not create land");
 
+        DateTime expireDate = new DateTime();
+        expireDate.plusMinutes(2);
+
+        String primaryGroup = user.getPrimaryGroup();
+        boolean canExpire = primaryGroup.equalsIgnoreCase("default") || primaryGroup.equalsIgnoreCase("barbarian");
+
         /* Claim the chunk */
-        chunkAPI.claim(chunk, landDTO.getId());
+        chunkAPI.claim(chunk, landDTO.getId(), canExpire, canExpire ? expireDate : null);
 
         cachedRecords.put(landDTO.getId(), landDTO);
 

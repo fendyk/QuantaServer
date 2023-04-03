@@ -3,6 +3,7 @@ package com.fendyk.managers;
 import com.fendyk.DTOs.ChunkDTO;
 import com.fendyk.DTOs.LandDTO;
 import com.fendyk.Main;
+import com.fendyk.clients.apis.ChunkAPI;
 import com.fendyk.utilities.ChunkUtils;
 import com.fendyk.utilities.Log;
 import com.fendyk.utilities.Vector2;
@@ -17,9 +18,11 @@ import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.*;
 import org.jetbrains.annotations.Nullable;
+import org.joda.time.DateTime;
 import xyz.xenondevs.particle.ParticleBuilder;
 import xyz.xenondevs.particle.ParticleEffect;
 import xyz.xenondevs.particle.data.ParticleData;
+import xyz.xenondevs.particle.data.color.DustData;
 import xyz.xenondevs.particle.task.TaskManager;
 
 import java.util.*;
@@ -151,6 +154,17 @@ public final class WorldguardSyncManager {
                 BlockVector3.at(center.x(), center.y(), center.z())
         ).getRegions();
 
+        ProtectedRegion region;
+
+        DateTime expireDate = chunkDTO.getExpirationDate();
+        boolean hasExpired = expireDate != null && expireDate.isBeforeNow();
+
+        // If the chunk can expire, keep track of it
+        if(chunkDTO.canExpire() && expireDate != null) {
+            Log.info("We've detected a expirable chunk : " + expireDate);
+            ChunkManager.getExpirableChunks().put(expireDate, chunk);
+        }
+
         /* If we cannot find the region but the land has a landOwnerId, we need to sync */
         if(set.size() < 1) {
             Location topLeft = chunk.getBlock(0,-64,0).getLocation();
@@ -158,13 +172,15 @@ public final class WorldguardSyncManager {
 
             BlockVector3 min = BlockVector3.at(topLeft.getX(), -256, topLeft.getZ());
             BlockVector3 max = BlockVector3.at(bottomRight.getX(), 256, bottomRight.getZ());
-            ProtectedRegion newRegion = new ProtectedCuboidRegion(chunkDTO.getId(), min, max);
+            region = new ProtectedCuboidRegion(chunkDTO.getId(), min, max);
 
-            WorldguardSyncManager.setRegionMembersAndOwner(newRegion,
-                    landDTO.getOwnerId(),
-                    landDTO.getMemberIDs()
-            ); // Updates the region
-            main.getOverworldRegionManager().addRegion(newRegion); // Dont forget to save the region
+            if(!hasExpired) {
+                WorldguardSyncManager.setRegionMembersAndOwner(region,
+                        landDTO.getOwnerId(),
+                        landDTO.getMemberIDs()
+                );
+            }
+            main.getOverworldRegionManager().addRegion(region); // Dont forget to save the region
         }
         else {
             @Nullable ChunkDTO finalChunkDTO = chunkDTO;
@@ -179,17 +195,20 @@ public final class WorldguardSyncManager {
             }
 
             // Now Find any id matching ours
-            Optional<ProtectedRegion> region = set.stream().filter(r -> r.getId().equalsIgnoreCase(finalChunkDTO.getId())).findFirst();
+            Optional<ProtectedRegion> optionalRegion = set.stream().filter(r -> r.getId().equalsIgnoreCase(finalChunkDTO.getId())).findFirst();
 
-            if(region.isEmpty()) return;
+            if(optionalRegion.isEmpty()) return;
+            region = optionalRegion.get();
 
-            WorldguardSyncManager.setRegionMembersAndOwner(region.get(),
-                    landDTO.getOwnerId(),
-                    landDTO.getMemberIDs()
+            WorldguardSyncManager.setRegionMembersAndOwner(region,
+                    !hasExpired ? landDTO.getOwnerId() : null,
+                    !hasExpired ? landDTO.getMemberIDs() : null
             ); // Updates the region
         }
 
-        main.getOverworldRegionManager().save(); // Dont forget to save the region
+        region.setFlag(Main.BARBARIAN_BUILD, StateFlag.State.ALLOW); // Allow barbarians to build on regions of players
+
+        main.getOverworldRegionManager().save(); // Don't forget to save the region
         Log.success(chunk.getX() + "/" + chunk.getZ() + " is synced");
     }
 
@@ -207,6 +226,32 @@ public final class WorldguardSyncManager {
             // code to execute after 10 seconds goes here
             TaskManager.getTaskManager().stopTask(task);
         }, 600L); // 30 seconds
+    }
+    
+    public static void showParticleEffectAtChunk(Chunk chunk, Location location, ChunkAPI.ChunkState chunkState) {
+        ParticleData particleData;
+        switch (chunkState) {
+            case BLACKLISTED -> {
+                particleData = new DustData(0, 0, 0, 20); // Black
+            }
+            case UNCLAIMABLE -> {
+                particleData = new DustData(255, 0, 0, 20); // Red
+            }
+            case UNCLAIMED -> {
+                particleData = new DustData(0, 128, 0, 20); // Green
+            }
+            case CLAIMED_EXPIRABLE -> {
+                particleData = new DustData(255, 255, 0, 20); // Yellow
+            }
+            case CLAIMED_PERMANENT -> {
+                particleData = new DustData(0, 0, 255, 20); // Blue
+            }
+            default -> {
+                particleData = new DustData(255, 255, 255, 20); // White
+            }
+        }
+
+        showParticleEffectAtChunk(chunk, location, particleData);
     }
 
 }

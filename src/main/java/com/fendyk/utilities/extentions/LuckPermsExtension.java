@@ -7,19 +7,18 @@ import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.NodeType;
 import net.luckperms.api.node.types.InheritanceNode;
 import net.luckperms.api.node.types.MetaNode;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.Comparator;
 import java.util.Optional;
 
-public class LuckPermsExtention {
+public class LuckPermsExtension {
 
     static Main main = Main.getInstance();
     static LuckPerms luckPerms = main.getLuckPermsApi();
 
     /**
-     * Get the group with the heighest weight from a user
+     * Get the group with the highest weight from a user
      * @param user
      * @return the rank or 'default' if not found.
      */

@@ -6,7 +6,7 @@ import com.fendyk.managers.ConfirmCommandManager;
 import com.fendyk.utilities.Log;
 import com.fendyk.utilities.PayableCommand;
 import com.fendyk.utilities.RankConfiguration;
-import com.fendyk.utilities.extentions.LuckPermsExtention;
+import com.fendyk.utilities.extentions.LuckPermsExtension;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,7 +26,7 @@ public class PlayerCommandListener implements Listener {
         // into their chat box, but before the server executes the command
         String command = event.getMessage(); // Get the command entered by the player
         Player player = event.getPlayer(); // Get the player who entered the command
-        String rankName = LuckPermsExtention.getHighestGroup(player);
+        String rankName = LuckPermsExtension.getHighestGroup(player);
 
         Log.info("Now: " + command);
 

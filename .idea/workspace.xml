@@ -4,21 +4,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Add customizable payable commands">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/configs/RanksConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/PayableCommand.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/RankConfiguration.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/extentions/LuckPermsExtention.java" afterDir="false" />
+    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/configs/MessagesConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/extentions/WorldGuardExtension.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/ChunkDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/ChunkDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/updates/UpdateChunkDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/updates/UpdateChunkDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/ChunkAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/ChunkAPI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/LandAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/LandAPI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/PreferencesCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/PreferencesCommands.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/SpawnCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/SpawnCommands.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/configs/PricesConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/configs/PricesConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/BlockBreakListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/BlockBreakListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/BlockPlaceListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/BlockPlaceListener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/PlayerCommandListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/PlayerCommandListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/managers/ConfirmCommandManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/managers/ConfirmCommandManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/PlayerMoveListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/PlayerMoveListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/managers/ChunkManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/managers/ChunkManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/managers/WorldguardSyncManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/managers/WorldguardSyncManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/extentions/LuckPermsExtention.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/extentions/LuckPermsExtension.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,6 +58,12 @@
                 <item name="QuantaServer" type="f1a62948:ProjectNode" />
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
                 <item name="shadow" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="QuantaServer" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="verification" type="c8890929:TasksNode$1" />
               </path>
             </expand>
             <select />
@@ -239,7 +250,9 @@
       <workItem from="1680386424712" duration="524000" />
       <workItem from="1680387737426" duration="2354000" />
       <workItem from="1680433761371" duration="3708000" />
-      <workItem from="1680460471759" duration="1574000" />
+      <workItem from="1680460471759" duration="3964000" />
+      <workItem from="1680469221423" duration="3480000" />
+      <workItem from="1680547586214" duration="11236000" />
     </task>
     <task id="LOCAL-00001" summary="feat: redis">
       <created>1675545393878</created>
@@ -500,7 +513,14 @@
       <option name="project" value="LOCAL" />
       <updated>1680223117765</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary="Add only citizen or higher can build in the world">
+      <created>1680462399599</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1680462399599</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -518,7 +538,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fix: land working" />
     <MESSAGE value="fix: Reduces redis" />
     <MESSAGE value="feat: new worldguard sync" />
     <MESSAGE value="feat: worldguard now syncing with redis" />
@@ -543,6 +562,7 @@
     <MESSAGE value="Add cached option for minecraft user api for visualisation purposes" />
     <MESSAGE value="Add payable commands" />
     <MESSAGE value="Add customizable payable commands" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add customizable payable commands" />
+    <MESSAGE value="Add only citizen or higher can build in the world" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add only citizen or higher can build in the world" />
   </component>
 </project>

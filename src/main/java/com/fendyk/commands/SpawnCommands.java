@@ -4,7 +4,7 @@ import com.fendyk.Main;
 import com.fendyk.managers.ConfirmCommandManager;
 import com.fendyk.utilities.PayableCommand;
 import com.fendyk.utilities.RankConfiguration;
-import com.fendyk.utilities.extentions.LuckPermsExtention;
+import com.fendyk.utilities.extentions.LuckPermsExtension;
 import dev.jorel.commandapi.CommandAPICommand;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -19,7 +19,7 @@ public class SpawnCommands {
         new CommandAPICommand("spawn")
                 .executesPlayer((player, args) -> {
 
-                    String rankName = LuckPermsExtention.getHighestGroup(player);
+                    String rankName = LuckPermsExtension.getHighestGroup(player);
                     RankConfiguration configuration = main.getRanksConfig().getRankConfiguration(rankName);
 
                     if(configuration == null) {

@@ -27,6 +27,7 @@ public class PlayerMoveListener implements Listener {
             return;
         }
 
+        /*
         Chunk currentChunk = player.getChunk();
         Chunk recentChunk = ChunkManager.getCurrentPlayerLocationChunks().getOrDefault(player.getUniqueId(), currentChunk);
 
@@ -37,6 +38,8 @@ public class PlayerMoveListener implements Listener {
 
             // Do stuff
         }
+
+         */
     }
 
 }

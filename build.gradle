@@ -32,6 +32,8 @@ dependencies {
     implementation "net.kyori:adventure-platform-bukkit:4.2.0"
     implementation 'com.google.code.gson:gson:2.10.1'
 
+    implementation 'com.github.JodaOrg:joda-time:v2.12.5'
+
     compileOnly "dev.jorel:commandapi-core:8.8.0"
 
     implementation 'com.github.Simplix-Softworks:SimplixStorage:3.1.9'
