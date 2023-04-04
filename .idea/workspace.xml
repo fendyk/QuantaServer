@@ -4,12 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Add expirable chunk, messages config and new particle effect method">
+    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Fix rewards now claimable">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/SubscriptionRewardDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/SubscriptionRewardDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/updates/UpdateMinecraftUserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/updates/UpdateMinecraftUserDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/MinecraftUserAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/MinecraftUserAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/RewardCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/RewardCommands.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -239,7 +236,7 @@
       <workItem from="1680460471759" duration="3964000" />
       <workItem from="1680469221423" duration="3480000" />
       <workItem from="1680547586214" duration="11861000" />
-      <workItem from="1680639437987" duration="3797000" />
+      <workItem from="1680639437987" duration="6348000" />
     </task>
     <task id="LOCAL-00001" summary="feat: redis">
       <created>1675545393878</created>
@@ -514,7 +511,14 @@
       <option name="project" value="LOCAL" />
       <updated>1680561460025</updated>
     </task>
-    <option name="localTasksCounter" value="40" />
+    <task id="LOCAL-00040" summary="Fix rewards now claimable">
+      <created>1680643495226</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1680643495226</updated>
+    </task>
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -532,7 +536,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat: new worldguard sync" />
     <MESSAGE value="feat: worldguard now syncing with redis" />
     <MESSAGE value="feat: activities" />
     <MESSAGE value="Update activities now working as intended" />
@@ -557,6 +560,7 @@
     <MESSAGE value="Add customizable payable commands" />
     <MESSAGE value="Add only citizen or higher can build in the world" />
     <MESSAGE value="Add expirable chunk, messages config and new particle effect method" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add expirable chunk, messages config and new particle effect method" />
+    <MESSAGE value="Fix rewards now claimable" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix rewards now claimable" />
   </component>
 </project>
