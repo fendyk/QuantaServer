@@ -2,6 +2,7 @@ package com.fendyk.DTOs.updates;
 
 import com.fendyk.DTOs.SubscriptionRewardDTO;
 import com.fendyk.DTOs.TaggedLocationDTO;
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,8 +12,8 @@ public class UpdateMinecraftUserDTO {
     ArrayList<TaggedLocationDTO> pushHomes;
     ArrayList<String> spliceHomes;
     ArrayList<SubscriptionRewardDTO> pushSubscriptionRewards;
-    ArrayList<Date> spliceSubscriptionRewards;
-    ArrayList<Date> claimSubscriptionRewards;
+    ArrayList<String> spliceSubscriptionRewards;
+    ArrayList<String> claimSubscriptionRewards;
 
     public UpdateMinecraftUserDTO() {
         this.pushHomes = new ArrayList<>();
@@ -54,19 +55,12 @@ public class UpdateMinecraftUserDTO {
         this.pushSubscriptionRewards = pushSubscriptionRewards;
     }
 
-    public ArrayList<Date> getSpliceSubscriptionRewards() {
+    public ArrayList<String> getSpliceSubscriptionRewards() {
         return spliceSubscriptionRewards;
     }
 
-    public void setSpliceSubscriptionRewards(ArrayList<Date> spliceSubscriptionRewards) {
-        this.spliceSubscriptionRewards = spliceSubscriptionRewards;
-    }
-
-    public ArrayList<Date> getClaimSubscriptionRewards() {
+    public ArrayList<String> getClaimSubscriptionRewards() {
         return claimSubscriptionRewards;
     }
 
-    public void setClaimSubscriptionRewards(ArrayList<Date> claimSubscriptionRewards) {
-        this.claimSubscriptionRewards = claimSubscriptionRewards;
-    }
 }

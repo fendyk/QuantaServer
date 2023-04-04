@@ -2,6 +2,7 @@ package com.fendyk.clients.apis;
 
 import com.fendyk.API;
 import com.fendyk.DTOs.MinecraftUserDTO;
+import com.fendyk.DTOs.SubscriptionRewardDTO;
 import com.fendyk.DTOs.updates.UpdateMinecraftUserDTO;
 import com.fendyk.clients.ClientAPI;
 import com.fendyk.clients.fetch.FetchMinecraftUser;
@@ -12,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 

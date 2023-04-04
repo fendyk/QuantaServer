@@ -1,5 +1,7 @@
 package com.fendyk.DTOs;
 
+import org.joda.time.DateTime;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -9,7 +11,7 @@ public class SubscriptionRewardDTO {
     double quanta;
     int crateKeys;
     ArrayList<KitDTO> kits;
-    Date createdAt;
+    String createdAt;
 
     public SubscriptionRewardDTO() {
         this.kits = new ArrayList<>();
@@ -18,6 +20,7 @@ public class SubscriptionRewardDTO {
     public ArrayList<KitDTO> getKits() {
         return kits;
     }
+
 
     public void setKits(ArrayList<KitDTO> kits) {
         this.kits = kits;
@@ -47,11 +50,11 @@ public class SubscriptionRewardDTO {
         this.crateKeys = crateKeys;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
+    public DateTime getCreatedAt() {
+        return new DateTime(createdAt);
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    public void setCreatedAt(DateTime createdAt) {
+        this.createdAt = createdAt.toString();
     }
 }
