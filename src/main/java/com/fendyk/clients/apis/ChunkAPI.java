@@ -72,6 +72,15 @@ public class ChunkAPI extends ClientAPI<FetchChunk, RedisChunk, String, ChunkDTO
         return update(chunk, updateChunkDTO) != null;
     }
 
+    public boolean extend(Chunk chunk, int days) {
+        DateTime expireDate = new DateTime().plusDays(days);
+        UpdateChunkDTO updateChunkDTO = new UpdateChunkDTO();
+        updateChunkDTO.setCanExpire(true);
+        updateChunkDTO.setExpirationDate(expireDate);
+        return update(chunk, updateChunkDTO) != null;
+    }
+
+
     public static boolean isBlacklistedBlock(ChunkDTO chunkDTO, Block block) {
         return chunkDTO.getBlacklistedBlocks().stream().anyMatch(item ->
             item.getX() == block.getX() &&

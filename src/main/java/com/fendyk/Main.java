@@ -52,6 +52,7 @@ public class Main extends JavaPlugin implements Listener {
     }
 
     public static final StateFlag BARBARIAN_BUILD = new StateFlag("barbarian-build", true);
+    public static final StateFlag REDSTONE = new StateFlag("redstone", true);
 
     @Override
     public void onEnable() {
@@ -97,6 +98,7 @@ public class Main extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new BlockBreakListener(this), this);
         getServer().getPluginManager().registerEvents(new BlockPlaceListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerCommandListener(), this);
+        //getServer().getPluginManager().registerEvents(new RedStoneListener(), this);
 
         // PlaceholderAPI expansion
         new QuantaExpansion().register();

@@ -5,6 +5,7 @@ public class RankConfiguration {
     int renewableChunkSlots;
     int chunkSlots;
     int memberSlots;
+    int homeSlots;
     double discountPercentage;
 
     public RankConfiguration(
@@ -12,12 +13,14 @@ public class RankConfiguration {
             int renewableChunkSlots,
             int chunkSlots,
             int memberSlots,
+            int homeSlots,
             double discountPercentage
     ) {
         this.name = name;
         this.renewableChunkSlots = renewableChunkSlots;
         this.chunkSlots = chunkSlots;
         this.memberSlots = memberSlots;
+        this.homeSlots = homeSlots;
         this.discountPercentage = discountPercentage;
     }
 
@@ -39,5 +42,9 @@ public class RankConfiguration {
 
     public int getRenewableChunkSlots() {
         return renewableChunkSlots;
+    }
+
+    public int getHomeSlots() {
+        return homeSlots;
     }
 }

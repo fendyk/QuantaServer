@@ -71,6 +71,7 @@ public final class WorldguardSyncManager {
         region.setFlag(Flags.FALL_DAMAGE, StateFlag.State.DENY);
         region.setFlag(Flags.HUNGER_DRAIN, StateFlag.State.DENY);
         region.setFlag(Flags.FALL_DAMAGE, StateFlag.State.DENY);
+        region.setFlag(Flags.TNT, StateFlag.State.DENY);
 
         GlobalProtectedRegion globalProtectedRegion = new GlobalProtectedRegion("__global__");
         globalProtectedRegion.setFlag(Flags.BUILD, StateFlag.State.ALLOW);
@@ -78,6 +79,7 @@ public final class WorldguardSyncManager {
         globalProtectedRegion.setFlag(Flags.BLOCK_BREAK, StateFlag.State.ALLOW);
         globalProtectedRegion.setFlag(Flags.INTERACT, StateFlag.State.ALLOW);
         globalProtectedRegion.setFlag(Main.BARBARIAN_BUILD, StateFlag.State.DENY); // Set the build flag to deny for the Member rank
+        globalProtectedRegion.setFlag(Flags.TNT, StateFlag.State.DENY);
 
         overworldRegionManager.addRegion(globalProtectedRegion);
         overworldRegionManager.addRegion(region);

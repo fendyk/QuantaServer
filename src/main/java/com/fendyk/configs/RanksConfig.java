@@ -25,6 +25,7 @@ public class RanksConfig {
             config.setDefault("ranks.default.renewableChunkSlots", 1);
             config.setDefault("ranks.default.chunkSlots", 1);
             config.setDefault("ranks.default.memberSlots", 1);
+            config.setDefault("ranks.default.homeSlots", 1);
             config.setDefault("ranks.default.discountPercentage", 0);
         }
 
@@ -38,6 +39,7 @@ public class RanksConfig {
                     config.getInt(key + "renewableChunkSlots"),
                     config.getInt(key + "chunkSlots"),
                     config.getInt(key + "memberSlots"),
+                    config.getInt(key + "homeSlots"),
                     config.getDouble(key + "discountPercentage")
             );
 

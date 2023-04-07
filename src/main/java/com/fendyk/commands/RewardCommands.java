@@ -53,7 +53,7 @@ public class RewardCommands {
                             if(quanta > 0) server.getApi().getMinecraftUserAPI().depositBalance(player, new BigDecimal(quanta));
                             player.sendMessage(ChatColor.GREEN + "You've received " + quanta + " $QUANTA.");
 
-                            if(crateKeys > 0) Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "crate key give " + player.getName() + " diamond " + crateKeys);
+                            if(crateKeys > 0) Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "crate key give " + player.getName() + " legendary " + crateKeys);
                             player.sendMessage(ChatColor.GREEN + "You've received " + crateKeys + " crate keys.");
 
                             // Make sure we're updating the 'isClaimed' boolean

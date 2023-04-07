@@ -9,6 +9,8 @@ public class LandDTO {
     String ownerId;
     ArrayList<TaggedLocationDTO> homes;
 
+    ArrayList<ChunkDTO> chunks;
+
     public LandDTO() {
         memberIDs = new ArrayList<>();
         homes = new ArrayList<>();
@@ -53,4 +55,6 @@ public class LandDTO {
     public void setHomes(ArrayList<TaggedLocationDTO> homes) {
         this.homes = homes;
     }
+
+    public ArrayList<ChunkDTO> getChunks() {return chunks;}
 }
