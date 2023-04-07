@@ -16,7 +16,7 @@ public class ValidateCommand {
     }
 
     public boolean passed() {
-        return builder.getUser() != null;
+        return builder.isPassed();
     }
 
     public Builder getBuilder() {
@@ -31,6 +31,11 @@ public class ValidateCommand {
         private String primaryGroup;
         private RankConfiguration rankConfiguration;
 
+        private boolean passed = true;
+
+        public boolean isPassed() {
+            return passed;
+        }
 
         public Builder(Player player) {
             this.player = player;
@@ -45,6 +50,7 @@ public class ValidateCommand {
             }
             this.user = main.getLuckPermsApi().getUserManager().getUser(player.getUniqueId());
             if (user == null) {
+                passed = false;
                 player.sendMessage("We could not determine your user permissions account");
                 throw new IllegalStateException("User permissions account could not be determined");
             }
@@ -56,6 +62,7 @@ public class ValidateCommand {
             }
             this.minecraftUserDTO = main.getApi().getMinecraftUserAPI().getRedis().get(player.getUniqueId());
             if (minecraftUserDTO == null) {
+                passed = false;
                 player.sendMessage("We could not determine your minecraft account data");
                 throw new IllegalStateException("Minecraft account data could not be determined");
             }
@@ -76,6 +83,7 @@ public class ValidateCommand {
             validatePrimaryGroup();
             this.rankConfiguration = main.getRanksConfig().getRankConfiguration(primaryGroup);
             if (rankConfiguration == null) {
+                passed = false;
                 player.sendMessage("We could not determine your rank's configuration");
                 throw new IllegalStateException("Rank's configuration could not be found");
             }
@@ -89,6 +97,7 @@ public class ValidateCommand {
         public Builder checkLastLocation() {
             validateMinecraftUserDTO();
             if(minecraftUserDTO.getLastLocation() == null) {
+                passed = false;
                 player.sendMessage("We could not find your last location");
                 throw new IllegalStateException("Last location could not be found");
             }

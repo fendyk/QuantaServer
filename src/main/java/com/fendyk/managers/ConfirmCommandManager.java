@@ -138,6 +138,9 @@ public class ConfirmCommandManager {
         double discountPercentage = payableCommand.getDiscountPercentage();
         double discountPrice = price * (1 - discountPercentage / 100);
 
+        boolean isPerformed = player.performCommand(cmd.substring(1));
+        if(!isPerformed) return;
+
         boolean isWithdrawn = main.getApi().getMinecraftUserAPI().withDrawBalance(player, new BigDecimal(discountPrice));
 
         if(!isWithdrawn) {
@@ -150,7 +153,6 @@ public class ConfirmCommandManager {
                         .color(NamedTextColor.GREEN)
         );
 
-        player.performCommand(cmd.substring(1));
 
         unconfirmedStates.remove(uuid);
         unconfirmedPayableCommands.remove(uuid);

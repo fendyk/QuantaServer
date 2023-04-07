@@ -9,9 +9,7 @@ import com.fendyk.clients.apis.ChunkAPI;
 import com.fendyk.configs.MessagesConfig;
 import com.fendyk.managers.ConfirmCommandManager;
 import com.fendyk.managers.WorldguardSyncManager;
-import com.fendyk.utilities.LocationUtil;
-import com.fendyk.utilities.RankConfiguration;
-import com.fendyk.utilities.Vector2;
+import com.fendyk.utilities.*;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandPermission;
 import dev.jorel.commandapi.arguments.BooleanArgument;
@@ -30,6 +28,7 @@ import org.joda.time.DateTime;
 import xyz.xenondevs.particle.ParticleEffect;
 import xyz.xenondevs.particle.data.color.DustData;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -91,6 +90,36 @@ public class LandCommands {
                             LandDTO landDTO = main.getApi().getLandAPI().get(uuid);
                             if (landDTO != null) {
                                 player.sendMessage("You've already created a land. Lands can only be created once by one player.");
+                                return;
+                            }
+
+                            ValidateCommand validateCommand = new ValidateCommand.Builder(player)
+                                    .checkPrimaryGroup()
+                                    .checkRankConfiguration()
+                                    .build();
+
+                            if(!validateCommand.passed()) {
+                                player.sendMessage("We could not pass the validation of the command.");
+                                return;
+                            }
+                            ValidateCommand.Builder builder = validateCommand.getBuilder();
+                            RankConfiguration rankConfiguration = builder.getRankConfiguration();
+
+                            if (!ConfirmCommandManager.isConfirmed(player)) {
+                                ConfirmCommandManager.requestCommandConfirmation(player,
+                                        new PayableCommand(
+                                                "/land create " + player.getName(),
+                                                new ArrayList<>(),
+                                                2000,
+                                                30L,
+                                                rankConfiguration.getDiscountPercentage()
+                                        )
+                                );
+                                return;
+                            }
+                            boolean isWithdrawn = main.getApi().getMinecraftUserAPI().withDrawBalance(player, new BigDecimal(2000));
+                            if (!isWithdrawn) {
+                                player.sendMessage(ChatColor.RED + "Could not withdraw money.");
                                 return;
                             }
 
@@ -195,6 +224,24 @@ public class LandCommands {
                                         }
                                     }
 
+                                    if (!ConfirmCommandManager.isConfirmed(player)) {
+                                        ConfirmCommandManager.requestCommandConfirmation(player,
+                                                new PayableCommand(
+                                                        "/land claim expirable",
+                                                        new ArrayList<>(),
+                                                        1500,
+                                                        30L,
+                                                        rankConfiguration.getDiscountPercentage()
+                                                )
+                                        );
+                                        return;
+                                    }
+                                    boolean isWithdrawn = main.getApi().getMinecraftUserAPI().withDrawBalance(player, new BigDecimal(1500));
+                                    if (!isWithdrawn) {
+                                        player.sendMessage(ChatColor.RED + "Could not withdraw money.");
+                                        return;
+                                    }
+
                                     DateTime expireDate = new DateTime().plusDays(7);
                                     boolean isClaimed = api.getChunkAPI().claim(chunk, landDTO.getId(), true, expireDate);
                                     if (!isClaimed) {
@@ -283,8 +330,27 @@ public class LandCommands {
                                     }
 
                                     ArrayList<ChunkDTO> chunkDTOS = landDTO.getChunks();
+
                                     if(chunkDTOS != null && chunkDTOS.size() >= rankConfiguration.getChunkSlots()) {
                                         player.sendMessage("You've reached your limit for claiming new permanent chunks.");
+                                        return;
+                                    }
+
+                                    if (!ConfirmCommandManager.isConfirmed(player)) {
+                                        ConfirmCommandManager.requestCommandConfirmation(player,
+                                                new PayableCommand(
+                                                        "/land claim permanent",
+                                                        new ArrayList<>(),
+                                                        1500,
+                                                        30L,
+                                                        rankConfiguration.getDiscountPercentage()
+                                                )
+                                        );
+                                        return;
+                                    }
+                                    boolean isWithdrawn = main.getApi().getMinecraftUserAPI().withDrawBalance(player, new BigDecimal(1500));
+                                    if (!isWithdrawn) {
+                                        player.sendMessage(ChatColor.RED + "Could not withdraw money.");
                                         return;
                                     }
 
@@ -320,6 +386,36 @@ public class LandCommands {
 
                             if (taggedLocationDTO.isEmpty()) {
                                 player.sendMessage("Could not locate your spawn location. Try adding a home naming 'spawn'");
+                                return;
+                            }
+
+                            ValidateCommand validateCommand = new ValidateCommand.Builder(player)
+                                    .checkPrimaryGroup()
+                                    .checkRankConfiguration()
+                                    .build();
+
+                            if(!validateCommand.passed()) {
+                                player.sendMessage("We could not pass the validation of the command.");
+                                return;
+                            }
+                            ValidateCommand.Builder builder = validateCommand.getBuilder();
+                            RankConfiguration rankConfiguration = builder.getRankConfiguration();
+
+                            if (!ConfirmCommandManager.isConfirmed(player)) {
+                                ConfirmCommandManager.requestCommandConfirmation(player,
+                                        new PayableCommand(
+                                                "/land spawn",
+                                                new ArrayList<>(),
+                                                2,
+                                                30L,
+                                                rankConfiguration.getDiscountPercentage()
+                                        )
+                                );
+                                return;
+                            }
+                            boolean isWithdrawn = main.getApi().getMinecraftUserAPI().withDrawBalance(player, new BigDecimal(2));
+                            if (!isWithdrawn) {
+                                player.sendMessage(ChatColor.RED + "Could not withdraw money.");
                                 return;
                             }
 
@@ -431,6 +527,36 @@ public class LandCommands {
                                         return;
                                     }
 
+                                    ValidateCommand validateCommand = new ValidateCommand.Builder(player)
+                                            .checkPrimaryGroup()
+                                            .checkRankConfiguration()
+                                            .build();
+
+                                    if(!validateCommand.passed()) {
+                                        player.sendMessage("We could not pass the validation of the command.");
+                                        return;
+                                    }
+                                    ValidateCommand.Builder builder = validateCommand.getBuilder();
+                                    RankConfiguration rankConfiguration = builder.getRankConfiguration();
+
+                                    if (!ConfirmCommandManager.isConfirmed(player)) {
+                                        ConfirmCommandManager.requestCommandConfirmation(player,
+                                                new PayableCommand(
+                                                        "/land home tp " + name,
+                                                        new ArrayList<>(),
+                                                        2,
+                                                        30L,
+                                                        rankConfiguration.getDiscountPercentage()
+                                                )
+                                        );
+                                        return;
+                                    }
+                                    boolean isWithdrawn = main.getApi().getMinecraftUserAPI().withDrawBalance(player, new BigDecimal(2));
+                                    if (!isWithdrawn) {
+                                        player.sendMessage(ChatColor.RED + "Could not withdraw money.");
+                                        return;
+                                    }
+
                                     LocationDTO loc = taggedLocationDTO.get().getLocation();
 
                                     player.teleport(new Location(world, loc.getX(), loc.getY(), loc.getZ(), (float) loc.getYaw(), (float) loc.getPitch()));
@@ -477,6 +603,24 @@ public class LandCommands {
                                     ArrayList<TaggedLocationDTO> taggedLocationDTOS = landDTO.getHomes();
                                     if(taggedLocationDTOS != null && taggedLocationDTOS.size() >= rankConfiguration.getHomeSlots()) {
                                         player.sendMessage("You've reached your limit for setting new land homes.");
+                                        return;
+                                    }
+
+                                    if (!ConfirmCommandManager.isConfirmed(player)) {
+                                        ConfirmCommandManager.requestCommandConfirmation(player,
+                                                new PayableCommand(
+                                                        "/land home set " + name,
+                                                        new ArrayList<>(),
+                                                        250,
+                                                        30L,
+                                                        rankConfiguration.getDiscountPercentage()
+                                                )
+                                        );
+                                        return;
+                                    }
+                                    boolean isWithdrawn = main.getApi().getMinecraftUserAPI().withDrawBalance(player, new BigDecimal(250));
+                                    if (!isWithdrawn) {
+                                        player.sendMessage(ChatColor.RED + "Could not withdraw money.");
                                         return;
                                     }
 
@@ -585,6 +729,24 @@ public class LandCommands {
                                         return;
                                     }
 
+                                    if (!ConfirmCommandManager.isConfirmed(player)) {
+                                        ConfirmCommandManager.requestCommandConfirmation(player,
+                                                new PayableCommand(
+                                                        "/land member add " + newMember.getName(),
+                                                        new ArrayList<>(),
+                                                        750,
+                                                        30L,
+                                                        rankConfiguration.getDiscountPercentage()
+                                                )
+                                        );
+                                        return;
+                                    }
+                                    boolean isWithdrawn = main.getApi().getMinecraftUserAPI().withDrawBalance(player, new BigDecimal(750));
+                                    if (!isWithdrawn) {
+                                        player.sendMessage(ChatColor.RED + "Could not withdraw money.");
+                                        return;
+                                    }
+
                                     updateLandDTO.getConnectMembers().add(new UpdateLandDTO.MemberDTO(memberUuid.toString()));
                                     LandDTO result = api.getLandAPI().getFetch().update(landDTO.getId(), updateLandDTO);
 
@@ -676,6 +838,36 @@ public class LandCommands {
 
                             if(!chunkDTO.canExpire()) {
                                 player.sendMessage("This chunk is permanent and cannot be extended. Hooray ;)");
+                                return;
+                            }
+
+                            ValidateCommand validateCommand = new ValidateCommand.Builder(player)
+                                    .checkPrimaryGroup()
+                                    .checkRankConfiguration()
+                                    .build();
+
+                            if(!validateCommand.passed()) {
+                                player.sendMessage("We could not pass the validation of the command.");
+                                return;
+                            }
+                            ValidateCommand.Builder builder = validateCommand.getBuilder();
+                            RankConfiguration rankConfiguration = builder.getRankConfiguration();
+
+                            if (!ConfirmCommandManager.isConfirmed(player)) {
+                                ConfirmCommandManager.requestCommandConfirmation(player,
+                                        new PayableCommand(
+                                                "/land extend",
+                                                new ArrayList<>(),
+                                                2000,
+                                                30L,
+                                                rankConfiguration.getDiscountPercentage()
+                                        )
+                                );
+                                return;
+                            }
+                            boolean isWithdrawn = main.getApi().getMinecraftUserAPI().withDrawBalance(player, new BigDecimal(2000));
+                            if (!isWithdrawn) {
+                                player.sendMessage(ChatColor.RED + "Could not withdraw money.");
                                 return;
                             }
 
