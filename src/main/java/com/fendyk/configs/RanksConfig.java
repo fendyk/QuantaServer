@@ -22,7 +22,9 @@ public class RanksConfig {
 
         if(config.get("ranks") == null) {
             config.setDefault("ranks.default.name", "default");
-            config.setDefault("ranks.default.chunkClaimLimit", 1);
+            config.setDefault("ranks.default.renewableChunkSlots", 1);
+            config.setDefault("ranks.default.chunkSlots", 1);
+            config.setDefault("ranks.default.memberSlots", 1);
             config.setDefault("ranks.default.discountPercentage", 0);
         }
 
@@ -33,7 +35,9 @@ public class RanksConfig {
 
             RankConfiguration rankConfiguration = new RankConfiguration(
                     name.toString(),
-                    config.getInt(key + "chunkClaimLimit"),
+                    config.getInt(key + "renewableChunkSlots"),
+                    config.getInt(key + "chunkSlots"),
+                    config.getInt(key + "memberSlots"),
                     config.getDouble(key + "discountPercentage")
             );
 

@@ -22,7 +22,8 @@ public class PreferencesCommands {
                         .executesPlayer((player, args) -> {
                             main.getPricesConfig().initialize();
                             main.getRanksConfig().initialize();
-                            player.sendMessage(ChatColor.GREEN + "Plugin configurations has been reloaded");
+                            main.getEarningsConfig().initialize();
+                            player.sendMessage(ChatColor.GREEN + "Plugin configurations have been reloaded");
                         })
                 )
                 .register();

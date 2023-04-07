@@ -4,27 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Update /land commands">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/ValidateCommand.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/LocationUtil.java" afterDir="false" />
+    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Add builder for command validation">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/API.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/API.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/LocationDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/LocationDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/MinecraftUserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/MinecraftUserDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/updates/UpdateMinecraftUserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/updates/UpdateMinecraftUserDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/BlacklistedChunkAPI.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/MinecraftUserAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/MinecraftUserAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/PreferencesCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/PreferencesCommands.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/QuantaCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/QuantaCommands.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/RewardCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/RewardCommands.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/SpawnCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/TeleportationCommands.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/configs/PricesConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/configs/PricesConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/configs/ServerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/configs/ServerConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/BlockPlaceListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/BlockPlaceListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/managers/WorldguardSyncManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/managers/WorldguardSyncManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/ChunkUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/ChunkUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/configs/EarningsConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/configs/EarningsConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/configs/RanksConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/configs/RanksConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/RankConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/RankConfiguration.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -261,7 +246,7 @@
       <workItem from="1680697123471" duration="1439000" />
       <workItem from="1680814460210" duration="7982000" />
       <workItem from="1680822770447" duration="3374000" />
-      <workItem from="1680863284727" duration="10552000" />
+      <workItem from="1680863284727" duration="11803000" />
     </task>
     <task id="LOCAL-00001" summary="feat: redis">
       <created>1675545393878</created>
@@ -550,7 +535,14 @@
       <option name="project" value="LOCAL" />
       <updated>1680646885371</updated>
     </task>
-    <option name="localTasksCounter" value="42" />
+    <task id="LOCAL-00042" summary="Add builder for command validation">
+      <created>1680895720894</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1680895720894</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -568,7 +560,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat: activities" />
     <MESSAGE value="Update activities now working as intended" />
     <MESSAGE value="Update activities (not really working yet)" />
     <MESSAGE value="Update Now working as intended" />
@@ -593,6 +584,7 @@
     <MESSAGE value="Add expirable chunk, messages config and new particle effect method" />
     <MESSAGE value="Fix rewards now claimable" />
     <MESSAGE value="Update /land commands" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update /land commands" />
+    <MESSAGE value="Add builder for command validation" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add builder for command validation" />
   </component>
 </project>

@@ -13,10 +13,10 @@ import java.util.Map;
 public class EarningsConfig {
 
     Toml config;
-    final double timeEarnings;
-    final double timeThreshold;
-    final double pvpEarnings;
-    final double pvpThreshold;
+    double timeEarnings;
+    double timeThreshold;
+    double pvpEarnings;
+    double pvpThreshold;
     HashMap<EntityType, Double> entityEarnings = new HashMap<>();
     HashMap<EntityType, Double> entityThreshold = new HashMap<>();
     HashMap<Material, Double> materialEarnings = new HashMap<>();
@@ -24,6 +24,10 @@ public class EarningsConfig {
 
 
     public EarningsConfig() {
+        initialize();
+    }
+
+    public void initialize() {
         config = new Toml("earnings", "plugins/QuantaServer");
 
         timeEarnings = config.getOrSetDefault("timeEarnings", .5);
