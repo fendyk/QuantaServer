@@ -3,6 +3,7 @@ package com.fendyk.clients.apis;
 import com.fendyk.API;
 import com.fendyk.DTOs.BlacklistedBlockDTO;
 import com.fendyk.DTOs.ChunkDTO;
+import com.fendyk.DTOs.LandDTO;
 import com.fendyk.DTOs.updates.UpdateChunkDTO;
 import com.fendyk.Main;
 import com.fendyk.clients.ClientAPI;
@@ -73,10 +74,17 @@ public class ChunkAPI extends ClientAPI<FetchChunk, RedisChunk, String, ChunkDTO
     }
 
     public boolean extend(Chunk chunk, int days) {
-        DateTime expireDate = new DateTime().plusDays(days);
+        ChunkDTO chunkDTO = get(chunk);
+        if(chunkDTO == null) return false;
+
+        DateTime expirationDate = chunkDTO.getExpirationDate();
+        if(expirationDate == null) return false;
+
+        DateTime newExpirationDate = expirationDate.plusDays(days);
+
         UpdateChunkDTO updateChunkDTO = new UpdateChunkDTO();
         updateChunkDTO.setCanExpire(true);
-        updateChunkDTO.setExpirationDate(expireDate);
+        updateChunkDTO.setExpirationDate(newExpirationDate);
         return update(chunk, updateChunkDTO) != null;
     }
 

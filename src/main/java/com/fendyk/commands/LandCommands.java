@@ -669,7 +669,7 @@ public class LandCommands {
                             }
 
                             ChunkDTO chunkDTO = main.getApi().getChunkAPI().get(chunk);
-                            if (chunkDTO == null || ChunkAPI.isClaimable(chunkDTO)) {
+                            if (chunkDTO == null || !ChunkAPI.isClaimable(chunkDTO)) {
                                 player.sendMessage(main.getMessagesConfig().getMessage(MessagesConfig.State.CHUNK_IS_NOT_CLAIMABLE));
                                 return;
                             }
