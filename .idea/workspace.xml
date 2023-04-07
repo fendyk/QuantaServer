@@ -4,9 +4,27 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Fix rewards now claimable">
+    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Update /land commands">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/ValidateCommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/LocationUtil.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/API.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/API.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/LocationDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/LocationDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/MinecraftUserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/MinecraftUserDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/updates/UpdateMinecraftUserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/updates/UpdateMinecraftUserDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/BlacklistedChunkAPI.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/MinecraftUserAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/MinecraftUserAPI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/PreferencesCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/PreferencesCommands.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/QuantaCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/QuantaCommands.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/RewardCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/RewardCommands.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/SpawnCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/TeleportationCommands.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/configs/PricesConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/configs/PricesConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/configs/ServerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/configs/ServerConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/BlockPlaceListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/BlockPlaceListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/managers/WorldguardSyncManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/managers/WorldguardSyncManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/ChunkUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/ChunkUtils.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,12 +60,6 @@
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
                 <item name="shadow" type="c8890929:TasksNode$1" />
               </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="QuantaServer" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="verification" type="c8890929:TasksNode$1" />
-              </path>
             </expand>
             <select />
           </tree_state>
@@ -63,6 +75,12 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/dev.jorel/commandapi-core/8.8.0/4960a56e870fbca4201cc01c7a82dcdaad9671b1/commandapi-core-8.8.0-sources.jar!/dev/jorel/commandapi/CommandAPICommand.java" root0="SKIP_INSPECTION" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -72,25 +90,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;extract.method.default.visibility&quot;: &quot;private&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "extract.method.default.visibility": "private",
+    "git-widget-placeholder": "main",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "reference.settingsdialog.IDE.editor.colors",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="com.fendyk.clients.redis" />
@@ -117,6 +136,7 @@
       <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
       <DebugAllEnabled>false</DebugAllEnabled>
+      <ForceTestExec>false</ForceTestExec>
       <method v="2" />
     </configuration>
     <configuration name="QuantaServer [shadowJar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -138,6 +158,7 @@
       <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
       <DebugAllEnabled>false</DebugAllEnabled>
+      <ForceTestExec>false</ForceTestExec>
       <method v="2" />
     </configuration>
     <recent_temporary>
@@ -236,7 +257,11 @@
       <workItem from="1680460471759" duration="3964000" />
       <workItem from="1680469221423" duration="3480000" />
       <workItem from="1680547586214" duration="11861000" />
-      <workItem from="1680639437987" duration="6348000" />
+      <workItem from="1680639437987" duration="6973000" />
+      <workItem from="1680697123471" duration="1439000" />
+      <workItem from="1680814460210" duration="7982000" />
+      <workItem from="1680822770447" duration="3374000" />
+      <workItem from="1680863284727" duration="10552000" />
     </task>
     <task id="LOCAL-00001" summary="feat: redis">
       <created>1675545393878</created>
@@ -518,7 +543,14 @@
       <option name="project" value="LOCAL" />
       <updated>1680643495226</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL-00041" summary="Update /land commands">
+      <created>1680646885371</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1680646885371</updated>
+    </task>
+    <option name="localTasksCounter" value="42" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -536,7 +568,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat: worldguard now syncing with redis" />
     <MESSAGE value="feat: activities" />
     <MESSAGE value="Update activities now working as intended" />
     <MESSAGE value="Update activities (not really working yet)" />
@@ -561,6 +592,7 @@
     <MESSAGE value="Add only citizen or higher can build in the world" />
     <MESSAGE value="Add expirable chunk, messages config and new particle effect method" />
     <MESSAGE value="Fix rewards now claimable" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix rewards now claimable" />
+    <MESSAGE value="Update /land commands" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update /land commands" />
   </component>
 </project>

@@ -6,6 +6,7 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandPermission;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.permissions.ServerOperator;
 
 import java.math.BigDecimal;
 
@@ -15,6 +16,7 @@ public class PreferencesCommands {
 
     public PreferencesCommands() {
         new CommandAPICommand("main")
+                .withRequirement(ServerOperator::isOp)
                 .withPermission(CommandPermission.OP)
                 .withSubcommand(new CommandAPICommand("reload")
                         .executesPlayer((player, args) -> {

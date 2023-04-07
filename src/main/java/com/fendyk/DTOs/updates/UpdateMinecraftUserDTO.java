@@ -1,5 +1,6 @@
 package com.fendyk.DTOs.updates;
 
+import com.fendyk.DTOs.LocationDTO;
 import com.fendyk.DTOs.SubscriptionRewardDTO;
 import com.fendyk.DTOs.TaggedLocationDTO;
 import org.joda.time.DateTime;
@@ -14,6 +15,7 @@ public class UpdateMinecraftUserDTO {
     ArrayList<SubscriptionRewardDTO> pushSubscriptionRewards;
     ArrayList<String> spliceSubscriptionRewards;
     ArrayList<String> claimSubscriptionRewards;
+    LocationDTO lastLocation;
 
     public UpdateMinecraftUserDTO() {
         this.pushHomes = new ArrayList<>();
@@ -63,4 +65,11 @@ public class UpdateMinecraftUserDTO {
         return claimSubscriptionRewards;
     }
 
+    public LocationDTO getLastLocation() {
+        return lastLocation;
+    }
+
+    public void setLastLocation(LocationDTO lastLocation) {
+        this.lastLocation = lastLocation;
+    }
 }

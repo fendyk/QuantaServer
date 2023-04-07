@@ -46,8 +46,7 @@ public final class WorldguardSyncManager {
         return chunks;
     }
 
-    public static void initialize(int chunkCount, int minYHeight, int maxYHeight) throws StorageException {
-        int radius = ChunkUtils.getRadiusInChunks(chunkCount);
+    public static void initialize(int radius, int minYHeight, int maxYHeight) throws StorageException {
         Location[] areaCorners = ChunkUtils.getAreaCorners(radius);
         BlockVector3 topLeft = BlockVector3.at(areaCorners[0].getX(), minYHeight, areaCorners[0].getZ());
         BlockVector3 topBottomRight = BlockVector3.at(areaCorners[3].getX(), maxYHeight, areaCorners[3].getZ());

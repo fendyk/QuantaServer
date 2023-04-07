@@ -2,8 +2,6 @@ package com.fendyk.configs;
 
 import com.fendyk.utilities.Log;
 import com.fendyk.utilities.PayableCommand;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import de.leonhard.storage.Toml;
 
 import java.util.*;
@@ -12,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class PricesConfig {
 
     Toml config;
-    double spawnCommandPrice;
+    double teleportCommandPrice;
 
     HashMap<String, Integer> commandIndexes;
     HashMap<Integer, PayableCommand> commands;
@@ -27,7 +25,7 @@ public class PricesConfig {
 
         config = new Toml("prices", "plugins/QuantaServer");
 
-        spawnCommandPrice = config.getOrSetDefault("spawnCommandPrice", 1D);
+        teleportCommandPrice = config.getOrSetDefault("teleportCommandPrice", 1D);
 
         if (config.get("commands") == null) {
             config.setDefault("commands.spawn.command", "/gm");
@@ -71,8 +69,8 @@ public class PricesConfig {
         });
     }
 
-    public double getSpawnCommandPrice() {
-        return spawnCommandPrice;
+    public double getTeleportCommandPrice() {
+        return teleportCommandPrice;
     }
 
     /**

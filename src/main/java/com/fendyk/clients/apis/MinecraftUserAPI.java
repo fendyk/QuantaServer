@@ -1,12 +1,14 @@
 package com.fendyk.clients.apis;
 
 import com.fendyk.API;
+import com.fendyk.DTOs.LocationDTO;
 import com.fendyk.DTOs.MinecraftUserDTO;
 import com.fendyk.DTOs.SubscriptionRewardDTO;
 import com.fendyk.DTOs.updates.UpdateMinecraftUserDTO;
 import com.fendyk.clients.ClientAPI;
 import com.fendyk.clients.fetch.FetchMinecraftUser;
 import com.fendyk.clients.redis.RedisMinecraftUser;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
@@ -101,6 +103,18 @@ public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecra
         UpdateMinecraftUserDTO update = new UpdateMinecraftUserDTO();
         update.setQuanta(newAmount.floatValue());
         return update(uuid, update) != null;
+    }
+
+    /**
+     * Updates the last location of the player.
+     * @param player
+     * @param location
+     * @return
+     */
+    public boolean updateLastLocation(Player player, Location location) {
+        UpdateMinecraftUserDTO update = new UpdateMinecraftUserDTO();
+        update.setLastLocation(new LocationDTO(location));
+        return update(player.getUniqueId(), update) != null;
     }
 
 }

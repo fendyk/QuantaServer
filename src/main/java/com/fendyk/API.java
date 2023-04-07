@@ -28,7 +28,6 @@ public class API {
     MinecraftUserAPI minecraftUserAPI;
     LandAPI landAPI;
     ChunkAPI chunkAPI;
-    BlacklistedChunkAPI blacklistedChunkAPI;
 
     FetchAPI<String, Object,  Object> fetchAPI;
     RedisAPI<String, Object> redisAPI;
@@ -69,12 +68,6 @@ public class API {
             }
         };
 
-        blacklistedChunkAPI = new BlacklistedChunkAPI(
-                this,
-                null,
-                new RedisBlacklistedChunk(server, client, inDebugMode, null, null)
-        );
-
         activitiesAPI = new ActivitiesAPI(
                 this,
                 new FetchActivities(server, apiUrl, inDebugMode, jwtToken),
@@ -101,7 +94,6 @@ public class API {
 
     }
 
-    public BlacklistedChunkAPI getBlacklistedChunkAPI() {return blacklistedChunkAPI;}
     public ActivitiesAPI getActivitiesAPI() {return activitiesAPI;}
     public FetchAPI<String, Object, Object> getFetchAPI() {return fetchAPI;}
     public RedisAPI<String, Object> getRedisAPI() {return redisAPI;}

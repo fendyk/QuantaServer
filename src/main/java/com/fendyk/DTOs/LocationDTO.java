@@ -1,8 +1,10 @@
 package com.fendyk.DTOs;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 public class LocationDTO {
+    String world;
     double x;
     double y;
     double z;
@@ -14,6 +16,7 @@ public class LocationDTO {
     }
 
     public LocationDTO(Location location) {
+        this.world = location.getWorld().getName();
         this.x = location.x();
         this.y = location.getY();
         this.z = location.getZ();
@@ -59,5 +62,19 @@ public class LocationDTO {
 
     public void setPitch(double pitch) {
         this.pitch = pitch;
+    }
+    public String getWorld() {return world;}
+
+    public void setWorld(String world) {this.world = world;}
+
+    public static Location toLocation(LocationDTO locationDTO) {
+        return new Location(
+                Bukkit.getWorld(locationDTO.getWorld()),
+                locationDTO.getX(),
+                locationDTO.getY(),
+                locationDTO.getZ(),
+                (float) locationDTO.getYaw(),
+                (float) locationDTO.getPitch()
+        );
     }
 }

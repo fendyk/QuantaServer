@@ -8,6 +8,7 @@ import com.fendyk.clients.apis.ChunkAPI;
 import com.fendyk.configs.MessagesConfig;
 import com.fendyk.managers.ConfirmCommandManager;
 import com.fendyk.managers.WorldguardSyncManager;
+import com.fendyk.utilities.LocationUtil;
 import com.fendyk.utilities.Vector2;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandPermission;
@@ -17,6 +18,7 @@ import dev.jorel.commandapi.arguments.StringArgument;
 import net.luckperms.api.model.user.User;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.ServerOperator;
 import org.joda.time.DateTime;
 import xyz.xenondevs.particle.ParticleEffect;
 import xyz.xenondevs.particle.data.color.DustData;
@@ -55,7 +57,7 @@ public class LandCommands {
                             player.sendMessage("/land spawn - To visit your land's spawn");
                             player.sendMessage("/land homes - To view all your homes");
                             player.sendMessage("/land home <name> - To visit your home");
-                            player.sendMessage("/land home set,remove <name> - To set or remove a home");
+                            player.sendMessage("/land home set,remove,tp <name> - To set, remove or teleport to a home");
                         })
                 )
                 // ### /land create <name> ###
@@ -66,7 +68,14 @@ public class LandCommands {
                             Chunk chunk = player.getChunk();
                             UUID uuid = player.getUniqueId();
 
-                            if (api.getBlacklistedChunkAPI().isBlacklisted(chunk)) {
+                            // Only continue if we're in the overworld
+                            if(!chunk.getWorld().equals(main.getServerConfig().getOverworld())) {
+                                player.sendMessage("You can only claim chunks in the overworld.");
+                                return;
+                            }
+
+                            // Check if the player is within the blacklisted chunk radius
+                            if(main.getServerConfig().isWithinBlacklistedChunkRadius(player.getLocation())) {
                                 player.sendMessage("The chunk you're currently standing on is considered 'blacklisted' and not claimable.");
                                 return;
                             }
@@ -98,9 +107,14 @@ public class LandCommands {
 
                             if (user == null) return;
 
-                            // TODO: Validate for worldName
+                            // Only continue if we're in the overworld
+                            if(!chunk.getWorld().equals(main.getServerConfig().getOverworld())) {
+                                player.sendMessage("You can only claim chunks in the overworld.");
+                                return;
+                            }
 
-                            if (api.getBlacklistedChunkAPI().getRedis().hGet(new Vector2(chunk.getX(), chunk.getZ()))) {
+                            // Check if the player is within the blacklisted chunk radius
+                            if(main.getServerConfig().isWithinBlacklistedChunkRadius(player.getLocation())) {
                                 player.sendMessage("The chunk you're currently standing on is considered 'blacklisted' and not claimable.");
                                 return;
                             }
@@ -175,7 +189,29 @@ public class LandCommands {
                 // ### /land spawn ###
                 .withSubcommand(new CommandAPICommand("spawn")
                         .executesPlayer((player, args) -> {
-                            // Spawn
+                            UUID uuid = player.getUniqueId();
+                            World world = main.getServerConfig().getOverworld();
+
+                            LandDTO landDTO = api.getLandAPI().getRedis().get(uuid.toString());
+                            if (landDTO == null) {
+                                player.sendMessage("Could not find your land");
+                                return;
+                            }
+
+                            Optional<TaggedLocationDTO> taggedLocationDTO = Optional.ofNullable(landDTO.getHomes().stream()
+                                    .filter(t -> t.getName().equals("spawn"))
+                                    .findAny()
+                                    .orElseGet(() -> landDTO.getHomes().stream().findFirst().orElse(null)));
+
+                            if (taggedLocationDTO.isEmpty()) {
+                                player.sendMessage("Could not locate your spawn location. Try adding a home naming 'spawn'");
+                                return;
+                            }
+
+                            LocationDTO loc = taggedLocationDTO.get().getLocation();
+
+                            player.teleport(new Location(world, loc.getX(), loc.getY(), loc.getZ(), (float) loc.getYaw(), (float) loc.getPitch()));
+                            player.sendMessage(player.getName() + " You have been teleported to your spawn");
                         })
                 )
                 // ### /land info ###
@@ -183,8 +219,15 @@ public class LandCommands {
                         .executesPlayer((player, args) -> {
                             Chunk chunk = player.getChunk();
 
-                            if (api.getBlacklistedChunkAPI().isBlacklisted(chunk)) {
-                                player.sendMessage(main.getMessagesConfig().getMessage(MessagesConfig.State.CHUNK_IS_BLACKLISTED));
+                            // Only continue if we're in the overworld
+                            if(!chunk.getWorld().equals(main.getServerConfig().getOverworld())) {
+                                player.sendMessage("You can only see information about a chunk in the overworld");
+                                return;
+                            }
+
+                            // Check if the player is within the blacklisted chunk radius
+                            if(main.getServerConfig().isWithinBlacklistedChunkRadius(player.getLocation())) {
+                                player.sendMessage("The chunk you're currently standing on is considered 'blacklisted' and not claimable.");
                                 return;
                             }
 
@@ -253,36 +296,45 @@ public class LandCommands {
                 )
                 // ### /land home <name> ###
                 .withSubcommand(new CommandAPICommand("home")
-                        .withArguments(new StringArgument("name"))
-                        .executesPlayer((player, args) -> {
-                            String name = (String) args[0];
-                            UUID uuid = player.getUniqueId();
-                            World world = Bukkit.getWorld(server.getServerConfig().getWorldName());
+                        .withSubcommand(new CommandAPICommand("tp")
+                                .withArguments(new StringArgument("name"))
+                                .executesPlayer((player, args) -> {
+                                    String name = (String) args[0];
+                                    UUID uuid = player.getUniqueId();
+                                    World world = main.getServerConfig().getOverworld();
 
-                            LandDTO landDTO = api.getLandAPI().getRedis().get(uuid.toString());
-                            if (landDTO == null) {
-                                player.sendMessage("Could not find your land");
-                                return;
-                            }
+                                    LandDTO landDTO = api.getLandAPI().getRedis().get(uuid.toString());
+                                    if (landDTO == null) {
+                                        player.sendMessage("Could not find your land");
+                                        return;
+                                    }
 
-                            Optional<TaggedLocationDTO> taggedLocationDTO = landDTO.getHomes().stream().filter(t -> t.getName().equals(name)).findFirst();
+                                    Optional<TaggedLocationDTO> taggedLocationDTO = landDTO.getHomes().stream().filter(t -> t.getName().equals(name)).findFirst();
 
-                            if (taggedLocationDTO.isEmpty()) {
-                                player.sendMessage("Could not find any home matching the name: " + name);
-                                return;
-                            }
+                                    if (taggedLocationDTO.isEmpty()) {
+                                        player.sendMessage("Could not find any home matching the name: " + name);
+                                        return;
+                                    }
 
-                            LocationDTO loc = taggedLocationDTO.get().getLocation();
+                                    LocationDTO loc = taggedLocationDTO.get().getLocation();
 
-                            player.teleport(new Location(world, loc.getX(), loc.getY(), loc.getZ(), (float) loc.getYaw(), (float) loc.getPitch()));
-                            player.sendMessage(player.getName() + " You have been teleported to " + name);
-                        })
+                                    player.teleport(new Location(world, loc.getX(), loc.getY(), loc.getZ(), (float) loc.getYaw(), (float) loc.getPitch()));
+                                    player.sendMessage(player.getName() + " You have been teleported to " + name);
+                                })
+                        )
                         // ### /land home set <name> ###
                         .withSubcommand(new CommandAPICommand("set")
                                 .withArguments(new StringArgument("name"))
                                 .executesPlayer((player, args) -> {
                                     String name = (String) args[0];
                                     UUID uuid = player.getUniqueId();
+                                    Chunk chunk = player.getChunk();
+
+                                    // Only continue if we're in the overworld
+                                    if(!chunk.getWorld().equals(main.getServerConfig().getOverworld())) {
+                                        player.sendMessage("You can only claim chunks in the overworld.");
+                                        return;
+                                    }
 
                                     UpdateLandDTO updateLandDTO = new UpdateLandDTO();
                                     LandDTO landDTO = api.getLandAPI().getRedis().get(uuid.toString());
@@ -364,7 +416,7 @@ public class LandCommands {
                 .withSubcommand(new CommandAPICommand("member")
                         // ### /land member add <name> ###
                         .withSubcommand(new CommandAPICommand("add")
-                                .withArguments(new StringArgument("name"))
+                                .withArguments(new PlayerArgument("name"))
                                 .executesPlayer((player, args) -> {
                                     OfflinePlayer newMember = (OfflinePlayer) args[0];
                                     UUID uuid = player.getUniqueId();
@@ -393,7 +445,7 @@ public class LandCommands {
                         )
                         // ### /land member remove <name> ###
                         .withSubcommand(new CommandAPICommand("remove")
-                                .withArguments(new StringArgument("name"))
+                                .withArguments(new PlayerArgument("name"))
                                 .executesPlayer((player, args) -> {
                                     OfflinePlayer oldMember = (OfflinePlayer) args[0];
                                     UUID uuid = player.getUniqueId();
@@ -423,11 +475,19 @@ public class LandCommands {
                 )
                 // ### /land generate ###
                 .withSubcommand(new CommandAPICommand("generate")
+                        .withRequirement(ServerOperator::isOp)
                         .withPermission(CommandPermission.OP)
                         .withArguments(new BooleanArgument("isClaimable"))
                         .executesPlayer((player, args) -> {
                             boolean isClaimable = (boolean) args[0];
                             Chunk chunk = player.getChunk();
+
+                            // Only continue if we're in the overworld
+                            if(!chunk.getWorld().equals(main.getServerConfig().getOverworld())) {
+                                player.sendMessage("You can only generate chunks in the overworld.");
+                                return;
+                            }
+
 
                             ChunkDTO chunkDTO = api.getChunkAPI().create(chunk, isClaimable);
                             if (chunkDTO == null) {
@@ -443,8 +503,15 @@ public class LandCommands {
                         .executesPlayer((player, args) -> {
                             Chunk chunk = player.getChunk();
 
-                            if (api.getBlacklistedChunkAPI().isBlacklisted(chunk)) {
-                                player.sendMessage(main.getMessagesConfig().getMessage(MessagesConfig.State.CHUNK_IS_BLACKLISTED));
+                            // Only continue if we're in the overworld
+                            if(!chunk.getWorld().equals(main.getServerConfig().getOverworld())) {
+                                player.sendMessage("You can only extend chunks in the overworld.");
+                                return;
+                            }
+
+                            // Check if the player is within the blacklisted chunk radius
+                            if(main.getServerConfig().isWithinBlacklistedChunkRadius(player.getLocation())) {
+                                player.sendMessage("The chunk you're currently standing on is considered 'blacklisted' and not claimable.");
                                 return;
                             }
 
@@ -456,6 +523,28 @@ public class LandCommands {
                             }
 
                         })
+                )
+                .withSubcommand(new CommandAPICommand("debug")
+                        .withRequirement(ServerOperator::isOp)
+                        .withPermission(CommandPermission.OP)
+                        .withSubcommand(new CommandAPICommand("blacklistradius")
+                                .executesPlayer((player, args) -> {
+                                    Location playerLocation = player.getLocation();
+                                    Location center = new Location(player.getWorld(), 0, playerLocation.getY(), 0);
+                                    int blockRadius = main.getServerConfig().getBlacklistedBlockRadius();
+                                    int chunkRadius = main.getServerConfig().getBlacklistedChunkRadius();
+
+                                    boolean isInRadiusConfig = main.getServerConfig().isWithinBlacklistedChunkRadius(playerLocation);
+                                    boolean isInRadiusUtil = LocationUtil.isWithinRadius(center, playerLocation, blockRadius);
+
+                                    player.sendMessage("isInRadiusConfig: " + isInRadiusConfig);
+                                    player.sendMessage("isInRadiusUtil: " + isInRadiusUtil);
+                                    player.sendMessage(String.format("playerLocation: X=%.2f, Y=%.2f, Z=%.2f", playerLocation.getX(), playerLocation.getY(), playerLocation.getZ()));
+                                    player.sendMessage(String.format("center: X=%.2f, Y=%.2f, Z=%.2f", center.getX(), center.getY(), center.getZ()));
+                                    player.sendMessage("blockRadius: "+  blockRadius);
+                                    player.sendMessage("chunkRadius: "+  chunkRadius);
+                                })
+                        )
                 )
                 .register();
     }

@@ -9,6 +9,7 @@ import dev.jorel.commandapi.arguments.DoubleArgument;
 import dev.jorel.commandapi.arguments.PlayerArgument;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.ServerOperator;
 
 import java.math.BigDecimal;
 
@@ -28,6 +29,7 @@ public class QuantaCommands {
                         .withAliases("add")
                         .withArguments(new PlayerArgument("player"))
                         .withArguments(new DoubleArgument("amount"))
+                        .withRequirement(ServerOperator::isOp)
                         .withPermission(CommandPermission.OP)
                         .executes((sender, args) -> {
                             Player player = (Player) args[0];
@@ -44,6 +46,7 @@ public class QuantaCommands {
                         .withAliases("remove")
                         .withArguments(new PlayerArgument("player"))
                         .withArguments(new DoubleArgument("amount"))
+                        .withRequirement(ServerOperator::isOp)
                         .withPermission(CommandPermission.OP)
                         .executes((sender, args) -> {
                             Player player = (Player) args[0];

@@ -11,12 +11,9 @@ public class ChunkUtils {
 
     /**
      * Return an array length of 4 - (topLeft, topRight, bottomLeft, bottomRight)
-     * @param chunks
      * @return
      */
     public static Location[] getAreaCorners(int radius) {
-        int x = 0; // Center chunk x coordinate
-        int z = 0; // Center chunk z coordinate
         int blockRadius = radius * 16; // Radius in blocks
         Location[] corners = new Location[4]; // Array to hold the four corners
 

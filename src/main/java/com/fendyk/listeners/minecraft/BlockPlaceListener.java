@@ -57,7 +57,11 @@ public class BlockPlaceListener implements Listener {
             Bukkit.getScheduler().runTaskAsynchronously(server, () -> {
 
                 // Verify if the chunk is blacklisted
-                if (server.getApi().getBlacklistedChunkAPI().isBlacklisted(chunk)) return;
+                // Check if the player is within the blacklisted chunk radius
+                if(main.getServerConfig().isWithinBlacklistedChunkRadius(player.getLocation())) {
+                    player.sendMessage("The chunk you're currently standing on is considered 'blacklisted' and not claimable.");
+                    return;
+                }
 
                 // Find the chunk
                 ChunkDTO chunkDTO = server.getApi().getChunkAPI().get(chunk);

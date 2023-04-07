@@ -75,7 +75,7 @@ public class Main extends JavaPlugin implements Listener {
 
         // Commands
         new PreferencesCommands();
-        new SpawnCommands();
+        new TeleportationCommands();
         new EconomyCommands();
         new ConfirmCommands();
         new QuantaCommands();
@@ -105,7 +105,7 @@ public class Main extends JavaPlugin implements Listener {
         org.bukkit.World world = Bukkit.getWorld(serverConfig.getWorldName());
         try {
             WorldguardSyncManager.initialize(
-                    Math.toIntExact(api.getBlacklistedChunkAPI().getRedis().hLen()),
+                    getServerConfig().getBlacklistedChunkRadius(),
                     world != null ? world.getMinHeight() : -64,
                     world != null ? world.getMaxHeight() : 319
             );
