@@ -63,7 +63,7 @@ public class LandAPI extends ClientAPI<FetchLand, RedisLand, String, LandDTO> {
         /* Create the actual land */
         LandDTO landDTO = new LandDTO();
         landDTO.setName(name);
-        landDTO.setOwnerId(owner.toString());
+        landDTO.setOwnerId(owner.getUniqueId().toString());
         landDTO.getHomes().add(taggedLocationDTO);
         landDTO = fetch.create(landDTO);
 

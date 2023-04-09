@@ -11,13 +11,15 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -34,17 +36,17 @@ public class PlayerJoinListener implements Listener {
         Player player = event.getPlayer();
         World world = Bukkit.getWorld(server.getServerConfig().getWorldName());
         Audience audience = server.adventure().player(player);
-
         User luckPermsUser = server.getLuckPermsApi().getPlayerAdapter(Player.class).getUser(player);
+        String primaryGroup = luckPermsUser.getPrimaryGroup();
 
-        Collection<Group> inheritedGroups = luckPermsUser.getInheritedGroups(luckPermsUser.getQueryOptions());
-        boolean hasDefaultRank = inheritedGroups.stream().anyMatch(g -> g.getName().equals("default"));
-        boolean hasBarbarianRank = inheritedGroups.stream().anyMatch(g -> g.getName().equals("barbarian"));
-        boolean hasCitizenRank = inheritedGroups.stream().anyMatch(g -> g.getName().equals("citizen"));
-        boolean hasHeroRank = inheritedGroups.stream().anyMatch(g -> g.getName().equals("hero"));
+        // Give the player a starterpack
+        if(!player.hasPlayedBefore()) {
+            giveStarterKit(player);
+            player.sendMessage(ChatColor.GREEN + "We've given you some starter items to start your adventure!");
+        }
 
-        if(hasDefaultRank && !player.isOp()) {
-            player.teleport(new Location(world, 0,173,0));
+        if(primaryGroup.equalsIgnoreCase("default") && !player.isOp()) {
+            player.teleport(main.getServerConfig().getSpawnLocation());
             server.getFrozenPlayers().add(player.getUniqueId());
             player.sendMessage("You've been frozen because you're not authorized to the server.");
         }
@@ -116,6 +118,46 @@ public class PlayerJoinListener implements Listener {
         PlaceholderAPI.setPlaceholders(player, "%quantum_activities_pve_daily_quantity%");
         //PlaceholderAPI.setPlaceholders(player, "%quantum_land_standing%");
 
+    }
+
+    public void giveStarterKit(Player player) {
+        // Enchanted stone sword
+        ItemStack stoneSword = new ItemStack(Material.STONE_SWORD);
+        stoneSword.addEnchantment(Enchantment.DURABILITY, 3);
+
+        // Steak
+        ItemStack steak = new ItemStack(Material.COOKED_BEEF, 8);
+
+        // Gray-dyed enchanted leather helmet
+        ItemStack leatherHelmet = new ItemStack(Material.LEATHER_HELMET);
+        LeatherArmorMeta helmetMeta = (LeatherArmorMeta) leatherHelmet.getItemMeta();
+        helmetMeta.setColor(Color.GRAY);
+        helmetMeta.addEnchant(Enchantment.DURABILITY, 1, true);
+        leatherHelmet.setItemMeta(helmetMeta);
+
+        // Gray-dyed enchanted leather chestplate
+        ItemStack leatherChestplate = new ItemStack(Material.LEATHER_CHESTPLATE);
+        LeatherArmorMeta chestplateMeta = (LeatherArmorMeta) leatherChestplate.getItemMeta();
+        chestplateMeta.setColor(Color.GRAY);
+        chestplateMeta.addEnchant(Enchantment.DURABILITY, 1, true);
+        leatherChestplate.setItemMeta(chestplateMeta);
+
+        // Gray-dyed enchanted leather leggings
+        ItemStack leatherLeggings = new ItemStack(Material.LEATHER_LEGGINGS);
+        LeatherArmorMeta leggingsMeta = (LeatherArmorMeta) leatherLeggings.getItemMeta();
+        leggingsMeta.setColor(Color.GRAY);
+        leggingsMeta.addEnchant(Enchantment.DURABILITY, 1, true);
+        leatherLeggings.setItemMeta(leggingsMeta);
+
+        // Gray-dyed enchanted leather boots
+        ItemStack leatherBoots = new ItemStack(Material.LEATHER_BOOTS);
+        LeatherArmorMeta bootsMeta = (LeatherArmorMeta) leatherBoots.getItemMeta();
+        bootsMeta.setColor(Color.GRAY);
+        bootsMeta.addEnchant(Enchantment.DURABILITY, 1, true);
+        leatherBoots.setItemMeta(bootsMeta);
+
+        // Add items to the player's inventory
+        player.getInventory().addItem(stoneSword, steak, leatherHelmet, leatherChestplate, leatherLeggings, leatherBoots);
     }
 
 }

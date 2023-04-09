@@ -52,7 +52,6 @@ public class Main extends JavaPlugin implements Listener {
     }
 
     public static final StateFlag BARBARIAN_BUILD = new StateFlag("barbarian-build", true);
-    public static final StateFlag REDSTONE = new StateFlag("redstone", true);
 
     @Override
     public void onEnable() {

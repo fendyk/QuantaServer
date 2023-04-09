@@ -108,7 +108,7 @@ public class LandCommands {
                             if (!ConfirmCommandManager.isConfirmed(player)) {
                                 ConfirmCommandManager.requestCommandConfirmation(player,
                                         new PayableCommand(
-                                                "/land create " + player.getName(),
+                                                "/land create " + name,
                                                 new ArrayList<>(),
                                                 2000,
                                                 30L,

@@ -1,5 +1,7 @@
 package com.fendyk.DTOs;
 
+import com.fendyk.utilities.Vector2;
+
 import java.util.ArrayList;
 
 public class LandDTO {

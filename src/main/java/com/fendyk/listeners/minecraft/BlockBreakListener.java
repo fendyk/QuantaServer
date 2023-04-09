@@ -51,11 +51,12 @@ public class BlockBreakListener implements Listener {
         EarningsConfig config = server.getEarningsConfig();
 
         // If the current user is either barbarian or default, verify the flag.
-        if(!WorldGuardExtension.hasBarbarianPermissionToBuildAtGlobalLocation(player, block.getLocation())) {
+        if(!WorldGuardExtension.hasPermissionToBuildAtGlobalLocation(player, block.getLocation())) {
             event.setCancelled(true);
-            player.sendMessage(ChatColor.RED + "You are not allowed to build. You need to be at least a Citizen.");
+            player.sendMessage(ChatColor.RED + "You are not allowed to build.");
             return;
         }
+
 
         // Player can only receive the block IF in survival mode, unless you are operator
         if(player.getGameMode() != GameMode.SURVIVAL && !player.isOp()) return;

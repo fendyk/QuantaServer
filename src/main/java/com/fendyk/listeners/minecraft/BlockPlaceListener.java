@@ -33,12 +33,11 @@ public class BlockPlaceListener implements Listener {
         EarningsConfig config = server.getEarningsConfig();
 
         // If the current user is either barbarian or default, verify the flag.
-        if(!WorldGuardExtension.hasBarbarianPermissionToBuildAtGlobalLocation(player, block.getLocation())) {
+        if(!WorldGuardExtension.hasPermissionToBuildAtGlobalLocation(player, block.getLocation())) {
             event.setCancelled(true);
-            player.sendMessage(ChatColor.RED + "You are not allowed to build. You need to be at least a Citizen.");
+            player.sendMessage(ChatColor.RED + "You are not allowed to build.");
             return;
         }
-
 
         // Ignore if player is Operator
         if(player.isOp()) return;

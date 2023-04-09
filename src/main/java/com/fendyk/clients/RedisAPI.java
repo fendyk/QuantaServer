@@ -98,7 +98,7 @@ public abstract class RedisAPI<K, DTO> {
             if (result == null || result.length() < 1) {
                 Log.warning("Result is null or length is < 1");
             } else {
-                Log.info("Result: " + result);
+                Log.info("Result: " + (result.length() > 1000 ? result.substring(0, 1000) : result));
             }
             Log.info("");
         }
@@ -112,7 +112,7 @@ public abstract class RedisAPI<K, DTO> {
         if (inDebugMode) {
             Log.info("");
             Log.info("REDIS: setCache is called with key: " + key);
-            Log.info("Result: " + result);
+            Log.info("Result: " + (result.length() > 1000 ? result.substring(0, 1000) : result));
             Log.info("");
         }
         return result.equals("OK");

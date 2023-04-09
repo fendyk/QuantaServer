@@ -5,7 +5,12 @@ import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.flags.StateFlag;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
+import com.sk89q.worldguard.protection.regions.RegionQuery;
 import net.luckperms.api.model.user.User;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -14,18 +19,32 @@ public class WorldGuardExtension {
 
     static Main main = Main.getInstance();
 
-    public static boolean hasBarbarianPermissionToBuildAtGlobalLocation(Player player, Location location) {
+    public static boolean hasPermissionToBuildAtGlobalLocation(Player player, Location location) {
         User user = main.getLuckPermsApi().getUserManager().getUser(player.getUniqueId());
-        // If the current user is either barbarian or default, verify the flag.
-        if(user != null && (user.getPrimaryGroup().equalsIgnoreCase("barbarian") || user.getPrimaryGroup().equalsIgnoreCase("default"))) {
-            LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
-            com.sk89q.worldedit.util.Location location1 = BukkitAdapter.adapt(location);
 
-            StateFlag.State state = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery().queryState(location1, localPlayer, Main.BARBARIAN_BUILD);
-            return state != StateFlag.State.DENY;
+        LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
+        com.sk89q.worldedit.util.Location location1 = BukkitAdapter.adapt(location);
+
+        // Check the regular build flag
+        StateFlag.State stateBuild = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery().queryState(location1, localPlayer, Flags.BUILD);
+
+        // Check if the player is a member or owner of the region
+        RegionQuery query = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery();
+        ApplicableRegionSet set = query.getApplicableRegions(location1);
+        boolean isMemberOrOwner = set.isMemberOfAll(localPlayer) || set.isOwnerOfAll(localPlayer);
+
+        // If the player is a member or owner of the region, check the barbarian-build flag (if they are in the barbarian group)
+        if (isMemberOrOwner) {
+            if (user != null && user.getPrimaryGroup().equalsIgnoreCase("barbarian")) {
+                StateFlag.State stateBarbarianBuild = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery().queryState(location1, localPlayer, Main.BARBARIAN_BUILD);
+                return stateBarbarianBuild != StateFlag.State.DENY;
+            }
+            // If the player is not in the barbarian group, they can build
+            return true;
         }
 
-        return true;
+        // If the player is not a member or owner of the region, check if the build flag is set to ALLOW
+        return stateBuild == StateFlag.State.ALLOW;
     }
 
 }

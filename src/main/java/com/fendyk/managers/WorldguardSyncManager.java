@@ -208,6 +208,7 @@ public final class WorldguardSyncManager {
         }
 
         region.setFlag(Main.BARBARIAN_BUILD, StateFlag.State.ALLOW); // Allow barbarians to build on regions of players
+        region.setFlag(Flags.BUILD, StateFlag.State.DENY);
 
         main.getOverworldRegionManager().save(); // Don't forget to save the region
         Log.success(chunk.getX() + "/" + chunk.getZ() + " is synced");
