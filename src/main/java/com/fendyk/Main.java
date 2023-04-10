@@ -43,7 +43,9 @@ public class Main extends JavaPlugin implements Listener {
 
     List<UUID> frozenPlayers;
 
-    RegionManager regionManager;
+    RegionManager overworldRegionManager;
+    RegionManager endRegionManager;
+    RegionManager netherRegionManager;
     FlagRegistry registry;
     LuckPerms luckPermsApi;
     BukkitAudiences adventure;
@@ -140,9 +142,12 @@ public class Main extends JavaPlugin implements Listener {
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
         String worldName = serverConfig.getWorldName();
         World world = BukkitAdapter.adapt(Objects.requireNonNull(Bukkit.getWorld(worldName)));
-        this.regionManager = container.get(world);
+        World nether = BukkitAdapter.adapt(Objects.requireNonNull(Bukkit.getWorld("world_nether")));
+        World end = BukkitAdapter.adapt(Objects.requireNonNull(Bukkit.getWorld("world_the_end")));
+        this.overworldRegionManager = container.get(world);
+        this.netherRegionManager = container.get(nether);
+        this.endRegionManager = container.get(end);
     }
-
 
     public FlagRegistry getFlagRegistry() {
         return registry;
@@ -157,8 +162,17 @@ public class Main extends JavaPlugin implements Listener {
         return frozenPlayers;
     }
     public RegionManager getOverworldRegionManager() {
-        return regionManager;
+        return overworldRegionManager;
     }
+
+    public RegionManager getEndRegionManager() {
+        return endRegionManager;
+    }
+
+    public RegionManager getNetherRegionManager() {
+        return netherRegionManager;
+    }
+
     public ServerConfig getServerConfig() {return serverConfig;}
     public PricesConfig getPricesConfig() {return pricesConfig;}
     public RanksConfig getRanksConfig() {return ranksConfig;}

@@ -77,5 +77,12 @@ public class ChunkUtils {
         return dx <= radius && dz <= radius;
     }
 
+    public static Location getChunkCenter(Chunk chunk) {
+        int x = (chunk.getX() << 4) + 8; // calculate the X coordinate of the center of the chunk
+        int z = (chunk.getZ() << 4) + 8; // calculate the Z coordinate of the center of the chunk
+        int y = chunk.getWorld().getHighestBlockYAt(x, z); // get the highest block Y coordinate at the center of the chunk
+        return new Location(chunk.getWorld(), x, y, z); // create and return a new Location object with the center coordinates
+    }
+
 
 }

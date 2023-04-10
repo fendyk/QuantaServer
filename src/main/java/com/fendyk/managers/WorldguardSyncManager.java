@@ -52,6 +52,8 @@ public final class WorldguardSyncManager {
         BlockVector3 topBottomRight = BlockVector3.at(areaCorners[3].getX(), maxYHeight, areaCorners[3].getZ());
 
         RegionManager overworldRegionManager = main.getOverworldRegionManager();
+        RegionManager endRegionManager = main.getEndRegionManager();
+        RegionManager netherRegionManager = main.getNetherRegionManager();
 
         Set<ProtectedRegion> set = overworldRegionManager.getApplicableRegions(
                 BlockVector3.at(0, 0, 0)
@@ -75,15 +77,17 @@ public final class WorldguardSyncManager {
 
         GlobalProtectedRegion globalProtectedRegion = new GlobalProtectedRegion("__global__");
         globalProtectedRegion.setFlag(Flags.BUILD, StateFlag.State.ALLOW);
-        globalProtectedRegion.setFlag(Flags.BLOCK_PLACE, StateFlag.State.ALLOW);
-        globalProtectedRegion.setFlag(Flags.BLOCK_BREAK, StateFlag.State.ALLOW);
-        globalProtectedRegion.setFlag(Flags.INTERACT, StateFlag.State.ALLOW);
         globalProtectedRegion.setFlag(Main.BARBARIAN_BUILD, StateFlag.State.DENY); // Set the build flag to deny for the Member rank
         globalProtectedRegion.setFlag(Flags.TNT, StateFlag.State.DENY);
 
         overworldRegionManager.addRegion(globalProtectedRegion);
-        overworldRegionManager.addRegion(region);
         overworldRegionManager.save();
+
+        netherRegionManager.addRegion(globalProtectedRegion);
+        netherRegionManager.save();
+
+        endRegionManager.addRegion(globalProtectedRegion);
+        endRegionManager.save();
     }
 
     public static List<Location> getChunkBounds(Chunk chunk, double height) {
@@ -102,13 +106,6 @@ public final class WorldguardSyncManager {
             }
         }
         return bounds;
-    }
-
-    public static Location getChunkCenter(Chunk chunk) {
-        int x = chunk.getX() << 4 + 8; // calculate the X coordinate of the center of the chunk
-        int z = chunk.getZ() << 4 + 8; // calculate the Z coordinate of the center of the chunk
-        int y = chunk.getWorld().getHighestBlockYAt(x, z); // get the highest block Y coordinate at the center of the chunk
-        return new Location(chunk.getWorld(), x, y, z); // create and return a new Location object with the center coordinates
     }
 
     public static void setRegionMembersAndOwner(ProtectedRegion region, @Nullable  String landOwnerId, @Nullable  ArrayList<String> memberIds) {
@@ -145,12 +142,12 @@ public final class WorldguardSyncManager {
 
         /* Find the land by landID */
         if(landDTO == null) {
-            landDTO = main.getApi().getLandAPI().getRedis().get(chunkDTO.getLandId());
+            landDTO = main.getApi().getLandAPI().getRedis().getMin(chunkDTO.getLandId());
             if(landDTO == null) return;
         }
 
         /* Find the region */
-        Location center = WorldguardSyncManager.getChunkCenter(chunk);
+        Location center = ChunkUtils.getChunkCenter(chunk);
         Set<ProtectedRegion> set = main.getOverworldRegionManager().getApplicableRegions(
                 BlockVector3.at(center.x(), center.y(), center.z())
         ).getRegions();

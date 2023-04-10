@@ -26,6 +26,12 @@ public class RedisLand extends RedisAPI<String, LandDTO> {
         );
     }
 
+    public LandDTO getMin(String key) {
+        return Main.gson.fromJson(
+                getCache("land:" + key + ":min"),
+                LandDTO.class
+        );
+    }
 
     @Override
     public boolean set(String key, LandDTO data) {

@@ -4,6 +4,8 @@ import com.fendyk.DTOs.ChunkDTO;
 import com.fendyk.DTOs.LandDTO;
 import com.fendyk.Main;
 import com.fendyk.managers.WorldguardSyncManager;
+import com.fendyk.utilities.ChunkUtils;
+import com.fendyk.utilities.Log;
 import com.fendyk.utilities.Vector2;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.domains.DefaultDomain;
@@ -24,6 +26,7 @@ import java.util.UUID;
 
 public class ChunkLoadListener implements Listener {
 
+    Main main = Main.getInstance();
     HashMap<String, Chunk> checkedChunks;
     Main server;
 
@@ -44,23 +47,37 @@ public class ChunkLoadListener implements Listener {
      */
     @EventHandler
     public void onChunkLoad(PlayerChunkLoadEvent event) {
+        // Check if the event is for the specified world
+        if (!event.getWorld().getName().equalsIgnoreCase(worldName)) return;
+
+        // Get the chunk
+        Chunk chunk = event.getChunk();
+
+        // Create a chunk key
+        final String key = chunk.getX() + ":" + chunk.getZ();
+
+        // Check if the chunk is already processed
+        if (checkedChunks.containsKey(key)) return;
+
+        // Run the async task
         Bukkit.getScheduler().runTaskAsynchronously(server, () -> {
-            if(!event.getWorld().getName().equalsIgnoreCase(worldName)) return;
-            Chunk chunk = event.getChunk();
-            final String key = chunk.getX() + ":" + chunk.getZ();
+            Bukkit.getLogger().info(chunk.getX() + "/" + chunk.getZ() + " loaded");
 
-            if (!checkedChunks.containsKey(key)) {
-                Bukkit.getLogger().info(chunk.getX() + "/" + chunk.getZ() + " loaded");
-
-                Bukkit.getScheduler().runTask(server, () -> {
-                    try {
-                        WorldguardSyncManager.syncChunkWithRegion(chunk, null, null);
-                    } catch (StorageException e) {
-                        throw new RuntimeException(e);
-                    }
-                    checkedChunks.put(key, chunk);
-                });
+            // Check if the player is within the blacklisted chunk radius
+            if(main.getServerConfig().isWithinBlacklistedChunkRadius(ChunkUtils.getChunkCenter(chunk))) {
+                Bukkit.getLogger().info(chunk.getX() + "/" + chunk.getZ() + " chunk is considered blacklisted, no need for check.");
+                return;
             }
+
+            // Run the sync task
+            Bukkit.getScheduler().runTask(server, () -> {
+                try {
+                    WorldguardSyncManager.syncChunkWithRegion(chunk, null, null);
+                    checkedChunks.put(key, chunk);
+                } catch (StorageException e) {
+                    Bukkit.getLogger().severe("StorageException occurred while syncing chunk with region: " + e.getMessage());
+                }
+            });
         });
     }
 
