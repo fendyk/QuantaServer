@@ -2,13 +2,16 @@ package com.fendyk.expansions;
 
 import com.fendyk.DTOs.ActivitiesDTO;
 import com.fendyk.DTOs.ActivityDTO;
+import com.fendyk.DTOs.MinecraftUserDTO;
 import com.fendyk.Main;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 public class QuantaExpansion extends PlaceholderExpansion {
     Main main = Main.getInstance();
@@ -34,11 +37,12 @@ public class QuantaExpansion extends PlaceholderExpansion {
 
     @Override
     public @Nullable String onRequest(@NotNull OfflinePlayer player, @NotNull String params) {
+        UUID uuid = player.getUniqueId();
 
         if(params.equalsIgnoreCase("eco_balance")) {
             if(player.isOnline() && player.getPlayer() != null) {
-                Float amount = main.getApi().getMinecraftUserAPI().getCached(player.getPlayer()).getQuanta();
-                return amount != null ? String.format("%.2f", amount) : "undefined";
+                MinecraftUserDTO minecraftUserDTO = main.getApi().getMinecraftUserAPI().getCached(uuid);
+                return minecraftUserDTO != null ? String.format("%.2f", minecraftUserDTO.getQuanta()) : "0";
             }
         }
 
