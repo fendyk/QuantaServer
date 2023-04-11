@@ -79,8 +79,11 @@ public final class WorldguardSyncManager {
         globalProtectedRegion.setFlag(Flags.BUILD, StateFlag.State.ALLOW);
         globalProtectedRegion.setFlag(Main.BARBARIAN_BUILD, StateFlag.State.DENY); // Set the build flag to deny for the Member rank
         globalProtectedRegion.setFlag(Flags.TNT, StateFlag.State.DENY);
+        globalProtectedRegion.setFlag(Flags.LEAF_DECAY, StateFlag.State.DENY);
+        globalProtectedRegion.setFlag(Flags.FIRE_SPREAD, StateFlag.State.DENY);
 
         overworldRegionManager.addRegion(globalProtectedRegion);
+        overworldRegionManager.addRegion(region);
         overworldRegionManager.save();
 
         netherRegionManager.addRegion(globalProtectedRegion);

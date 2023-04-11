@@ -62,6 +62,7 @@ public class ChunkLoadListener implements Listener {
         // Run the async task
         Bukkit.getScheduler().runTaskAsynchronously(server, () -> {
             Bukkit.getLogger().info(chunk.getX() + "/" + chunk.getZ() + " loaded");
+            checkedChunks.put(key, chunk);
 
             // Check if the player is within the blacklisted chunk radius
             if(main.getServerConfig().isWithinBlacklistedChunkRadius(ChunkUtils.getChunkCenter(chunk))) {
@@ -73,7 +74,6 @@ public class ChunkLoadListener implements Listener {
             Bukkit.getScheduler().runTask(server, () -> {
                 try {
                     WorldguardSyncManager.syncChunkWithRegion(chunk, null, null);
-                    checkedChunks.put(key, chunk);
                 } catch (StorageException e) {
                     Bukkit.getLogger().severe("StorageException occurred while syncing chunk with region: " + e.getMessage());
                 }
