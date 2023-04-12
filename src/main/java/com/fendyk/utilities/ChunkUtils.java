@@ -84,5 +84,38 @@ public class ChunkUtils {
         return new Location(chunk.getWorld(), x, y, z); // create and return a new Location object with the center coordinates
     }
 
+    public static List<Chunk> getNeighboringChunks(Chunk chunk) {
+        List<Chunk> chunks = new ArrayList<>();
+        World world = chunk.getWorld();
+
+        int chunkX = chunk.getX();
+        int chunkZ = chunk.getZ();
+
+        // Get the neighboring chunks
+        chunks.add(world.getChunkAt(chunkX + 1, chunkZ));
+        chunks.add(world.getChunkAt(chunkX - 1, chunkZ));
+        chunks.add(world.getChunkAt(chunkX, chunkZ + 1));
+        chunks.add(world.getChunkAt(chunkX, chunkZ - 1));
+        return chunks;
+    }
+
+    public static List<Location> getChunkBounds(Chunk chunk, double height) {
+        List<Location> bounds = new ArrayList<Location>();
+        int minX = chunk.getX() * 16;
+        int minZ = chunk.getZ() * 16;
+        int maxX = minX + 15;
+        int maxZ = minZ + 15;
+        for (int x = minX; x <= maxX; x++) {
+            for (int z = minZ; z <= maxZ; z++) {
+                Location location = new Location(chunk.getWorld(), x, height, z);
+                // found a block at this location, check if it's at the edge of the chunk
+                if (x == minX || x == maxX || z == minZ || z == maxZ) {
+                    bounds.add(location);
+                }
+            }
+        }
+        return bounds;
+    }
+
 
 }

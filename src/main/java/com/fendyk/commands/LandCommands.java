@@ -200,7 +200,7 @@ public class LandCommands {
                                     }
 
                                     // Find out if there is a neighbour.
-                                    List<Chunk> neighbours = WorldguardSyncManager.getNeighboringChunks(chunk);
+                                    List<Chunk> neighbours = ChunkUtils.getNeighboringChunks(chunk);
                                     long countNeighbours = neighbours.stream().filter(neighbour -> {
                                         ChunkDTO neighbourChunkDTO = api.getChunkAPI().getRedis().get(new Vector2(neighbour.getX(), neighbour.getZ()));
                                         return neighbourChunkDTO != null && neighbourChunkDTO.getLandId() != null && neighbourChunkDTO.getLandId().equals(landDTO.getId());
@@ -318,7 +318,7 @@ public class LandCommands {
                                     }
 
                                     // Find out if there is a neighbour.
-                                    List<Chunk> neighbours = WorldguardSyncManager.getNeighboringChunks(chunk);
+                                    List<Chunk> neighbours = ChunkUtils.getNeighboringChunks(chunk);
                                     long countNeighbours = neighbours.stream().filter(neighbour -> {
                                         ChunkDTO neighbourChunkDTO = api.getChunkAPI().getRedis().get(new Vector2(neighbour.getX(), neighbour.getZ()));
                                         return neighbourChunkDTO != null && neighbourChunkDTO.getLandId() != null && neighbourChunkDTO.getLandId().equals(landDTO.getId());

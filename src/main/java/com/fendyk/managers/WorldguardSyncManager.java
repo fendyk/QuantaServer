@@ -9,6 +9,7 @@ import com.fendyk.utilities.Log;
 import com.fendyk.utilities.Vector2;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.domains.DefaultDomain;
+import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
@@ -30,21 +31,6 @@ import java.util.*;
 public final class WorldguardSyncManager {
 
     static Main main = Main.getInstance();
-
-    public static List<Chunk> getNeighboringChunks(Chunk chunk) {
-        List<Chunk> chunks = new ArrayList<>();
-        World world = chunk.getWorld();
-
-        int chunkX = chunk.getX();
-        int chunkZ = chunk.getZ();
-
-        // Get the neighboring chunks
-        chunks.add(world.getChunkAt(chunkX + 1, chunkZ));
-        chunks.add(world.getChunkAt(chunkX - 1, chunkZ));
-        chunks.add(world.getChunkAt(chunkX, chunkZ + 1));
-        chunks.add(world.getChunkAt(chunkX, chunkZ - 1));
-        return chunks;
-    }
 
     public static void initialize(int radius, int minYHeight, int maxYHeight) throws StorageException {
         Location[] areaCorners = ChunkUtils.getAreaCorners(radius);
@@ -77,38 +63,15 @@ public final class WorldguardSyncManager {
 
         GlobalProtectedRegion globalProtectedRegion = new GlobalProtectedRegion("__global__");
         globalProtectedRegion.setFlag(Flags.BUILD, StateFlag.State.ALLOW);
-        globalProtectedRegion.setFlag(Main.BARBARIAN_BUILD, StateFlag.State.DENY); // Set the build flag to deny for the Member rank
+        globalProtectedRegion.setFlag(Main.BARBARIAN_BUILD, StateFlag.State.DENY);
         globalProtectedRegion.setFlag(Flags.TNT, StateFlag.State.DENY);
         globalProtectedRegion.setFlag(Flags.LEAF_DECAY, StateFlag.State.DENY);
         globalProtectedRegion.setFlag(Flags.FIRE_SPREAD, StateFlag.State.DENY);
+        globalProtectedRegion.setFlag(Flags.CREEPER_EXPLOSION, StateFlag.State.DENY);
 
         overworldRegionManager.addRegion(globalProtectedRegion);
         overworldRegionManager.addRegion(region);
         overworldRegionManager.save();
-
-        netherRegionManager.addRegion(globalProtectedRegion);
-        netherRegionManager.save();
-
-        endRegionManager.addRegion(globalProtectedRegion);
-        endRegionManager.save();
-    }
-
-    public static List<Location> getChunkBounds(Chunk chunk, double height) {
-        List<Location> bounds = new ArrayList<Location>();
-        int minX = chunk.getX() * 16;
-        int minZ = chunk.getZ() * 16;
-        int maxX = minX + 15;
-        int maxZ = minZ + 15;
-        for (int x = minX; x <= maxX; x++) {
-            for (int z = minZ; z <= maxZ; z++) {
-                Location location = new Location(chunk.getWorld(), x, height, z);
-                // found a block at this location, check if it's at the edge of the chunk
-                if (x == minX || x == maxX || z == minZ || z == maxZ) {
-                    bounds.add(location);
-                }
-            }
-        }
-        return bounds;
     }
 
     public static void setRegionMembersAndOwner(ProtectedRegion region, @Nullable  String landOwnerId, @Nullable  ArrayList<String> memberIds) {
@@ -207,15 +170,22 @@ public final class WorldguardSyncManager {
             ); // Updates the region
         }
 
+        resetRegionFlags(region); // Resets all old flags
         region.setFlag(Main.BARBARIAN_BUILD, StateFlag.State.ALLOW); // Allow barbarians to build on regions of players
-        region.setFlag(Flags.BUILD, StateFlag.State.DENY);
 
         main.getOverworldRegionManager().save(); // Don't forget to save the region
         Log.success(chunk.getX() + "/" + chunk.getZ() + " is synced");
     }
 
+    public static void resetRegionFlags(ProtectedRegion region) {
+        Map<Flag<?>, Object> flags = region.getFlags();
+        for (Flag<?> flag : flags.keySet()) {
+            region.setFlag(flag, null);
+        }
+    }
+
     public static void showParticleEffectAtChunk(Chunk chunk, Location location, ParticleData particleData) {
-        List<Location> bounds = WorldguardSyncManager.getChunkBounds(chunk, location.getY() + 1.5);
+        List<Location> bounds = ChunkUtils.getChunkBounds(chunk, location.getY() + 1.5);
         List<Object> packets = new ArrayList<>();
         ParticleBuilder particle = new ParticleBuilder(ParticleEffect.DUST_COLOR_TRANSITION)
                 .setParticleData(particleData);

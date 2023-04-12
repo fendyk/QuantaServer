@@ -76,6 +76,7 @@ public class Main extends JavaPlugin implements Listener {
         api = new API(this);
 
         // Commands
+        new GeneralCommands();
         new PreferencesCommands();
         new TeleportationCommands();
         new EconomyCommands();
