@@ -13,6 +13,8 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -37,20 +39,23 @@ public class ConfirmCommandManager {
     public static void watch() {
         Bukkit.getScheduler().runTaskTimerAsynchronously(main, () -> {
             unconfirmedExpiresInSeconds.replaceAll((k, v) -> v - 4);
-            unconfirmedExpiresInSeconds.entrySet().removeIf(entry -> {
+
+            Iterator<Map.Entry<UUID, Long>> iterator = unconfirmedExpiresInSeconds.entrySet().iterator();
+
+            while (iterator.hasNext()) {
+                Map.Entry<UUID, Long> entry = iterator.next();
                 UUID uuid = entry.getKey();
                 Long seconds = entry.getValue();
 
-                if(seconds <= 0) {
+                if (seconds <= 0) {
                     unconfirmedStates.remove(uuid);
                     unconfirmedPayableCommands.remove(uuid);
-                    unconfirmedExpiresInSeconds.remove(uuid);
-                    return true;
+                    iterator.remove();
                 }
-                return false;
-            });
+            }
         }, 0, 80L);
     }
+
 
     /**
      * Checks if the player's command is unchecked
@@ -131,29 +136,44 @@ public class ConfirmCommandManager {
             player.sendMessage("It looks like you have not confirmed your command in time and has been expired.");
             return;
         }
-        unconfirmedStates.put(uuid, true);
         PayableCommand payableCommand = unconfirmedPayableCommands.get(uuid);
         String cmd = payableCommand.getCommand();
         double price = payableCommand.getPrice();
         double discountPercentage = payableCommand.getDiscountPercentage();
         double discountPrice = price * (1 - discountPercentage / 100);
 
-        boolean isPerformed = player.performCommand(cmd.substring(1));
-        if(!isPerformed) return;
+        // Verify balance exists
+        BigDecimal bal = main.getApi().getMinecraftUserAPI().getPlayerBalance(uuid);
+        if(bal == null) {
+            player.sendMessage(ChatColor.RED + "Could not find your balance.");
+            return;
+        }
 
+        // Verify balance is enough
+        double balDouble = bal.doubleValue();
+        if(balDouble < discountPrice) {
+            player.sendMessage(ChatColor.RED + "You have insufficient balance in your account." +
+                    " You need at least " + (discountPrice - balDouble) + " $QTA");
+            return;
+        }
+
+        // Verify if is withdrawn
         boolean isWithdrawn = main.getApi().getMinecraftUserAPI().withDrawBalance(player, new BigDecimal(discountPrice));
-
         if(!isWithdrawn) {
             player.sendMessage(ChatColor.RED + "Could not withdraw money.");
             return;
         }
+
+        // Perform command after checks
+        boolean isPerformed = player.performCommand(cmd.substring(1));
+        if(!isPerformed) return;
 
         player.sendActionBar(
                 Component.text("You've purchased the " + cmd + " command for " + String.format("%.4f", discountPrice) + " $QTA")
                         .color(NamedTextColor.GREEN)
         );
 
-
+        // Remove states
         unconfirmedStates.remove(uuid);
         unconfirmedPayableCommands.remove(uuid);
         unconfirmedExpiresInSeconds.remove(uuid);

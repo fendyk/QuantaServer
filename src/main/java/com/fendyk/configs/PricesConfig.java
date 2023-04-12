@@ -112,9 +112,6 @@ public class PricesConfig {
                 }
             }
 
-            Log.info("index:" + index);
-            Log.info("cmdName:" + cmdName);
-
             // Check if the command name or any of its aliases match
             if (commandName.equalsIgnoreCase(cmdName)) {
                 return true;

@@ -12,10 +12,7 @@ import com.fendyk.managers.WorldguardSyncManager;
 import com.fendyk.utilities.*;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandPermission;
-import dev.jorel.commandapi.arguments.BooleanArgument;
-import dev.jorel.commandapi.arguments.LiteralArgument;
-import dev.jorel.commandapi.arguments.PlayerArgument;
-import dev.jorel.commandapi.arguments.StringArgument;
+import dev.jorel.commandapi.arguments.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -115,11 +112,6 @@ public class LandCommands {
                                                 rankConfiguration.getDiscountPercentage()
                                         )
                                 );
-                                return;
-                            }
-                            boolean isWithdrawn = main.getApi().getMinecraftUserAPI().withDrawBalance(player, new BigDecimal(2000));
-                            if (!isWithdrawn) {
-                                player.sendMessage(ChatColor.RED + "Could not withdraw money.");
                                 return;
                             }
 
@@ -236,11 +228,6 @@ public class LandCommands {
                                         );
                                         return;
                                     }
-                                    boolean isWithdrawn = main.getApi().getMinecraftUserAPI().withDrawBalance(player, new BigDecimal(1500));
-                                    if (!isWithdrawn) {
-                                        player.sendMessage(ChatColor.RED + "Could not withdraw money.");
-                                        return;
-                                    }
 
                                     DateTime expireDate = new DateTime().plusDays(7);
                                     boolean isClaimed = api.getChunkAPI().claim(chunk, landDTO.getId(), true, expireDate);
@@ -348,11 +335,6 @@ public class LandCommands {
                                         );
                                         return;
                                     }
-                                    boolean isWithdrawn = main.getApi().getMinecraftUserAPI().withDrawBalance(player, new BigDecimal(1500));
-                                    if (!isWithdrawn) {
-                                        player.sendMessage(ChatColor.RED + "Could not withdraw money.");
-                                        return;
-                                    }
 
                                     boolean isClaimed = api.getChunkAPI().claim(chunk, landDTO.getId(), false, null);
                                     if (!isClaimed) {
@@ -411,11 +393,6 @@ public class LandCommands {
                                                 rankConfiguration.getDiscountPercentage()
                                         )
                                 );
-                                return;
-                            }
-                            boolean isWithdrawn = main.getApi().getMinecraftUserAPI().withDrawBalance(player, new BigDecimal(2));
-                            if (!isWithdrawn) {
-                                player.sendMessage(ChatColor.RED + "Could not withdraw money.");
                                 return;
                             }
 
@@ -551,11 +528,6 @@ public class LandCommands {
                                         );
                                         return;
                                     }
-                                    boolean isWithdrawn = main.getApi().getMinecraftUserAPI().withDrawBalance(player, new BigDecimal(2));
-                                    if (!isWithdrawn) {
-                                        player.sendMessage(ChatColor.RED + "Could not withdraw money.");
-                                        return;
-                                    }
 
                                     LocationDTO loc = taggedLocationDTO.get().getLocation();
 
@@ -616,11 +588,6 @@ public class LandCommands {
                                                         rankConfiguration.getDiscountPercentage()
                                                 )
                                         );
-                                        return;
-                                    }
-                                    boolean isWithdrawn = main.getApi().getMinecraftUserAPI().withDrawBalance(player, new BigDecimal(250));
-                                    if (!isWithdrawn) {
-                                        player.sendMessage(ChatColor.RED + "Could not withdraw money.");
                                         return;
                                     }
 
@@ -694,7 +661,7 @@ public class LandCommands {
                 .withSubcommand(new CommandAPICommand("member")
                         // ### /land member add <name> ###
                         .withSubcommand(new CommandAPICommand("add")
-                                .withArguments(new PlayerArgument("name"))
+                                .withArguments(new OfflinePlayerArgument("name"))
                                 .executesPlayer((player, args) -> {
                                     OfflinePlayer newMember = (OfflinePlayer) args[0];
                                     UUID uuid = player.getUniqueId();
@@ -739,11 +706,6 @@ public class LandCommands {
                                                         rankConfiguration.getDiscountPercentage()
                                                 )
                                         );
-                                        return;
-                                    }
-                                    boolean isWithdrawn = main.getApi().getMinecraftUserAPI().withDrawBalance(player, new BigDecimal(750));
-                                    if (!isWithdrawn) {
-                                        player.sendMessage(ChatColor.RED + "Could not withdraw money.");
                                         return;
                                     }
 
@@ -863,11 +825,6 @@ public class LandCommands {
                                                 rankConfiguration.getDiscountPercentage()
                                         )
                                 );
-                                return;
-                            }
-                            boolean isWithdrawn = main.getApi().getMinecraftUserAPI().withDrawBalance(player, new BigDecimal(2000));
-                            if (!isWithdrawn) {
-                                player.sendMessage(ChatColor.RED + "Could not withdraw money.");
                                 return;
                             }
 
