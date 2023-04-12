@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Fix for regions not being able to build if claimed">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/configs/PricesConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/configs/PricesConfig.java" afterDir="false" />
+    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Fix payable commands duplicating glitch and now performing command after balance check">
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/managers/ConfirmCommandManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/managers/ConfirmCommandManager.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -262,14 +259,7 @@
       <workItem from="1681149243086" duration="1924000" />
       <workItem from="1681199592372" duration="3081000" />
       <workItem from="1681241234204" duration="2669000" />
-      <workItem from="1681246740632" duration="9299000" />
-    </task>
-    <task id="LOCAL-00002" summary="remove: old messaging channels">
-      <created>1675545604168</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1675545604168</updated>
+      <workItem from="1681246740632" duration="9478000" />
     </task>
     <task id="LOCAL-00003" summary="feat: new commands added">
       <created>1675555629850</created>
@@ -607,7 +597,14 @@
       <option name="project" value="LOCAL" />
       <updated>1681339113222</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="Fix payable commands duplicating glitch and now performing command after balance check">
+      <created>1681341611348</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1681341611348</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -625,7 +622,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add redeem reward and more stuff" />
     <MESSAGE value="Add blacklist blocks to chunks" />
     <MESSAGE value="Add spawn now syncing based on proxy" />
     <MESSAGE value="Add more features to activity bossbar ui" />
@@ -650,6 +646,7 @@
     <MESSAGE value="Hotfix spawn and chunkloading" />
     <MESSAGE value="Hotfix null type with placeholder api" />
     <MESSAGE value="Fix for regions not being able to build if claimed" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix for regions not being able to build if claimed" />
+    <MESSAGE value="Fix payable commands duplicating glitch and now performing command after balance check" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix payable commands duplicating glitch and now performing command after balance check" />
   </component>
 </project>

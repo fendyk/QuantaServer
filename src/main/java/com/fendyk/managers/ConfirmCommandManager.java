@@ -164,6 +164,8 @@ public class ConfirmCommandManager {
             return;
         }
 
+        unconfirmedStates.put(uuid, true);
+
         // Perform command after checks
         boolean isPerformed = player.performCommand(cmd.substring(1));
         if(!isPerformed) return;
