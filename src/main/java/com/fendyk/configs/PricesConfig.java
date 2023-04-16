@@ -11,6 +11,11 @@ public class PricesConfig {
 
     Toml config;
     double teleportCommandPrice;
+    double landHomeSetPrice;
+    double landMemberAddPrice;
+    double landCreatePrice;
+    double landClaimPermanentPrice;
+    double landClaimExpirablePrice;
 
     HashMap<String, Integer> commandIndexes;
     HashMap<Integer, PayableCommand> commands;
@@ -24,8 +29,14 @@ public class PricesConfig {
         commands = new HashMap<>();
 
         config = new Toml("prices", "plugins/QuantaServer");
+        teleportCommandPrice = config.getOrSetDefault("teleportCommandPrice", 1);
 
-        teleportCommandPrice = config.getOrSetDefault("teleportCommandPrice", 1D);
+
+        landCreatePrice = config.getOrSetDefault("landCreatePrice", 1550);
+        landClaimPermanentPrice = config.getOrSetDefault("landClaimPermanentPrice", 3000);
+        landClaimExpirablePrice = config.getOrSetDefault("landClaimExpirablePrice", 1000);
+        landHomeSetPrice = config.getOrSetDefault("landHomeSetPrice", 250);
+        landMemberAddPrice = config.getOrSetDefault("landMemberAddPrice", 300);
 
         if (config.get("commands") == null) {
             config.setDefault("commands.spawn.command", "/gm");
@@ -132,4 +143,23 @@ public class PricesConfig {
         return commands.get(index);
     }
 
+    public double getLandHomeSetPrice() {
+        return landHomeSetPrice;
+    }
+
+    public double getLandCreatePrice() {
+        return landCreatePrice;
+    }
+
+    public double getLandClaimPermanentPrice() {
+        return landClaimPermanentPrice;
+    }
+
+    public double getLandClaimExpirablePrice() {
+        return landClaimExpirablePrice;
+    }
+
+    public double getLandMemberAddPrice() {
+        return landMemberAddPrice;
+    }
 }

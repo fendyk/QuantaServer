@@ -67,11 +67,11 @@ public class ConfirmCommandManager {
     }
 
     public static void requestCommandConfirmation(Player player, PayableCommand payableCommand) {
-        UUID uuid = player.getUniqueId();
-        String cmd = payableCommand.getCommand();
-        double price = payableCommand.getPrice();
-        long expires = payableCommand.getExpires();
-        double discountPercentage = payableCommand.getDiscountPercentage();
+        final UUID uuid = player.getUniqueId();
+        final String cmd = payableCommand.getCommand();
+        final double price = payableCommand.getPrice();
+        final long expires = payableCommand.getExpires();
+        final double discountPercentage = payableCommand.getDiscountPercentage();
 
         unconfirmedStates.put(uuid, false);
         unconfirmedPayableCommands.put(uuid, payableCommand);
@@ -131,26 +131,26 @@ public class ConfirmCommandManager {
     }
 
     public static void confirmedCommand(Player player) {
-        UUID uuid = player.getUniqueId();
+        final UUID uuid = player.getUniqueId();
         if(!unconfirmedPayableCommands.containsKey(uuid)) {
             player.sendMessage("It looks like you have not confirmed your command in time and has been expired.");
             return;
         }
-        PayableCommand payableCommand = unconfirmedPayableCommands.get(uuid);
-        String cmd = payableCommand.getCommand();
-        double price = payableCommand.getPrice();
-        double discountPercentage = payableCommand.getDiscountPercentage();
-        double discountPrice = price * (1 - discountPercentage / 100);
+        final PayableCommand payableCommand = unconfirmedPayableCommands.get(uuid);
+        final String cmd = payableCommand.getCommand();
+        final double price = payableCommand.getPrice();
+        final double discountPercentage = payableCommand.getDiscountPercentage();
+        final double discountPrice = Math.max(0, price * (1 - discountPercentage / 100));
 
         // Verify balance exists
-        BigDecimal bal = main.getApi().getMinecraftUserAPI().getPlayerBalance(uuid);
+        final BigDecimal bal = main.getApi().getMinecraftUserAPI().getPlayerBalance(uuid);
         if(bal == null) {
             player.sendMessage(ChatColor.RED + "Could not find your balance.");
             return;
         }
 
         // Verify balance is enough
-        double balDouble = bal.doubleValue();
+        final double balDouble = bal.doubleValue();
         if(balDouble < discountPrice) {
             player.sendMessage(ChatColor.RED + "You have insufficient balance in your account." +
                     " You need at least " + (discountPrice - balDouble) + " $QTA");
@@ -158,7 +158,7 @@ public class ConfirmCommandManager {
         }
 
         // Verify if is withdrawn
-        boolean isWithdrawn = main.getApi().getMinecraftUserAPI().withDrawBalance(player, new BigDecimal(discountPrice));
+        final boolean isWithdrawn = main.getApi().getMinecraftUserAPI().withDrawBalance(player, new BigDecimal(discountPrice));
         if(!isWithdrawn) {
             player.sendMessage(ChatColor.RED + "Could not withdraw money.");
             return;

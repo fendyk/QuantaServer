@@ -4,8 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Fix payable commands duplicating glitch and now performing command after balance check">
+    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Hotfix set unconfirmedCommand state to true before excecuting after balance check">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/GeneralCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/GeneralCommands.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/configs/PricesConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/configs/PricesConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/managers/ConfirmCommandManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/managers/ConfirmCommandManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/extentions/WorldGuardExtension.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/extentions/WorldGuardExtension.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -259,14 +264,10 @@
       <workItem from="1681149243086" duration="1924000" />
       <workItem from="1681199592372" duration="3081000" />
       <workItem from="1681241234204" duration="2669000" />
-      <workItem from="1681246740632" duration="9478000" />
-    </task>
-    <task id="LOCAL-00003" summary="feat: new commands added">
-      <created>1675555629850</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1675555629850</updated>
+      <workItem from="1681246740632" duration="15682000" />
+      <workItem from="1681395412239" duration="6000" />
+      <workItem from="1681399312558" duration="17000" />
+      <workItem from="1681685754044" duration="1421000" />
     </task>
     <task id="LOCAL-00004" summary="fix: withdraw not working properly">
       <created>1675556070236</created>
@@ -604,7 +605,14 @@
       <option name="project" value="LOCAL" />
       <updated>1681341611348</updated>
     </task>
-    <option name="localTasksCounter" value="52" />
+    <task id="LOCAL-00052" summary="Hotfix set unconfirmedCommand state to true before excecuting after balance check">
+      <created>1681341748379</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1681341748379</updated>
+    </task>
+    <option name="localTasksCounter" value="53" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -622,7 +630,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add blacklist blocks to chunks" />
     <MESSAGE value="Add spawn now syncing based on proxy" />
     <MESSAGE value="Add more features to activity bossbar ui" />
     <MESSAGE value="Fix for activities bossbar ui" />
@@ -647,6 +654,7 @@
     <MESSAGE value="Hotfix null type with placeholder api" />
     <MESSAGE value="Fix for regions not being able to build if claimed" />
     <MESSAGE value="Fix payable commands duplicating glitch and now performing command after balance check" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix payable commands duplicating glitch and now performing command after balance check" />
+    <MESSAGE value="Hotfix set unconfirmedCommand state to true before excecuting after balance check" />
+    <option name="LAST_COMMIT_MESSAGE" value="Hotfix set unconfirmedCommand state to true before excecuting after balance check" />
   </component>
 </project>

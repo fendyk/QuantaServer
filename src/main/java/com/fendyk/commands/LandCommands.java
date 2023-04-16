@@ -107,8 +107,8 @@ public class LandCommands {
                                         new PayableCommand(
                                                 "/land create " + name,
                                                 new ArrayList<>(),
-                                                2000,
-                                                30L,
+                                                main.getPricesConfig().getLandCreatePrice(),
+                                                60L,
                                                 rankConfiguration.getDiscountPercentage()
                                         )
                                 );
@@ -221,7 +221,7 @@ public class LandCommands {
                                                 new PayableCommand(
                                                         "/land claim expirable",
                                                         new ArrayList<>(),
-                                                        1500,
+                                                        main.getPricesConfig().getLandClaimExpirablePrice(),
                                                         30L,
                                                         rankConfiguration.getDiscountPercentage()
                                                 )
@@ -328,7 +328,7 @@ public class LandCommands {
                                                 new PayableCommand(
                                                         "/land claim permanent",
                                                         new ArrayList<>(),
-                                                        1500,
+                                                        main.getPricesConfig().getLandClaimPermanentPrice(),
                                                         30L,
                                                         rankConfiguration.getDiscountPercentage()
                                                 )
@@ -388,7 +388,7 @@ public class LandCommands {
                                         new PayableCommand(
                                                 "/land spawn",
                                                 new ArrayList<>(),
-                                                2,
+                                                main.getPricesConfig().getTeleportCommandPrice(),
                                                 30L,
                                                 rankConfiguration.getDiscountPercentage()
                                         )
@@ -521,7 +521,7 @@ public class LandCommands {
                                                 new PayableCommand(
                                                         "/land home tp " + name,
                                                         new ArrayList<>(),
-                                                        2,
+                                                        main.getPricesConfig().getTeleportCommandPrice(),
                                                         30L,
                                                         rankConfiguration.getDiscountPercentage()
                                                 )
@@ -583,7 +583,7 @@ public class LandCommands {
                                                 new PayableCommand(
                                                         "/land home set " + name,
                                                         new ArrayList<>(),
-                                                        250,
+                                                        main.getPricesConfig().getLandHomeSetPrice(),
                                                         30L,
                                                         rankConfiguration.getDiscountPercentage()
                                                 )
@@ -701,7 +701,7 @@ public class LandCommands {
                                                 new PayableCommand(
                                                         "/land member add " + newMember.getName(),
                                                         new ArrayList<>(),
-                                                        750,
+                                                        main.getPricesConfig().getLandMemberAddPrice(),
                                                         30L,
                                                         rankConfiguration.getDiscountPercentage()
                                                 )

@@ -36,20 +36,15 @@ public class WorldGuardExtension {
 
         // If the player is a member or owner of the region, check the barbarian-build flag (if they are in the barbarian group)
         if (isMemberOrOwner) {
-            Log.info("Is member/owner of land");
             if (user != null && user.getPrimaryGroup().equalsIgnoreCase("barbarian")) {
-                Log.info("Is barbarian");
                 StateFlag.State stateBarbarianBuild = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery().queryState(location1, localPlayer, Main.BARBARIAN_BUILD);
-                Log.info("allowed build barbarian: " + (stateBarbarianBuild == StateFlag.State.ALLOW));
                 return stateBarbarianBuild == StateFlag.State.ALLOW;
             }
-            Log.info("You should be able to build (non barbarian)");
             // If the player is not in the barbarian group, they can build
             return true;
         }
 
         // If the player is not a member or owner of the region, check if the build flag is set to ALLOW
-        Log.info("allowed build: " + (stateBuild == StateFlag.State.ALLOW));
         return stateBuild == StateFlag.State.ALLOW;
     }
 
