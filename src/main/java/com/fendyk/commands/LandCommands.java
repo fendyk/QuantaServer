@@ -794,7 +794,7 @@ public class LandCommands {
 
                             ChunkDTO chunkDTO = main.getApi().getChunkAPI().get(chunk);
                             if (chunkDTO == null || !ChunkAPI.isClaimable(chunkDTO)) {
-                                player.sendMessage(main.getMessagesConfig().getMessage(MessagesConfig.State.CHUNK_IS_NOT_CLAIMABLE));
+                                player.sendMessage("The chunk you're standing on is either non-claimable or not found. Maybe try to claim it first?");
                                 return;
                             }
 
@@ -802,6 +802,9 @@ public class LandCommands {
                                 player.sendMessage("This chunk is permanent and cannot be extended. Hooray ;)");
                                 return;
                             }
+
+                            // TODO: Fix extend
+                            LandDTO landDTO =
 
                             ValidateCommand validateCommand = new ValidateCommand.Builder(player)
                                     .checkPrimaryGroup()

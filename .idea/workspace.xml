@@ -4,13 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Hotfix set unconfirmedCommand state to true before excecuting after balance check">
+    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Add more config prices for in-game actions">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/GeneralCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/GeneralCommands.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/configs/PricesConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/configs/PricesConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/managers/ConfirmCommandManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/managers/ConfirmCommandManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/extentions/WorldGuardExtension.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/extentions/WorldGuardExtension.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/ActivityEarnings.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/ActivityEarnings.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -267,14 +264,8 @@
       <workItem from="1681246740632" duration="15682000" />
       <workItem from="1681395412239" duration="6000" />
       <workItem from="1681399312558" duration="17000" />
-      <workItem from="1681685754044" duration="1421000" />
-    </task>
-    <task id="LOCAL-00004" summary="fix: withdraw not working properly">
-      <created>1675556070236</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1675556070236</updated>
+      <workItem from="1681685754044" duration="1662000" />
+      <workItem from="1681687599653" duration="3318000" />
     </task>
     <task id="LOCAL-00005" summary="feat: play to earn">
       <created>1675721559531</created>
@@ -612,7 +603,14 @@
       <option name="project" value="LOCAL" />
       <updated>1681341748379</updated>
     </task>
-    <option name="localTasksCounter" value="53" />
+    <task id="LOCAL-00053" summary="Add more config prices for in-game actions">
+      <created>1681687409996</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1681687409996</updated>
+    </task>
+    <option name="localTasksCounter" value="54" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -630,7 +628,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add spawn now syncing based on proxy" />
     <MESSAGE value="Add more features to activity bossbar ui" />
     <MESSAGE value="Fix for activities bossbar ui" />
     <MESSAGE value="Add lots of stuff and fix for shadowjar" />
@@ -655,6 +652,7 @@
     <MESSAGE value="Fix for regions not being able to build if claimed" />
     <MESSAGE value="Fix payable commands duplicating glitch and now performing command after balance check" />
     <MESSAGE value="Hotfix set unconfirmedCommand state to true before excecuting after balance check" />
-    <option name="LAST_COMMIT_MESSAGE" value="Hotfix set unconfirmedCommand state to true before excecuting after balance check" />
+    <MESSAGE value="Add more config prices for in-game actions" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add more config prices for in-game actions" />
   </component>
 </project>

@@ -16,15 +16,19 @@ public class ActivityEarnings {
      * @return the new earnings
      */
     public static double getEarningsFromPvp(int dailyKills, int workers) {
-        EarningsConfig config = Main.getInstance().getEarningsConfig();
+        final EarningsConfig config = Main.getInstance().getEarningsConfig();
         final double reward = config.getPvpEarnings();
         final double threshold = config.getPvpThreshold();
         final int citizens = Math.min(workers, maxWorkers);
 
-        double root = Math.min(threshold, Math.max(threshold - dailyKills, 0) + Math.max(dailyKills - threshold + 1, 0));
-        double newEarnings = (Math.sqrt(root) * reward) * citizens;
-        double oldEarnings = (Math.sqrt(root + 1) * reward) * citizens;
-        return oldEarnings - newEarnings;
+        dailyKills = Math.max(dailyKills, 1); // ensure dailyOreMined is at least 1
+
+        // If we reached the threshold, return the maximum earnings.
+        if (dailyKills >= threshold) {
+            return reward * citizens;
+        }
+
+        return reward * citizens * (Math.exp((dailyKills / threshold) * Math.log(2)) - 1);
     }
 
     /**
@@ -34,15 +38,19 @@ public class ActivityEarnings {
      * @return the new earnings
      */
     public static double getEarningsFromTime(long secondsPlayed, long dailyTimePlayed, int workers) {
-        EarningsConfig config = Main.getInstance().getEarningsConfig();
+        final EarningsConfig config = Main.getInstance().getEarningsConfig();
         final double reward = config.getTimeEarnings();
         final double threshold = config.getTimeThreshold();
         final int citizens = Math.min(workers, maxWorkers);
 
-        double root = Math.min(threshold, Math.max(threshold - dailyTimePlayed - secondsPlayed, 0) + Math.max(secondsPlayed - threshold + 1, 0));
-        double newEarnings = (Math.sqrt(root) * reward) * citizens;
-        double oldEarnings = (Math.sqrt(root + secondsPlayed) * reward) * citizens;
-        return oldEarnings - newEarnings;
+        secondsPlayed = Math.max(secondsPlayed, 1); // ensure dailyOreMined is at least 1
+
+        // If we reached the threshold, return the maximum earnings.
+        if (secondsPlayed >= threshold) {
+            return reward * citizens;
+        }
+
+        return reward * citizens * (Math.exp((secondsPlayed / threshold) * Math.log(2)) - 1);
     }
 
     /**
@@ -53,7 +61,7 @@ public class ActivityEarnings {
      * @return the new earnings
      */
     public static double getEarningsFromMining(Material ore, int dailyOreMined, int workers) {
-        EarningsConfig config = Main.getInstance().getEarningsConfig();
+        final EarningsConfig config = Main.getInstance().getEarningsConfig();
         final double reward = config.getMaterialEarnings().get(ore);
         final double threshold = config.getMaterialThreshold().get(ore);
         final int citizens = Math.min(workers, maxWorkers);
@@ -75,15 +83,19 @@ public class ActivityEarnings {
      * @return the new earnings
      */
     public static double getEarningsFromPve(EntityType type, int dailyPveKills, int workers) {
-        EarningsConfig config = Main.getInstance().getEarningsConfig();
+        final EarningsConfig config = Main.getInstance().getEarningsConfig();
         final double reward = config.getEntityEarnings().get(type);
         final double threshold = config.getEntityThreshold().get(type);
         final int citizens = Math.min(workers, maxWorkers);
 
-        double root = Math.min(threshold, Math.max(threshold - dailyPveKills, 0) + Math.max(dailyPveKills - threshold + 1, 0));
-        double newEarnings = (Math.sqrt(root) * reward) * citizens;
-        double oldEarnings = (Math.sqrt(root + 1) * reward) * citizens;
-        return oldEarnings - newEarnings;
+        dailyPveKills = Math.max(dailyPveKills, 1); // ensure dailyOreMined is at least 1
+
+        // If we reached the threshold, return the maximum earnings.
+        if (dailyPveKills >= threshold) {
+            return reward * citizens;
+        }
+
+        return reward * citizens * (Math.exp((dailyPveKills / threshold) * Math.log(2)) - 1);
     }
 
 }
