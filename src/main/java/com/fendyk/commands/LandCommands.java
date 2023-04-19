@@ -6,7 +6,10 @@ import com.fendyk.DTOs.updates.UpdateChunkDTO;
 import com.fendyk.DTOs.updates.UpdateLandDTO;
 import com.fendyk.Main;
 import com.fendyk.clients.apis.ChunkAPI;
+import com.fendyk.clients.apis.LandAPI;
+import com.fendyk.clients.apis.MinecraftUserAPI;
 import com.fendyk.configs.MessagesConfig;
+import com.fendyk.configs.ServerConfig;
 import com.fendyk.managers.ConfirmCommandManager;
 import com.fendyk.managers.WorldguardSyncManager;
 import com.fendyk.utilities.*;
@@ -33,23 +36,33 @@ public class LandCommands {
 
     Main main = Main.getInstance();
 
-    public LandCommands(Main server) {
-        API api = server.getApi();
+    public LandCommands() {
+        final API api = main.getApi();
+        final ServerConfig serverConfig = main.getServerConfig();
+        final LandAPI landAPI = api.getLandAPI();
+        final ChunkAPI chunkAPI = api.getChunkAPI();
+        final MinecraftUserAPI minecraftUserAPI = api.getMinecraftUserAPI();
+        final World overworld = serverConfig.getOverworld();
+
+
         new CommandAPICommand("land")
                 // ### /land ###
                 .executesPlayer((player, args) -> {
                     UUID uuid = player.getUniqueId();
 
-                    LandDTO landDTO = main.getApi().getLandAPI().get(uuid);
+                    LandDTO landDTO = landAPI.get(uuid);
                     if (landDTO == null) {
-                        player.sendMessage("It looks like that you've not created a land yet. To create one, type: /land create <name>");
+                        player.sendMessage(PluginTextComponent.warning(
+                                "You have not created a land yet. To create one," +
+                                        " type /land create <name>"
+                        ));
                         return;
                     }
 
-                    player.sendMessage("ID: " + landDTO.getId());
-                    player.sendMessage("Name: " + landDTO.getName());
-                    player.sendMessage("Members: " + landDTO.getMemberIDs().size());
-                    player.sendMessage("Homes: " + landDTO.getHomes().size());
+                    player.sendMessage(PluginTextComponent.statistic("ID:", landDTO.getId()));
+                    player.sendMessage(PluginTextComponent.statistic("Name:", landDTO.getName()));
+                    player.sendMessage(PluginTextComponent.statistic("Member count:", String.valueOf(landDTO.getMemberIDs().size())));
+                    player.sendMessage(PluginTextComponent.statistic("Home count:", String.valueOf(landDTO.getHomes().size())));
                 })
                 // ### /land help ###
                 .withSubcommand(new CommandAPICommand("help")
@@ -72,21 +85,28 @@ public class LandCommands {
                             Chunk chunk = player.getChunk();
                             UUID uuid = player.getUniqueId();
 
-                            // Only continue if we're in the overworld
-                            if(!chunk.getWorld().equals(main.getServerConfig().getOverworld())) {
-                                player.sendMessage("You can only claim chunks in the overworld.");
+                            // Only continue if we're in the OverWorld
+                            if(!chunk.getWorld().equals(overworld)) {
+                                player.sendMessage(PluginTextComponent.error(
+                                        "You can only create land in the overworld")
+                                );
                                 return;
                             }
 
                             // Check if the player is within the blacklisted chunk radius
-                            if(main.getServerConfig().isWithinBlacklistedChunkRadius(player.getLocation())) {
-                                player.sendMessage("The chunk you're currently standing on is considered 'blacklisted' and not claimable.");
+                            if(serverConfig.isWithinBlacklistedChunkRadius(player.getLocation())) {
+                                player.sendMessage(PluginTextComponent.warning(
+                                        "The chunk you're currently standing on is considered " +
+                                                "'blacklisted' and not claimable."
+                                ));
                                 return;
                             }
 
-                            LandDTO landDTO = main.getApi().getLandAPI().get(uuid);
+                            LandDTO landDTO = landAPI.get(uuid);
                             if (landDTO != null) {
-                                player.sendMessage("You've already created a land. Lands can only be created once by one player.");
+                                player.sendMessage(PluginTextComponent.warning(
+                                        "You've already created a land. Lands can only be created once by one player."
+                                ));
                                 return;
                             }
 
@@ -96,9 +116,12 @@ public class LandCommands {
                                     .build();
 
                             if(!validateCommand.passed()) {
-                                player.sendMessage("We could not pass the validation of the command.");
+                                player.sendMessage(PluginTextComponent.error(
+                                        "We could not pass the validation of the command."
+                                ));
                                 return;
                             }
+
                             ValidateCommand.Builder builder = validateCommand.getBuilder();
                             RankConfiguration rankConfiguration = builder.getRankConfiguration();
 
@@ -116,7 +139,7 @@ public class LandCommands {
                             }
 
                             try {
-                                LandDTO landDTO1 = api.getLandAPI().create(player, name, chunk, player.getLocation());
+                                LandDTO landDTO1 = landAPI.create(player, name, chunk, player.getLocation());
                                 WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(16, 185, 129, 15));
                                 ParticleEffect.FIREWORKS_SPARK.display(player.getLocation());
                                 player.sendMessage("Your land has been created");
@@ -135,21 +158,29 @@ public class LandCommands {
                                     Chunk chunk = player.getChunk();
                                     UUID uuid = player.getUniqueId();
 
-                                    // Only continue if we're in the overworld
-                                    if(!chunk.getWorld().equals(main.getServerConfig().getOverworld())) {
-                                        player.sendMessage("You can only claim chunks in the overworld.");
+                                    // Only continue if we're in the OverWorld
+                                    if(!chunk.getWorld().equals(overworld)) {
+                                        player.sendMessage(PluginTextComponent.error(
+                                                "You can only create land in the overworld")
+                                        );
                                         return;
                                     }
 
                                     // Check if the player is within the blacklisted chunk radius
-                                    if(main.getServerConfig().isWithinBlacklistedChunkRadius(player.getLocation())) {
-                                        player.sendMessage("The chunk you're currently standing on is considered 'blacklisted' and not claimable.");
+                                    if(serverConfig.isWithinBlacklistedChunkRadius(player.getLocation())) {
+                                        player.sendMessage(PluginTextComponent.warning(
+                                                "The chunk you're currently standing on is considered " +
+                                                        "'blacklisted' and not claimable."
+                                        ));
                                         return;
                                     }
 
                                     LandDTO landDTO = api.getLandAPI().getRedis().get(player.getUniqueId().toString());
                                     if (landDTO == null) {
-                                        player.sendMessage("You currently dont have a land. To create one, type /land create <name>");
+                                        player.sendMessage(PluginTextComponent.warning(
+                                                "You currently dont have a land. To create one," +
+                                                        " type /land create <name>"
+                                        ));
                                         return;
                                     }
 
@@ -778,34 +809,60 @@ public class LandCommands {
                 // ### /land extend ###
                 .withSubcommand(new CommandAPICommand("extend")
                         .executesPlayer((player, args) -> {
-                            Chunk chunk = player.getChunk();
+                            final Chunk chunk = player.getChunk();
+                            final UUID playerUuid = player.getUniqueId();
+                            final World currentWorld = chunk.getWorld();
 
-                            // Only continue if we're in the overworld
-                            if(!chunk.getWorld().equals(main.getServerConfig().getOverworld())) {
+                            // Only continue if we're in the OverWorld
+                            if(!currentWorld.equals(overworld)) {
                                 player.sendMessage("You can only extend chunks in the overworld.");
                                 return;
                             }
 
                             // Check if the player is within the blacklisted chunk radius
-                            if(main.getServerConfig().isWithinBlacklistedChunkRadius(player.getLocation())) {
+                            if(serverConfig.isWithinBlacklistedChunkRadius(player.getLocation())) {
                                 player.sendMessage("The chunk you're currently standing on is considered 'blacklisted' and not claimable.");
                                 return;
                             }
 
                             ChunkDTO chunkDTO = main.getApi().getChunkAPI().get(chunk);
+
+                            // Verify if the chunk is null or not claimable.
+                            // Players should be required to claim the land
+                            // they're standing on
                             if (chunkDTO == null || !ChunkAPI.isClaimable(chunkDTO)) {
                                 player.sendMessage("The chunk you're standing on is either non-claimable or not found. Maybe try to claim it first?");
                                 return;
                             }
 
+                            final String landId = chunkDTO.getLandId();
+
+                            // Verify if the chunk can expire. This is
+                            // required because we're checking for 'expirable'
+                            // chunks only.
                             if(!chunkDTO.canExpire()) {
-                                player.sendMessage("This chunk is permanent and cannot be extended. Hooray ;)");
+                                player.sendMessage(PluginTextComponent.warning("This thunk is permanent and cannot be extended."));
                                 return;
                             }
 
-                            // TODO: Fix extend
-                            LandDTO landDTO =
+                            LandDTO landDTO = main.getApi().getLandAPI().get(landId);
 
+                            // Verify again if we actually have a land with the chunkId.
+                            // This will prevent players from accessing the command and
+                            // claiming land that is not theirs.
+                            if(landDTO == null) {
+                                player.sendMessage("You cannot extend an unclaimed chunk.");
+                                return;
+                            }
+
+                            // Verify if the chunk is actually owner by the player. You
+                            // can only extend your own chunks.
+                            if(!UUID.fromString(landDTO.getOwnerId()).equals(playerUuid)) {
+                                player.sendMessage("This land is not yours.");
+                                return;
+                            }
+
+                            // Go through the validation process of the player.
                             ValidateCommand validateCommand = new ValidateCommand.Builder(player)
                                     .checkPrimaryGroup()
                                     .checkRankConfiguration()
@@ -818,12 +875,13 @@ public class LandCommands {
                             ValidateCommand.Builder builder = validateCommand.getBuilder();
                             RankConfiguration rankConfiguration = builder.getRankConfiguration();
 
+                            // Make a new payable command.
                             if (!ConfirmCommandManager.isConfirmed(player)) {
                                 ConfirmCommandManager.requestCommandConfirmation(player,
                                         new PayableCommand(
                                                 "/land extend",
                                                 new ArrayList<>(),
-                                                2000,
+                                                2000, // TODO: PricesConfig
                                                 30L,
                                                 rankConfiguration.getDiscountPercentage()
                                         )
@@ -831,14 +889,15 @@ public class LandCommands {
                                 return;
                             }
 
-                            boolean isExtended = main.getApi().getChunkAPI().extend(chunk, 7);
+                            final int dayCount = 7;
+                            boolean isExtended = main.getApi().getChunkAPI().extend(chunk, dayCount);
 
                             if(!isExtended) {
                                 player.sendMessage("Oops, Could not extend your land.");
                                 return;
                             }
 
-                            player.sendMessage("We've extended your chunk with another 7 days. Do keep in mind that only counts for the chunk you're standing on.");
+                            player.sendMessage("We've extended your chunk with another " + dayCount + " days. Do keep in mind that only counts for the chunk you're standing on.");
 
                         })
                 )

@@ -18,6 +18,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecraftUser, UUID, MinecraftUserDTO> {
 
@@ -31,10 +32,16 @@ public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecra
      * @return
      */
     @Nullable
-    public BigDecimal getPlayerBalance(UUID player) {
-        MinecraftUserDTO minecraftUser = get(player);
-        if(minecraftUser == null) return null;
-        return BigDecimal.valueOf(minecraftUser.getQuanta());
+    public CompletableFuture<Double> getPlayerBalance(UUID player) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                CompletableFuture<MinecraftUserDTO> awaitMinecraftUser = get(player);
+                if(!awaitMinecraftUser.isDone()) throw new Exception("Could not find");
+                return awaitMinecraftUser.get().getQuanta();
+            } catch (Exception e) {
+                return null;
+            }
+        });
     }
 
     /**
@@ -42,11 +49,16 @@ public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecra
      * @param player
      * @return
      */
-    @Nullable
-    public MinecraftUserDTO get(UUID player) {
-        MinecraftUserDTO dto = redis.get(player);
-        cachedRecords.put(player, dto);
-        return dto;
+    public CompletableFuture<MinecraftUserDTO> get(UUID player) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                MinecraftUserDTO dto = redis.get(player);
+                cachedRecords.put(player, dto);
+                return dto;
+            } catch(Exception e) {
+                return null;
+            }
+        });
     }
 
     /**

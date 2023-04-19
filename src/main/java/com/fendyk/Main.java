@@ -82,7 +82,7 @@ public class Main extends JavaPlugin implements Listener {
         new EconomyCommands();
         new ConfirmCommands();
         new QuantaCommands();
-        new LandCommands(this);
+        new LandCommands();
         new ActivityCommands(api);
         new RewardCommands(this);
 

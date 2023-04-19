@@ -8,7 +8,7 @@ public class MinecraftUserDTO {
     String id;
     String userId;
     Date authorizeExpireDate;
-    Float quanta;
+    Double quanta;
     ArrayList<TaggedLocationDTO> homes;
     ArrayList<String> memberLandIDs;
     ArrayList<SubscriptionRewardDTO> subscriptionRewards;
@@ -38,7 +38,7 @@ public class MinecraftUserDTO {
     }
 
 
-    public Float getQuanta() {
+    public Double getQuanta() {
         return quanta;
     }
 

@@ -1,11 +1,14 @@
 package com.fendyk.commands;
 
+import com.fendyk.DTOs.LandDTO;
 import com.fendyk.DTOs.MinecraftUserDTO;
 import com.fendyk.Main;
 import com.fendyk.utilities.RankConfiguration;
 import net.luckperms.api.model.user.User;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+
+import java.util.UUID;
 
 public class ValidateCommand {
     private Main main = Main.getInstance();
@@ -28,6 +31,7 @@ public class ValidateCommand {
         private Player player;
         private User user;
         private MinecraftUserDTO minecraftUserDTO;
+        private LandDTO landDTO;
         private String primaryGroup;
         private RankConfiguration rankConfiguration;
 
@@ -68,11 +72,22 @@ public class ValidateCommand {
             }
         }
 
+        private void validateLandDTO() {
+            if (landDTO != null) {
+                return;
+            }
+            this.landDTO = main.getApi().getLandAPI().get(minecraftUserDTO.getUserId());
+            if (landDTO == null) {
+                passed = false;
+                player.sendMessage("We could not determine your land");
+                throw new IllegalStateException("Land data could not be determined");
+            }
+        }
+
         private void validatePrimaryGroup() {
             if (primaryGroup != null) {
                 return;
             }
-            validateUser();
             this.primaryGroup = user.getPrimaryGroup();
         }
 
@@ -80,7 +95,6 @@ public class ValidateCommand {
             if (rankConfiguration != null) {
                 return;
             }
-            validatePrimaryGroup();
             this.rankConfiguration = main.getRanksConfig().getRankConfiguration(primaryGroup);
             if (rankConfiguration == null) {
                 passed = false;
@@ -106,19 +120,21 @@ public class ValidateCommand {
 
 
         public Builder checkPrimaryGroup() {
+            validateUser();
             validatePrimaryGroup();
             return this;
         }
 
         public Builder checkRankConfiguration() {
+            validateUser();
+            validatePrimaryGroup();
             validateRankConfiguration();
             return this;
         }
 
-        // Another function that requires the user
-        public Builder anotherFunction() {
-            validateUser();
-            // Your function logic here
+        public Builder checkLandDTO() {
+            validateMinecraftUserDTO();
+            validateLandDTO();
             return this;
         }
 
@@ -126,6 +142,15 @@ public class ValidateCommand {
         public Builder anotherFunctionNeedsRankConfiguration() {
             validateRankConfiguration();
             // Your function logic here
+            return this;
+        }
+
+        public Builder isPlayerOwnerOfLand(Player player, LandDTO landDTO) {
+            boolean isOwner = UUID.fromString(landDTO.getOwnerId()).equals(player.getUniqueId());
+            if(!isOwner) {
+
+                passed = false;
+            }
             return this;
         }
 

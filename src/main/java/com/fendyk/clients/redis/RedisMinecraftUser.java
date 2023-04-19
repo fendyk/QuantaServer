@@ -10,30 +10,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class RedisMinecraftUser extends RedisAPI<UUID, MinecraftUserDTO> {
+public class RedisMinecraftUser extends RedisAPI<MinecraftUserDTO> {
 
-    public RedisMinecraftUser(Main server,
-                     RedisClient client,
-                     boolean inDebugMode,
-                     ArrayList<RedisPubSubListener<String, String>> listeners,
-                     ArrayList<String> subscriptions) {
-        super(server, client, inDebugMode, listeners, subscriptions);
-    }
-
-    public MinecraftUserDTO get(UUID player) {
-        return Main.gson.fromJson(
-                getCache("minecraftuser:" + player.toString()),
-                MinecraftUserDTO.class
-        );
-    }
-
-    public boolean set(UUID player, MinecraftUserDTO data) {
-        return setCache("minecraftuser:" + player.toString(), Main.gson.toJson(data));
-    }
-
-    @Override
-    public boolean exists(UUID key) {
-        return false;
+    public RedisMinecraftUser(String key,
+                     Class<MinecraftUserDTO> dtoType) {
+        super(key, dtoType);
     }
 
 }
