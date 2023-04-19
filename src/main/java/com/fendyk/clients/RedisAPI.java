@@ -19,7 +19,6 @@ import java.util.concurrent.CompletableFuture;
 
 public abstract class RedisAPI<DTO> {
     static Main main = Main.getInstance();
-    static protected final boolean inDebugMode = main.getServerConfig().isInDebugMode();
     static protected RedisClient client = RedisClient.create(main.getServerConfig().getRedisUrl());
     static protected StatefulRedisConnection<String, String> connection = client.connect();
     static protected StatefulRedisPubSubConnection<String, String> pubSubConnection = client.connectPubSub();
@@ -36,23 +35,10 @@ public abstract class RedisAPI<DTO> {
         this.dtoType = dtoType;
     }
 
-    public static void setListeners(ArrayList<RedisPubSubListener<String, String>> listeners) {
-        listeners.forEach((RedisPubSubListener<String, String> k) -> {
-            RedisAPI.pubSubConnection.addListener(k);
-        });
-
-        RedisAPI.pubSubCommands = pubSubConnection.sync();
-    }
-
-    public static void setSubscriptions(ArrayList<String> subscriptions) {
-        subscriptions.forEach((String k) -> {
-            RedisAPI.pubSubCommands.subscribe(k);
-        });
-    }
-
     public CompletableFuture<DTO> get(String key) {
         return CompletableFuture.supplyAsync(() -> {
             try {
+                final boolean inDebugMode = main.getServerConfig().isInDebugMode();
                 final String data = syncCommands.get(redisKey + key);
                 if (inDebugMode) {
                     Log.info("");
@@ -81,6 +67,7 @@ public abstract class RedisAPI<DTO> {
     public CompletableFuture<Boolean> set(String key, DTO data) {
         return CompletableFuture.supplyAsync(() -> {
             try {
+                final boolean inDebugMode = main.getServerConfig().isInDebugMode();
                 final String result = syncCommands.set(redisKey + key, Main.gson.toJson(data));
                 if (inDebugMode) {
                     Log.info("");
@@ -98,6 +85,7 @@ public abstract class RedisAPI<DTO> {
     public CompletableFuture<Boolean> exists(String key) {
         return CompletableFuture.supplyAsync(() -> {
             try {
+                final boolean inDebugMode = main.getServerConfig().isInDebugMode();
                 final Long amount = syncCommands.exists(redisKey + key);
                 final boolean exists = amount > 0;
                 if (inDebugMode) {
@@ -111,6 +99,27 @@ public abstract class RedisAPI<DTO> {
                 return false;
             }
         });
+    }
+
+    public static void setListeners(ArrayList<RedisPubSubListener<String, String>> listeners) {
+        listeners.forEach((RedisPubSubListener<String, String> k) -> {
+            RedisAPI.pubSubConnection.addListener(k);
+        });
+
+        RedisAPI.pubSubCommands = pubSubConnection.sync();
+    }
+
+    public static void setSubscriptions(ArrayList<String> subscriptions) {
+        subscriptions.forEach((String k) -> {
+            RedisAPI.pubSubCommands.subscribe(k);
+        });
+    }
+
+    public static void connect(String url) {
+        client = RedisClient.create(main.getServerConfig().getRedisUrl());
+        connection = client.connect();
+        pubSubConnection = client.connectPubSub();
+        syncCommands = connection.sync();
     }
 
     public static RedisClient getClient() {

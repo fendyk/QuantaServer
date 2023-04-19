@@ -1,10 +1,8 @@
 package com.fendyk.DTOs;
 
-import com.fendyk.clients.redis.RedisBlacklistedBlock;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class ChunkDTO {
 

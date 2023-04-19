@@ -12,9 +12,8 @@ import java.util.UUID;
 
 public class RedisMinecraftUser extends RedisAPI<MinecraftUserDTO> {
 
-    public RedisMinecraftUser(String key,
-                     Class<MinecraftUserDTO> dtoType) {
-        super(key, dtoType);
+    public RedisMinecraftUser(String key) {
+        super(key, MinecraftUserDTO.class);
     }
 
 }

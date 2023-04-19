@@ -29,6 +29,7 @@ public class API {
     ChunkAPI chunkAPI;
 
     public API(Main server) {
+        ServerConfig serverConfig = main.getServerConfig();
         String redisUrl = serverConfig.getRedisUrl();
         String apiUrl = serverConfig.getApiUrl();
         String jwtToken = serverConfig.getJwtToken();
@@ -43,47 +44,43 @@ public class API {
         subscriptions.add("chunk");
         subscriptions.add("land");
 
+        // Make the connection to redis
+        RedisAPI.connect(redisUrl);
         RedisAPI.setListeners(listeners);
         RedisAPI.setSubscriptions(subscriptions);
 
         if(!RedisAPI.getConnection().isOpen()) {
             Log.error("Could not connect to redis, is the server offline?");
         }
-
         Log.success("Connection to the redis server has been successful!");
 
         activitiesAPI = new ActivitiesAPI(
                 this,
-                new FetchActivities(server, apiUrl, inDebugMode, jwtToken),
-                new RedisActivities(server, client, inDebugMode, null, null)
+                new FetchActivities("/activities"),
+                new RedisActivities("activities:")
         );
 
         minecraftUserAPI = new MinecraftUserAPI(
                 this,
-                new FetchMinecraftUser(server, apiUrl, inDebugMode, jwtToken),
-                new RedisMinecraftUser("minecraftuser:", MinecraftUserDTO.class)
+                new FetchMinecraftUser("/minecraftusers"),
+                new RedisMinecraftUser("minecraftuser:")
         );
 
         landAPI = new LandAPI(
                 this,
-                new FetchLand(server, apiUrl, inDebugMode, jwtToken),
-                new RedisLand(server, client, inDebugMode, null, null)
+                new FetchLand("/lands"),
+                new RedisLand("land:")
         );
 
         chunkAPI = new ChunkAPI(
                 this,
-                new FetchChunk(server, apiUrl, inDebugMode, jwtToken),
-                new RedisChunk(server, client, inDebugMode, null, null)
+                new FetchChunk("/chunks"),
+                new RedisChunk("chunk:")
         );
 
     }
 
-    public RedisClient getClient() {
-        return client;
-    }
-
     public ActivitiesAPI getActivitiesAPI() {return activitiesAPI;}
-    public FetchAPI<String, Object, Object> getFetchAPI() {return fetchAPI;}
     public MinecraftUserAPI getMinecraftUserAPI() {return this.minecraftUserAPI;}
     public LandAPI getLandAPI() {return this.landAPI;}
     public ChunkAPI getChunkAPI() {return this.chunkAPI;}
