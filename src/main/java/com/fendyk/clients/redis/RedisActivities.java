@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class RedisActivities extends RedisAPI<ActivitiesDTO> {
-    public RedisActivities(String key) {
-        super(key, ActivitiesDTO.class);
+    public RedisActivities() {
+        super("activities:", ActivitiesDTO.class);
     }
 }

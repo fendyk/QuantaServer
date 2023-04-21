@@ -9,54 +9,31 @@ import okhttp3.RequestBody;
 import org.bukkit.Bukkit;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class FetchLand extends FetchAPI<String, LandDTO, UpdateLandDTO> {
 
-    public FetchLand(Main server, String url, boolean inDebugMode, String apiKey) {
-        super(server, url, inDebugMode, apiKey);
+    public FetchLand() {
+        super(LandDTO.class);
     }
 
     @Override
-    public LandDTO get(String key) {
-        Request request = this.requestBuilder
-                .url(url + "/lands/" + key)
-                .get()
-                .build();
-        return Main.gson.fromJson(
-                fetchFromApi(request, "fetchLandByKey"),
-                LandDTO.class
-        );
+    public CompletableFuture<LandDTO> get(String key) {
+        return fetch("/lands/" + key, RequestMethod.GET, null);
     }
 
     @Override
-    public LandDTO create(LandDTO data) {
-        RequestBody body = RequestBody.create(Main.gson.toJson(data), JSON);
-        Request request = this.requestBuilder
-                .url(url + "/lands")
-                .post(body)
-                .build();
-        return Main.gson.fromJson(
-                fetchFromApi(request, "createLand"),
-                LandDTO.class
-        );
+    public CompletableFuture<LandDTO> create(LandDTO data) {
+        return fetch("/lands", RequestMethod.POST, data);
     }
 
     @Override
-    public LandDTO update(String key, UpdateLandDTO data) {
-        Bukkit.getLogger().info(Main.gson.toJson(data));
-        RequestBody body = RequestBody.create(Main.gson.toJson(data), JSON);
-        Request request = this.requestBuilder
-                .url(url + "/lands/" + key)
-                .patch(body)
-                .build();
-        return Main.gson.fromJson(
-                fetchFromApi(request, "updateLand"),
-                LandDTO.class
-        );
+    public CompletableFuture<LandDTO> update(String key, UpdateLandDTO data) {
+        return fetch("/lands/" + key, RequestMethod.PATCH, data);
     }
 
     @Override
-    public LandDTO delete(String key) {
+    public CompletableFuture<LandDTO> delete(String key) {
         return null;
     }
 }

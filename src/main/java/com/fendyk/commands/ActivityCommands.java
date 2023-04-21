@@ -20,7 +20,7 @@ public class ActivityCommands {
                     .executes((sender, args) -> {
                         Player player = (Player) sender;
 
-                        ActivitiesDTO activitiesDTO = api.getActivitiesAPI().getRedis().get(player.getUniqueId());
+                        ActivitiesDTO activitiesDTO = api.getActivitiesAPI().redis.get(player.getUniqueId());
                         if(activitiesDTO == null) {
                             player.sendMessage("Could not find TIME activity.");
                             return;
@@ -36,7 +36,7 @@ public class ActivityCommands {
                         .executes((sender, args) -> {
                             Player player = (Player) sender;
 
-                            ActivitiesDTO activitiesDTO = api.getActivitiesAPI().getRedis().get(player.getUniqueId());
+                            ActivitiesDTO activitiesDTO = api.getActivitiesAPI().redis.get(player.getUniqueId());
                             if(activitiesDTO == null || activitiesDTO.getPve() == null || activitiesDTO.getPve().size() < 1) {
                                 player.sendMessage("Could not find PVE activities.");
                                 return;
@@ -54,7 +54,7 @@ public class ActivityCommands {
                         .executes((sender, args) -> {
                             Player player = (Player) sender;
 
-                            ActivitiesDTO activitiesDTO = api.getActivitiesAPI().getRedis().get(player.getUniqueId());
+                            ActivitiesDTO activitiesDTO = api.getActivitiesAPI().redis.get(player.getUniqueId());
                             if(activitiesDTO == null || activitiesDTO.getPvp() == null || activitiesDTO.getPvp().size() < 1) {
                                 player.sendMessage("Could not find PVP activities.");
                                 return;
@@ -72,7 +72,7 @@ public class ActivityCommands {
                         .executes((sender, args) -> {
                             Player player = (Player) sender;
 
-                            ActivitiesDTO activitiesDTO = api.getActivitiesAPI().getRedis().get(player.getUniqueId());
+                            ActivitiesDTO activitiesDTO = api.getActivitiesAPI().redis.get(player.getUniqueId());
                             if(activitiesDTO == null || activitiesDTO.getMining() == null || activitiesDTO.getMining().size() < 1) {
                                 player.sendMessage("Could not find MINING activities.");
                                 return;

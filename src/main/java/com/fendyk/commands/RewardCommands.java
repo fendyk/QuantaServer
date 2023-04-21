@@ -36,7 +36,7 @@ public class RewardCommands {
                             double crateKeys = 0;
 
                             UpdateMinecraftUserDTO update = new UpdateMinecraftUserDTO();
-                            List<SubscriptionRewardDTO> unclaimedSubscriptionRewards = minecraftUserDTO.getSubscriptionRewards().stream().filter(s -> !s.isClaimed()).toList();
+                            List<SubscriptionRewardDTO> unclaimedSubscriptionRewards = minecraftUserDTO.subscriptionRewards.stream().filter(s -> !s.isClaimed()).toList();
 
                             if(unclaimedSubscriptionRewards.size() < 1) {
                                 player.sendMessage("We've detected no open subscription rewards. Maybe you've already claimed them all.");

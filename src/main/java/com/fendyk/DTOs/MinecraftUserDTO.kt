@@ -1,58 +1,24 @@
-package com.fendyk.DTOs;
+package com.fendyk.DTOs
 
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*
 
-public class MinecraftUserDTO {
+data class MinecraftUserDTO(val id: String) {
 
-    String id;
-    String userId;
-    Date authorizeExpireDate;
-    Double quanta;
-    ArrayList<TaggedLocationDTO> homes;
-    ArrayList<String> memberLandIDs;
-    ArrayList<SubscriptionRewardDTO> subscriptionRewards;
-    LocationDTO lastLocation;
+    @JvmField
+    var userId: String? = null
 
-    public MinecraftUserDTO() {
-        this.homes = new ArrayList<>();
-        this.memberLandIDs = new ArrayList<>();
-        this.subscriptionRewards = new ArrayList<>();
-    }
+    var authorizeExpireDate: Date? = null
 
-    public ArrayList<SubscriptionRewardDTO> getSubscriptionRewards() {return subscriptionRewards;}
+    @JvmField
+    var quanta: Double? = null
 
+    var homes: ArrayList<TaggedLocationDTO> = ArrayList()
+    var memberLandIDs: ArrayList<String> = ArrayList()
 
-    public String getId() {
-        return id;
-    }
+    @JvmField
+    var subscriptionRewards: ArrayList<SubscriptionRewardDTO> = ArrayList()
 
+    @JvmField
+    var lastLocation: LocationDTO? = null
 
-    public String getUserId() {
-        return userId;
-    }
-
-
-    public Date getAuthorizeExpireDate() {
-        return authorizeExpireDate;
-    }
-
-
-    public Double getQuanta() {
-        return quanta;
-    }
-
-
-    public ArrayList<TaggedLocationDTO> getHomes() {
-        return homes;
-    }
-
-
-    public ArrayList<String> getMemberLandIDs() {
-        return memberLandIDs;
-    }
-
-    public LocationDTO getLastLocation() {
-        return lastLocation;
-    }
 }

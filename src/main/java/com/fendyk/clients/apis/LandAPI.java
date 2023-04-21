@@ -89,7 +89,7 @@ public class LandAPI extends ClientAPI<FetchLand, RedisLand, String, LandDTO> {
      * @return LandDTO or null if not found
      */
     public LandDTO get(String id) {
-        LandDTO dto = getRedis().get(id);
+        LandDTO dto = redis.get(id);
         cachedRecords.put(id, dto);
         return dto;
     }
@@ -100,7 +100,7 @@ public class LandAPI extends ClientAPI<FetchLand, RedisLand, String, LandDTO> {
      * @return LandDTO or null if not found
      */
     public LandDTO get(UUID player) {
-        LandDTO dto =  getRedis().get(player.toString());
+        LandDTO dto =  redis.get(player.toString());
         cachedRecords.put(player.toString(), dto);
         return dto;
     }

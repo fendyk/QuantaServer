@@ -82,7 +82,7 @@ public class TeleportationCommands {
                     if(validateCommand.passed()) {
                         ValidateCommand.Builder builder = validateCommand.getBuilder();
                         Location playerLocation = player.getLocation();
-                        Location targetLocation = LocationDTO.toLocation(builder.getMinecraftUserDTO().getLastLocation());
+                        Location targetLocation = LocationDTO.toLocation(builder.getMinecraftUserDTO().lastLocation);
 
                         // Calculate the distance in blocks between both locations
                         double basePrice = main.getPricesConfig().getTeleportCommandPrice(); // example base price

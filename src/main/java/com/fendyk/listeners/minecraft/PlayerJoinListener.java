@@ -59,7 +59,7 @@ public class PlayerJoinListener implements Listener {
         // Verify if user still has a reward that needs to be claimed
         if(minecraftUserDTO != null) {
             Bukkit.getLogger().info("Found it");
-            List<SubscriptionRewardDTO> subscriptions = minecraftUserDTO.getSubscriptionRewards().stream().filter(s -> !s.isClaimed()).toList();
+            List<SubscriptionRewardDTO> subscriptions = minecraftUserDTO.subscriptionRewards.stream().filter(s -> !s.isClaimed()).toList();
 
             Bukkit.getLogger().info(subscriptions.size() + " :");
             if(subscriptions.size() > 0) {

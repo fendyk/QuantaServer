@@ -79,7 +79,7 @@ public class BlockBreakListener implements Listener {
                 }
             }
 
-            ActivitiesDTO activitiesDTO = server.getApi().getActivitiesAPI().getRedis().get(player.getUniqueId());
+            ActivitiesDTO activitiesDTO = server.getApi().getActivitiesAPI().redis.get(player.getUniqueId());
             double amount;
 
             if (activitiesDTO == null) {
@@ -100,7 +100,7 @@ public class BlockBreakListener implements Listener {
             updateActivitiesDTO.setMining(activities);
 
             api.getMinecraftUserAPI().depositBalance(player, new BigDecimal(amount));
-            ActivitiesDTO updatedActivities = api.getActivitiesAPI().getFetch().update(player.getUniqueId(), updateActivitiesDTO);
+            ActivitiesDTO updatedActivities = api.getActivitiesAPI().fetch.update(player.getUniqueId(), updateActivitiesDTO);
 
             player.sendActionBar(
                     Component.text("+" + String.format("%.8f", amount) + " $QTA")

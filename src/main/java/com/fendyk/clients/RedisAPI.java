@@ -54,10 +54,7 @@ public abstract class RedisAPI<DTO> {
 
                 if(data == null) throw new Exception("Redis data is null");
 
-                JsonElement jsonElement = data.length() < 1 ? JsonNull.INSTANCE.getAsJsonNull() :
-                        JsonParser.parseString(data).getAsJsonObject();
-
-                return Main.gson.fromJson(jsonElement, dtoType);
+                return Main.gson.fromJson(data, dtoType);
             } catch (Exception e) {
                 return null;
             }

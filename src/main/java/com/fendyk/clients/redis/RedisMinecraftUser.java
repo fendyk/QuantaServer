@@ -11,9 +11,8 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class RedisMinecraftUser extends RedisAPI<MinecraftUserDTO> {
-
-    public RedisMinecraftUser(String key) {
-        super(key, MinecraftUserDTO.class);
+    public RedisMinecraftUser() {
+        super("minecraftuser:", MinecraftUserDTO.class);
     }
 
 }

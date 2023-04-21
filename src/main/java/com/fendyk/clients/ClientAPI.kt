@@ -1,37 +1,16 @@
-package com.fendyk.clients;
+package com.fendyk.clients
 
-import com.fendyk.API;
+abstract class ClientAPI<FetchAPI, RedisAPI, Key, DTO>(@JvmField var fetch: FetchAPI, @JvmField var redis: RedisAPI) {
 
-import java.util.HashMap;
-
-public abstract class ClientAPI<FetchAPI, RedisAPI, Key, DTO> {
-    protected API api;
-    protected FetchAPI fetch;
-    protected RedisAPI redis;
-
-    protected HashMap<Key, DTO> cachedRecords = new HashMap<>();
-
-    public ClientAPI(API api, FetchAPI fetch, RedisAPI redis) {
-        this.api = api;
-        this.fetch = fetch;
-        this.redis = redis;
-    }
-    public FetchAPI getFetch() {
-        return fetch;
-    }
-
-    public RedisAPI getRedis() {
-        return redis;
-    }
-
+    @JvmField
+    protected var cachedRecords = HashMap<Key, DTO>()
 
     /**
      * Returns the cached player, pure for UI/Visuals that require loads of updates only.
      * @param key
      * @return DTO
      */
-    public DTO getCached(Key key) {
-        return cachedRecords.get(key);
+    fun getCached(key: Key): DTO? {
+        return cachedRecords[key]
     }
-
 }

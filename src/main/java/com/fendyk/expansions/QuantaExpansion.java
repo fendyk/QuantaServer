@@ -42,7 +42,7 @@ public class QuantaExpansion extends PlaceholderExpansion {
         if(params.equalsIgnoreCase("eco_balance")) {
             if(player.isOnline() && player.getPlayer() != null) {
                 MinecraftUserDTO minecraftUserDTO = main.getApi().getMinecraftUserAPI().getCached(uuid);
-                return minecraftUserDTO != null ? String.format("%.2f", minecraftUserDTO.getQuanta()) : "0";
+                return minecraftUserDTO != null ? String.format("%.2f", minecraftUserDTO.quanta) : "0";
             }
         }
 

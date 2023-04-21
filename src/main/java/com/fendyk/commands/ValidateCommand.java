@@ -64,7 +64,7 @@ public class ValidateCommand {
             if (minecraftUserDTO != null) {
                 return;
             }
-            this.minecraftUserDTO = main.getApi().getMinecraftUserAPI().getRedis().get(player.getUniqueId());
+            this.minecraftUserDTO = main.getApi().getMinecraftUserAPI().redis.get(player.getUniqueId());
             if (minecraftUserDTO == null) {
                 passed = false;
                 player.sendMessage("We could not determine your minecraft account data");
@@ -76,7 +76,7 @@ public class ValidateCommand {
             if (landDTO != null) {
                 return;
             }
-            this.landDTO = main.getApi().getLandAPI().get(minecraftUserDTO.getUserId());
+            this.landDTO = main.getApi().getLandAPI().get(minecraftUserDTO.userId);
             if (landDTO == null) {
                 passed = false;
                 player.sendMessage("We could not determine your land");
@@ -110,7 +110,7 @@ public class ValidateCommand {
 
         public Builder checkLastLocation() {
             validateMinecraftUserDTO();
-            if(minecraftUserDTO.getLastLocation() == null) {
+            if(minecraftUserDTO.lastLocation == null) {
                 passed = false;
                 player.sendMessage("We could not find your last location");
                 throw new IllegalStateException("Last location could not be found");

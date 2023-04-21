@@ -8,13 +8,15 @@ import com.fendyk.utilities.Vector2;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 
+import java.util.concurrent.CompletableFuture;
+
 public class FetchChunk extends FetchAPI<Vector2, ChunkDTO, UpdateChunkDTO> {
-    public FetchChunk(Main server, String url, boolean inDebugMode, String apiKey) {
-        super(server, url, inDebugMode, apiKey);
+    public FetchChunk() {
+        super(ChunkDTO.class);
     }
 
     @Override
-    public ChunkDTO get(Vector2 key) {
+    public CompletableFuture<ChunkDTO> get(Vector2 key) {
         Request request = this.requestBuilder
                 .url(url + "/chunks/" + key.getX() + "/" + key.getY())
                 .get()
@@ -26,7 +28,7 @@ public class FetchChunk extends FetchAPI<Vector2, ChunkDTO, UpdateChunkDTO> {
     }
 
     @Override
-    public ChunkDTO create(ChunkDTO data) {
+    public CompletableFuture<ChunkDTO> create(ChunkDTO data) {
         RequestBody body = RequestBody.create(Main.gson.toJson(data), JSON);
         Request request = this.requestBuilder
                 .url(url + "/chunks")

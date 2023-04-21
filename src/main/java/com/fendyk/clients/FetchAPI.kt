@@ -1,88 +1,103 @@
-package com.fendyk.clients;
+package com.fendyk.clients
 
-import com.fendyk.utilities.Log;
-import com.fendyk.Main;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
-import com.google.gson.JsonParser;
-import okhttp3.*;
-import org.bukkit.Bukkit;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.fendyk.Main
+import com.fendyk.utilities.Log
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.IOException
+import java.util.*
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.TimeUnit
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
-
-public abstract class FetchAPI<K, DTO, UpdateDTO> {
-    protected final boolean inDebugMode;
-    protected Main server;
-    protected OkHttpClient client = new OkHttpClient.Builder()
-            .readTimeout(30, TimeUnit.SECONDS)
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .build();
-    protected static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    protected final String url;
-    protected final String authHeader = "Authorization";
-    protected Request.Builder requestBuilder;
-
-    public FetchAPI(Main server, String url, boolean inDebugMode, String authKey) {
-        this.server = server;
-        this.url = url;
-        this.inDebugMode = inDebugMode;
-        this.requestBuilder = new Request.Builder()
-                .addHeader(authHeader, "Bearer " + authKey);
+abstract class FetchAPI<K, DTO, UpdateDTO>(private val dtoType: Class<DTO>) {
+    enum class RequestMethod(val method: String) {
+        GET("GET"),
+        POST("POST"),
+        PATCH("PATCH"),
+        DELETE("DELETE")
     }
 
-    /**
-     * Fetches from api
-     *
-     * @param request
-     * @param name
-     * @return
-     */
-    @Nullable
-    protected JsonElement fetchFromApi(Request request, String name) {
-        try (Response response = client.newCall(request).execute()) {
-            if (inDebugMode) {
-                Log.info("");
-                Log.info("FETCH: fetchFromApi is called at: " + name);
-                Log.info("Request URL: " + request.url());
-                Log.info("Response Code: " + response.code());
-                Log.info("Response Message: " + response.message());
-                Log.info("");
-            }
-
-            if (!response.isSuccessful()) {
-                throw new IOException("Unexpected response code: " + response.code());
-            }
-
-            try (ResponseBody body = response.body()) {
-                if (body == null) return null;
-                String json = body.string();
-                if (inDebugMode) {
-                    Log.info("Response Body: " + json);
+    fun fetch(url: String, requestMethod: RequestMethod, data: Any?): CompletableFuture<DTO> {
+        val body: RequestBody? = if (data != null) Main.gson.toJson(data).toRequestBody(JSON) else null
+        val request: Request = requestBuilder
+                .url(Companion.url + "/minecraftusers/" + url)
+                .method(requestMethod.toString(), body)
+                .build()
+        return CompletableFuture.supplyAsync {
+            try {
+                client.newCall(request).execute().use { response ->
+                    if (main.serverConfig.isInDebugMode) {
+                        Log.info("")
+                        Log.info("Request URL: " + request.url)
+                        Log.info("Response Code: " + response.code)
+                        Log.info("Response Message: " + response.message)
+                        Log.info("")
+                    }
+                    if (!response.isSuccessful) {
+                        throw IOException("Unexpected response code: " + response.code)
+                    }
+                    response.body.use { responseBody ->
+                        if (responseBody == null) return@supplyAsync null
+                        val json = responseBody.string()
+                        if (main.serverConfig.isInDebugMode) {
+                            Log.info("Response Body: $json")
+                        }
+                        return@supplyAsync Main.gson.fromJson<DTO>(
+                                json,
+                                dtoType
+                        )
+                    }
                 }
-                return JsonParser.parseString(json);
+            } catch (e: IOException) {
+                Log.error("Error in fetchFromApi: " + e.message)
+                Log.error("Stacktrace: " + Arrays.toString(e.stackTrace))
+                return@supplyAsync null
             }
-        } catch (IOException e) {
-            Log.error("Error in fetchFromApi: " + e.getMessage());
-            Log.error("Stacktrace: " + Arrays.toString(e.getStackTrace()));
-            return null;
         }
     }
 
+    open fun get(key: K): CompletableFuture<DTO> {
+        val future = CompletableFuture<DTO>()
+        future.completeExceptionally(Exception("GET is not implemented yet."))
+        return future;
+    }
+    open fun create(dto: DTO): CompletableFuture<DTO> {
+        val future = CompletableFuture<DTO>()
+        future.completeExceptionally(Exception("CREATE is not implemented yet."))
+        return future;
+    }
+    open fun update(key: K, data: UpdateDTO): CompletableFuture<DTO> {
+        val future = CompletableFuture<DTO>()
+        future.completeExceptionally(Exception("UPDATE is not implemented yet."))
+        return future;
+    }
+    open fun delete(key: K): CompletableFuture<DTO> {
+        val future = CompletableFuture<DTO>()
+        future.completeExceptionally(Exception("DELETE is not implemented yet."))
+        return future;
+    }
 
-    @Nullable
-    public abstract DTO get(K key);
 
-    @Nullable
-    public abstract DTO create(DTO data);
-
-    @Nullable
-    public abstract DTO update(K key, UpdateDTO data);
-
-    @Nullable
-    public abstract DTO delete(K key);
+    companion object {
+        var main: Main = Main.getInstance()
+        protected var client: OkHttpClient = OkHttpClient.Builder()
+                .readTimeout(10, TimeUnit.SECONDS)
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .build()
+        @JvmField
+        protected val JSON: MediaType? = ("application/json; charset=utf-8").toMediaTypeOrNull()
+        protected lateinit var url: String;
+        protected const val authHeader: String = "Authorization"
+        @JvmField
+        protected var requestBuilder: Request.Builder = Request.Builder()
+        @JvmStatic
+        fun connect(url: String, jwtKey: String) {
+            FetchAPI.url = url;
+            requestBuilder.addHeader(authHeader, "Bearer $jwtKey")
+        }
+    }
 }

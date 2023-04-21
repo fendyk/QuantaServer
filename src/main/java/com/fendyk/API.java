@@ -49,6 +49,9 @@ public class API {
         RedisAPI.setListeners(listeners);
         RedisAPI.setSubscriptions(subscriptions);
 
+        // Connect to the fetchAPI
+        FetchAPI.connect(apiUrl, jwtToken);
+
         if(!RedisAPI.getConnection().isOpen()) {
             Log.error("Could not connect to redis, is the server offline?");
         }
@@ -56,26 +59,26 @@ public class API {
 
         activitiesAPI = new ActivitiesAPI(
                 this,
-                new FetchActivities("/activities"),
-                new RedisActivities("activities:")
+                new FetchActivities(),
+                new RedisActivities()
         );
 
         minecraftUserAPI = new MinecraftUserAPI(
                 this,
-                new FetchMinecraftUser("/minecraftusers"),
-                new RedisMinecraftUser("minecraftuser:")
+                new FetchMinecraftUser(),
+                new RedisMinecraftUser()
         );
 
         landAPI = new LandAPI(
                 this,
-                new FetchLand("/lands"),
-                new RedisLand("land:")
+                new FetchLand(),
+                new RedisLand()
         );
 
         chunkAPI = new ChunkAPI(
                 this,
-                new FetchChunk("/chunks"),
-                new RedisChunk("chunk:")
+                new FetchChunk(),
+                new RedisChunk()
         );
 
     }

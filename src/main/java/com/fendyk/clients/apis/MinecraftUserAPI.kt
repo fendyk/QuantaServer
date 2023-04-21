@@ -1,47 +1,30 @@
-package com.fendyk.clients.apis;
+package com.fendyk.clients.apis
 
-import com.fendyk.API;
-import com.fendyk.DTOs.LocationDTO;
-import com.fendyk.DTOs.MinecraftUserDTO;
-import com.fendyk.DTOs.SubscriptionRewardDTO;
-import com.fendyk.DTOs.updates.UpdateMinecraftUserDTO;
-import com.fendyk.clients.ClientAPI;
-import com.fendyk.clients.fetch.FetchMinecraftUser;
-import com.fendyk.clients.redis.RedisMinecraftUser;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Nullable;
+import com.fendyk.DTOs.LocationDTO
+import com.fendyk.DTOs.MinecraftUserDTO
+import com.fendyk.DTOs.updates.UpdateMinecraftUserDTO
+import com.fendyk.clients.ClientAPI
+import com.fendyk.clients.fetch.FetchMinecraftUser
+import com.fendyk.clients.redis.RedisMinecraftUser
+import org.bukkit.Location
+import org.bukkit.OfflinePlayer
+import org.bukkit.entity.Player
+import java.util.*
+import java.util.concurrent.CompletableFuture
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-
-public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecraftUser, UUID, MinecraftUserDTO> {
-
-    public MinecraftUserAPI(API api, FetchMinecraftUser fetch, RedisMinecraftUser redis) {
-        super(api, fetch, redis);
-    }
-
+class MinecraftUserAPI(fetch: FetchMinecraftUser, redis: RedisMinecraftUser) :
+        ClientAPI<FetchMinecraftUser, RedisMinecraftUser, UUID?, MinecraftUserDTO?>(fetch, redis)
+{
     /**
      * Gets the player's balance
      * @param player
      * @return
      */
-    @Nullable
-    public CompletableFuture<Double> getPlayerBalance(UUID player) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                CompletableFuture<MinecraftUserDTO> awaitMinecraftUser = get(player);
-                if(!awaitMinecraftUser.isDone()) throw new Exception("Could not find");
-                return awaitMinecraftUser.get().getQuanta();
-            } catch (Exception e) {
-                return null;
-            }
-        });
+    fun getPlayerBalance(player: UUID): CompletableFuture<Double> {
+        return CompletableFuture.supplyAsync {
+            val awaitMinecraftUser = get(player)
+            return@supplyAsync awaitMinecraftUser.get().quanta
+        }
     }
 
     /**
@@ -49,16 +32,12 @@ public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecra
      * @param player
      * @return
      */
-    public CompletableFuture<MinecraftUserDTO> get(UUID player) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                MinecraftUserDTO dto = redis.get(player);
-                cachedRecords.put(player, dto);
-                return dto;
-            } catch(Exception e) {
-                return null;
-            }
-        });
+     fun get(player: UUID): CompletableFuture<MinecraftUserDTO> {
+        return CompletableFuture.supplyAsync {
+            val awaitMinecraftUser = redis.get(player.toString())
+            cachedRecords[player] = awaitMinecraftUser.get()
+            return@supplyAsync awaitMinecraftUser.get()
+        }
     }
 
     /**
@@ -66,8 +45,8 @@ public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecra
      * @param player
      * @return
      */
-    public MinecraftUserDTO getCached(Player player) {
-        return getCached(player.getUniqueId());
+    fun getCached(player: Player): MinecraftUserDTO? {
+        return getCached(player.uniqueId)
     }
 
     /**
@@ -75,27 +54,31 @@ public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecra
      * @param player
      * @return
      */
-    public MinecraftUserDTO update(UUID player, UpdateMinecraftUserDTO minecraftUserDTO) {
-        MinecraftUserDTO dto = fetch.update(player, minecraftUserDTO);
-        cachedRecords.put(player, dto);
-        return dto;
+    fun update(player: UUID, minecraftUserDTO: UpdateMinecraftUserDTO): CompletableFuture<MinecraftUserDTO> {
+        return CompletableFuture.supplyAsync {
+            val awaitMinecraftUser: CompletableFuture<MinecraftUserDTO> = fetch.update(player, minecraftUserDTO)
+            val dto = awaitMinecraftUser.get()
+            cachedRecords[player] = dto
+            return@supplyAsync dto
+        }
     }
 
-    public boolean withDrawBalance(OfflinePlayer player, BigDecimal amount) {
-        UUID uuid = player.getUniqueId();
-        MinecraftUserDTO minecraftUser = get(uuid);
-        if(minecraftUser == null) return false;
-
-        BigDecimal oldAmount = BigDecimal.valueOf(minecraftUser.getQuanta());
-        BigDecimal newAmount = oldAmount.subtract(amount).setScale(2, RoundingMode.HALF_EVEN);
-
-        if(oldAmount.compareTo(amount) < 0) {
-            return false;
+    fun withDrawBalance(player: OfflinePlayer, amount: Double): CompletableFuture<Boolean> {
+        return CompletableFuture.supplyAsync {
+            val uuid: UUID = player.uniqueId
+            val awaitMinecraftUser: CompletableFuture<MinecraftUserDTO> = get(uuid)
+            val dto: MinecraftUserDTO = awaitMinecraftUser.get()
+            val oldAmount: Double = dto.quanta ?: 0.0
+            val newAmount: Double = oldAmount - amount
+            if (newAmount < 0) {
+                return@supplyAsync false
+            }
+            val updateDTO = UpdateMinecraftUserDTO()
+            updateDTO.quanta = newAmount
+            return@supplyAsync update(uuid, updateDTO).handleAsync<Boolean> {
+                result: MinecraftUserDTO?, ex: Throwable? -> ex == null && result != null
+            }.join()
         }
-
-        UpdateMinecraftUserDTO update = new UpdateMinecraftUserDTO();
-        update.setQuanta(newAmount.floatValue());
-        return update(uuid, update) != null;
     }
 
     /**
@@ -104,17 +87,19 @@ public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecra
      * @param amount
      * @return
      */
-    public boolean depositBalance(OfflinePlayer player, BigDecimal amount) {
-        UUID uuid = player.getUniqueId();
-        MinecraftUserDTO minecraftUser = get(uuid);
-        if(minecraftUser == null) return false;
-
-        BigDecimal oldAmount = BigDecimal.valueOf(minecraftUser.getQuanta());
-        BigDecimal newAmount = oldAmount.add(amount).setScale(2, RoundingMode.HALF_EVEN);
-
-        UpdateMinecraftUserDTO update = new UpdateMinecraftUserDTO();
-        update.setQuanta(newAmount.floatValue());
-        return update(uuid, update) != null;
+    fun depositBalance(player: OfflinePlayer, amount: Double): CompletableFuture<Boolean> {
+        return CompletableFuture.supplyAsync {
+            val uuid: UUID = player.uniqueId
+            val awaitMinecraftUser: CompletableFuture<MinecraftUserDTO> = get(uuid)
+            val dto: MinecraftUserDTO = awaitMinecraftUser.get()
+            val oldAmount: Double = dto.quanta ?: 0.0
+            val newAmount: Double = oldAmount + amount
+            val updateDTO = UpdateMinecraftUserDTO()
+            updateDTO.quanta = newAmount
+            return@supplyAsync update(uuid, updateDTO).handleAsync<Boolean> {
+                result: MinecraftUserDTO?, ex: Throwable? -> ex == null && result != null
+            }.join()
+        }
     }
 
     /**
@@ -123,10 +108,13 @@ public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecra
      * @param location
      * @return
      */
-    public boolean updateLastLocation(Player player, Location location) {
-        UpdateMinecraftUserDTO update = new UpdateMinecraftUserDTO();
-        update.setLastLocation(new LocationDTO(location));
-        return update(player.getUniqueId(), update) != null;
+    fun updateLastLocation(player: Player, location: Location?): CompletableFuture<Boolean> {
+        return CompletableFuture.supplyAsync {
+            val updateDTO = UpdateMinecraftUserDTO()
+            updateDTO.lastLocation = LocationDTO(location)
+            return@supplyAsync update(player.uniqueId, updateDTO).handleAsync<Boolean> {
+                result: MinecraftUserDTO?, ex: Throwable? -> ex == null && result != null
+            }.join()
+        }
     }
-
 }

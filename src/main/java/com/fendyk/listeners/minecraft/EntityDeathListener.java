@@ -46,7 +46,7 @@ public class EntityDeathListener implements Listener {
             ActivityDTO activity = new ActivityDTO();
 
             if(killed instanceof Player) {
-                ActivitiesDTO activitiesDTO = server.getApi().getActivitiesAPI().getRedis().get(killer.getUniqueId());
+                ActivitiesDTO activitiesDTO = server.getApi().getActivitiesAPI().redis.get(killer.getUniqueId());
                 double amount = 0;
                 if(activitiesDTO != null) {
                     Optional<ActivityDTO> pvpActivity = activitiesDTO.getPvp().stream().filter(activity1 -> activity1.getName().equals(killed.getUniqueId().toString())).findFirst();
@@ -85,7 +85,7 @@ public class EntityDeathListener implements Listener {
                 }
             }
             else if(config.getEntityEarnings().containsKey(killed.getType())) {
-                ActivitiesDTO activitiesDTO = server.getApi().getActivitiesAPI().getRedis().get(killer.getUniqueId());
+                ActivitiesDTO activitiesDTO = server.getApi().getActivitiesAPI().redis.get(killer.getUniqueId());
                 double amount = 0;
                 if(activitiesDTO != null) {
                     Optional<ActivityDTO> pvpActivity = activitiesDTO.getPve().stream().filter(item -> item.getName().equalsIgnoreCase(killed.getType().name())).findFirst();

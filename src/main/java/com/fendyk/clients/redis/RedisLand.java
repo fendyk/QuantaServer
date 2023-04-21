@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class RedisLand extends RedisAPI<LandDTO> {
-    public RedisLand(String key) {
-        super(key, LandDTO.class);
+    public RedisLand() {
+        super("land:", LandDTO.class);
     }
 }
