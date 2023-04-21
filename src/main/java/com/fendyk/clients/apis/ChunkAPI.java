@@ -45,8 +45,8 @@ public class ChunkAPI extends ClientAPI<FetchChunk, RedisChunk, String, ChunkDTO
     public ChunkDTO create(Chunk chunk, boolean isClaimable) {
         ChunkDTO newChunkDTO = new ChunkDTO();
         newChunkDTO.setClaimable(isClaimable);
-        newChunkDTO.setX(chunk.getX());
-        newChunkDTO.setZ(chunk.getZ());
+        newChunkDTO.x = chunk.getX();
+        newChunkDTO.z = chunk.getZ();
         return fetch.create(newChunkDTO);
     }
 
@@ -57,7 +57,7 @@ public class ChunkAPI extends ClientAPI<FetchChunk, RedisChunk, String, ChunkDTO
 
     public boolean claim(Chunk chunk, String landId, boolean canExpire, DateTime expirationDate) {
         UpdateChunkDTO updateChunkDTO = new UpdateChunkDTO();
-        updateChunkDTO.setLandId(landId);
+        updateChunkDTO.landId = landId;
         updateChunkDTO.setCanExpire(canExpire);
         updateChunkDTO.setExpirationDate(expirationDate);
 
@@ -66,9 +66,9 @@ public class ChunkAPI extends ClientAPI<FetchChunk, RedisChunk, String, ChunkDTO
 
     public boolean expire(Chunk chunk) {
         UpdateChunkDTO updateChunkDTO = new UpdateChunkDTO();
-        updateChunkDTO.setResetLandId(true);
+        updateChunkDTO.resetLandId = true;
         updateChunkDTO.setCanExpire(false);
-        updateChunkDTO.setResetExpirationDate(true);
+        updateChunkDTO.resetExpirationDate = true;
 
         return update(chunk, updateChunkDTO) != null;
     }
@@ -90,10 +90,10 @@ public class ChunkAPI extends ClientAPI<FetchChunk, RedisChunk, String, ChunkDTO
 
 
     public static boolean isBlacklistedBlock(ChunkDTO chunkDTO, Block block) {
-        return chunkDTO.getBlacklistedBlocks().stream().anyMatch(item ->
-            item.getX() == block.getX() &&
-                    item.getY() == block.getY() &&
-                    item.getZ() == block.getZ()
+        return chunkDTO.blacklistedBlocks.stream().anyMatch(item ->
+            item.x == block.getX() &&
+                    item.y == block.getY() &&
+                    item.z == block.getZ()
         );
     }
 
@@ -103,7 +103,7 @@ public class ChunkAPI extends ClientAPI<FetchChunk, RedisChunk, String, ChunkDTO
      * @return
      */
     public static boolean isClaimable(ChunkDTO chunkDTO) {
-        return chunkDTO.isClaimable();
+        return chunkDTO.isClaimable;
     }
 
 }

@@ -1,72 +1,28 @@
-package com.fendyk.DTOs;
+package com.fendyk.DTOs
 
-import org.joda.time.DateTime;
+import com.google.gson.annotations.SerializedName
+import org.joda.time.DateTime
 
-import java.util.ArrayList;
+data class ChunkDTO(
+        val name: String,
+        val x: Int,
+        val z: Int
+) {
+    @JvmField var isClaimable: Boolean? = null
+    @JvmField var canExpire: Boolean? = null
+    @JvmField var landId: String? = null
+    @JvmField var expirationDate: String? = null
+    @JvmField var blacklistedBlocks: ArrayList<BlacklistedBlockDTO> = ArrayList()
 
-public class ChunkDTO {
-
-    String id;
-
-    Boolean isClaimable;
-    Boolean canExpire;
-    int x;
-    int z;
-    String landId;
-
-    String expirationDate;
-
-    ArrayList<BlacklistedBlockDTO> blacklistedBlocks;
-
-    public ChunkDTO() {
-        this.blacklistedBlocks = new ArrayList<>();
+    fun setClaimable(claimable: Boolean) {
+        isClaimable = claimable
     }
 
-    public ArrayList<BlacklistedBlockDTO> getBlacklistedBlocks() {
-        return blacklistedBlocks;
+    fun canExpire(): Boolean? {
+        return canExpire
     }
 
-    public String getId() {
-        return id;
+    fun getExpirationDate(): DateTime {
+        return DateTime(expirationDate)
     }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public Boolean isClaimable() {
-        return isClaimable;
-    }
-
-    public void setClaimable(boolean claimable) {
-        isClaimable = claimable;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getZ() {
-        return z;
-    }
-
-    public void setZ(int z) {
-        this.z = z;
-    }
-
-    public String getLandId() {
-        return landId;
-    }
-
-    public void setLandId(String landId) {
-        this.landId = landId;
-    }
-
-    public Boolean canExpire() {return canExpire;}
-
-    public DateTime getExpirationDate() {return new DateTime(expirationDate);}
 }

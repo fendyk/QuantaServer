@@ -146,7 +146,7 @@ public class ValidateCommand {
         }
 
         public Builder isPlayerOwnerOfLand(Player player, LandDTO landDTO) {
-            boolean isOwner = UUID.fromString(landDTO.getOwnerId()).equals(player.getUniqueId());
+            boolean isOwner = UUID.fromString(landDTO.ownerId).equals(player.getUniqueId());
             if(!isOwner) {
 
                 passed = false;

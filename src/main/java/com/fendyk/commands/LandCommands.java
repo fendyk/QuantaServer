@@ -60,10 +60,10 @@ public class LandCommands {
                         return;
                     }
 
-                    player.sendMessage(PluginTextComponent.statistic("ID:", landDTO.getId()));
-                    player.sendMessage(PluginTextComponent.statistic("Name:", landDTO.getName()));
-                    player.sendMessage(PluginTextComponent.statistic("Member count:", String.valueOf(landDTO.getMemberIDs().size())));
-                    player.sendMessage(PluginTextComponent.statistic("Home count:", String.valueOf(landDTO.getHomes().size())));
+                    player.sendMessage(PluginTextComponent.statistic("ID:", landDTO.id));
+                    player.sendMessage(PluginTextComponent.statistic("Name:", landDTO.name));
+                    player.sendMessage(PluginTextComponent.statistic("Member count:", String.valueOf(landDTO.memberIDs.size())));
+                    player.sendMessage(PluginTextComponent.statistic("Home count:", String.valueOf(landDTO.homes.size())));
                 })
                 // ### /land help ###
                 .withSubcommand(new CommandAPICommand("help")
@@ -144,7 +144,7 @@ public class LandCommands {
                                 WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(16, 185, 129, 15));
                                 ParticleEffect.FIREWORKS_SPARK.display(player.getLocation());
                                 player.sendMessage("Your land has been created");
-                                Bukkit.broadcast( Component.text(player.getName() + " has created a new land called '" + landDTO1.getName() + "' somewhere in the universe!", NamedTextColor.GREEN));
+                                Bukkit.broadcast( Component.text(player.getName() + " has created a new land called '" + landDTO1.name + "' somewhere in the universe!", NamedTextColor.GREEN));
                             } catch (Exception e) {
                                 Bukkit.getLogger().info(Arrays.toString(e.getStackTrace()));
                                 player.sendMessage(e.getMessage());
@@ -210,14 +210,14 @@ public class LandCommands {
                                         }
                                     }
 
-                                    String chunkLandId = chunkDTO.getLandId();
+                                    String chunkLandId = chunkDTO.landId;
                                     if (chunkLandId != null) {
                                         WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(239, 68, 68, 15));
                                         player.sendMessage("This chunk has already been claimed by someone else");
                                         return;
                                     }
 
-                                    if (chunkDTO.isClaimable() != null && !chunkDTO.isClaimable()) {
+                                    if (chunkDTO.isClaimable != null && !chunkDTO.isClaimable) {
                                         WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(252, 211, 77, 15));
                                         player.sendMessage("This chunk is considered not claimable");
                                         return;
@@ -227,7 +227,7 @@ public class LandCommands {
                                     List<Chunk> neighbours = ChunkUtils.getNeighboringChunks(chunk);
                                     long countNeighbours = neighbours.stream().filter(neighbour -> {
                                         ChunkDTO neighbourChunkDTO = api.getChunkAPI().redis.get(new Vector2(neighbour.getX(), neighbour.getZ()));
-                                        return neighbourChunkDTO != null && neighbourChunkDTO.getLandId() != null && neighbourChunkDTO.getLandId().equals(landDTO.getId());
+                                        return neighbourChunkDTO != null && neighbourChunkDTO.landId != null && neighbourChunkDTO.landId.equals(landDTO.id);
                                     }).count();
 
                                     if (countNeighbours < 1) {
@@ -235,7 +235,7 @@ public class LandCommands {
                                         return;
                                     }
 
-                                    ArrayList<ChunkDTO> chunkDTOS = landDTO.getChunks();
+                                    ArrayList<ChunkDTO> chunkDTOS = landDTO.chunks;
 
                                     if(chunkDTOS != null) {
                                         ArrayList<ChunkDTO> expirableChunkDTOS = chunkDTOS.stream()
@@ -262,7 +262,7 @@ public class LandCommands {
                                     }
 
                                     DateTime expireDate = new DateTime().plusDays(7);
-                                    boolean isClaimed = api.getChunkAPI().claim(chunk, landDTO.getId(), true, expireDate);
+                                    boolean isClaimed = api.getChunkAPI().claim(chunk, landDTO.id, true, expireDate);
                                     if (!isClaimed) {
                                         player.sendMessage("Could not claim chunk.");
                                         return;
@@ -323,14 +323,14 @@ public class LandCommands {
                                         }
                                     }
 
-                                    String chunkLandId = chunkDTO.getLandId();
+                                    String chunkLandId = chunkDTO.landId;
                                     if (chunkLandId != null) {
                                         WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(239, 68, 68, 15));
                                         player.sendMessage("This chunk has already been claimed by someone else");
                                         return;
                                     }
 
-                                    if (chunkDTO.isClaimable() != null && !chunkDTO.isClaimable()) {
+                                    if (chunkDTO.isClaimable != null && !chunkDTO.isClaimable) {
                                         WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(252, 211, 77, 15));
                                         player.sendMessage("This chunk is considered not claimable");
                                         return;
@@ -340,7 +340,7 @@ public class LandCommands {
                                     List<Chunk> neighbours = ChunkUtils.getNeighboringChunks(chunk);
                                     long countNeighbours = neighbours.stream().filter(neighbour -> {
                                         ChunkDTO neighbourChunkDTO = api.getChunkAPI().redis.get(new Vector2(neighbour.getX(), neighbour.getZ()));
-                                        return neighbourChunkDTO != null && neighbourChunkDTO.getLandId() != null && neighbourChunkDTO.getLandId().equals(landDTO.getId());
+                                        return neighbourChunkDTO != null && neighbourChunkDTO.landId != null && neighbourChunkDTO.landId.equals(landDTO.id);
                                     }).count();
 
                                     if (countNeighbours < 1) {
@@ -348,7 +348,7 @@ public class LandCommands {
                                         return;
                                     }
 
-                                    ArrayList<ChunkDTO> chunkDTOS = landDTO.getChunks();
+                                    ArrayList<ChunkDTO> chunkDTOS = landDTO.chunks;
 
                                     if(chunkDTOS != null && chunkDTOS.size() >= rankConfiguration.getChunkSlots()) {
                                         player.sendMessage("You've reached your limit for claiming new permanent chunks.");
@@ -368,7 +368,7 @@ public class LandCommands {
                                         return;
                                     }
 
-                                    boolean isClaimed = api.getChunkAPI().claim(chunk, landDTO.getId(), false, null);
+                                    boolean isClaimed = api.getChunkAPI().claim(chunk, landDTO.id, false, null);
                                     if (!isClaimed) {
                                         player.sendMessage("Could not claim chunk.");
                                         return;
@@ -393,10 +393,10 @@ public class LandCommands {
                                 return;
                             }
 
-                            Optional<TaggedLocationDTO> taggedLocationDTO = Optional.ofNullable(landDTO.getHomes().stream()
-                                    .filter(t -> t.getName().equals("spawn"))
+                            Optional<TaggedLocationDTO> taggedLocationDTO = Optional.ofNullable(landDTO.homes.stream()
+                                    .filter(t -> t.name.equals("spawn"))
                                     .findAny()
-                                    .orElseGet(() -> landDTO.getHomes().stream().findFirst().orElse(null)));
+                                    .orElseGet(() -> landDTO.homes.stream().findFirst().orElse(null)));
 
                             if (taggedLocationDTO.isEmpty()) {
                                 player.sendMessage("Could not locate your spawn location. Try adding a home naming 'spawn'");
@@ -428,9 +428,9 @@ public class LandCommands {
                                 return;
                             }
 
-                            LocationDTO loc = taggedLocationDTO.get().getLocation();
+                            LocationDTO loc = taggedLocationDTO.get().location;
 
-                            player.teleport(new Location(world, loc.getX(), loc.getY(), loc.getZ(), (float) loc.getYaw(), (float) loc.getPitch()));
+                            player.teleport(new Location(world, loc.x, loc.y, loc.z, (float) loc.yaw, (float) loc.pitch));
                             player.sendMessage(player.getName() + " You have been teleported to your spawn");
                         })
                 )
@@ -453,25 +453,25 @@ public class LandCommands {
 
                             ChunkDTO chunkDTO = api.getChunkAPI().redis.get(new Vector2(chunk.getX(), chunk.getZ()));
 
-                            if (chunkDTO == null || chunkDTO.getLandId() == null) {
+                            if (chunkDTO == null || chunkDTO.landId == null) {
                                 WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(16, 185, 129, 15));
                                 player.sendMessage("This chunk has not been claimed yet.");
                                 return;
                             }
 
-                            if (chunkDTO.isClaimable() != null && !chunkDTO.isClaimable()) {
+                            if (chunkDTO.isClaimable != null && !chunkDTO.isClaimable) {
                                 WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(252, 211, 77, 15));
                                 player.sendMessage("This chunk is considered not claimable");
                                 return;
                             }
 
-                            LandDTO landDTO = api.getLandAPI().redis.get(chunkDTO.getLandId());
+                            LandDTO landDTO = api.getLandAPI().redis.get(chunkDTO.landId);
                             if (landDTO == null) {
                                 player.sendMessage("Could not find land at current chunk.");
                                 return;
                             }
 
-                            CompletableFuture<MinecraftUserDTO> awaitMinecraftUser = minecraftUserAPI.get(UUID.fromString(landDTO.getOwnerId()));
+                            CompletableFuture<MinecraftUserDTO> awaitMinecraftUser = minecraftUserAPI.get(UUID.fromString(landDTO.ownerId));
                             // Add more here
 
                             // Perform actions
@@ -489,15 +489,15 @@ public class LandCommands {
                                 return null;
                             });
 
-                            if (!landDTO.getOwnerId().equals(player.getUniqueId().toString())) {
+                            if (!landDTO.ownerId.equals(player.getUniqueId().toString())) {
                                 WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(239, 68, 68, 15));
                             } else {
                                 WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(59, 130, 246, 15));
                             }
 
                             player.sendMessage("You're currently standing at:");
-                            player.sendMessage("Chunk: " + chunkDTO.getX() + "/" + chunkDTO.getZ());
-                            player.sendMessage("Land:" + landDTO.getName());
+                            player.sendMessage("Chunk: " + chunkDTO.x + "/" + chunkDTO.z);
+                            player.sendMessage("Land:" + landDTO.name);
                             player.sendMessage("Owned by player: " + Objects.requireNonNull(Bukkit.getPlayer(UUID.fromString(minecraftUserDTO.getId()))).getName());
                             if (chunkDTO.canExpire()) {
                                 player.sendMessage("Expiration date:" + chunkDTO.getExpirationDate());
@@ -515,14 +515,14 @@ public class LandCommands {
                                 return;
                             }
 
-                            if (landDTO.getHomes() == null || landDTO.getHomes().isEmpty()) {
+                            if (landDTO.homes == null || landDTO.homes.isEmpty()) {
                                 player.sendMessage("Could not find any homes yet. Maybe it's time to add one? Type /land homes add <name>");
                                 return;
                             }
 
-                            for (TaggedLocationDTO home : landDTO.getHomes()) {
-                                LocationDTO loc = home.getLocation();
-                                player.sendMessage(home.getName() + ": (" + loc.getX() + "," + loc.getY() + "," + loc.getZ() + ")");
+                            for (TaggedLocationDTO home : landDTO.homes) {
+                                LocationDTO loc = home.location;
+                                player.sendMessage(home.name + ": (" + loc.x + "," + loc.y + "," + loc.z + ")");
                             }
                         })
                 )
@@ -541,7 +541,7 @@ public class LandCommands {
                                         return;
                                     }
 
-                                    Optional<TaggedLocationDTO> taggedLocationDTO = landDTO.getHomes().stream().filter(t -> t.getName().equals(name)).findFirst();
+                                    Optional<TaggedLocationDTO> taggedLocationDTO = landDTO.homes.stream().filter(t -> t.name.equals(name)).findFirst();
 
                                     if (taggedLocationDTO.isEmpty()) {
                                         player.sendMessage("Could not find any home matching the name: " + name);
@@ -573,9 +573,9 @@ public class LandCommands {
                                         return;
                                     }
 
-                                    LocationDTO loc = taggedLocationDTO.get().getLocation();
+                                    LocationDTO loc = taggedLocationDTO.get().location;
 
-                                    player.teleport(new Location(world, loc.getX(), loc.getY(), loc.getZ(), (float) loc.getYaw(), (float) loc.getPitch()));
+                                    player.teleport(new Location(world, loc.x, loc.y, loc.z, (float) loc.yaw, (float) loc.pitch));
                                     player.sendMessage(player.getName() + " You have been teleported to " + name);
                                 })
                         )
@@ -598,7 +598,7 @@ public class LandCommands {
                                     if (landDTO == null) {
                                         player.sendMessage("Could not find your land");
                                         return;
-                                    } else if (landDTO.getHomes() != null && landDTO.getHomes().stream().filter(taggedLocationDTO -> taggedLocationDTO.getName().equals(name)).count() > 1) {
+                                    } else if (landDTO.homes != null && landDTO.homes.stream().filter(taggedLocationDTO -> taggedLocationDTO.name.equals(name)).count() > 1) {
                                         player.sendMessage("You've already set a home with the name " + name);
                                         return;
                                     }
@@ -616,7 +616,7 @@ public class LandCommands {
                                     ValidateCommand.Builder builder = validateCommand.getBuilder();
                                     RankConfiguration rankConfiguration = builder.getRankConfiguration();
 
-                                    ArrayList<TaggedLocationDTO> taggedLocationDTOS = landDTO.getHomes();
+                                    ArrayList<TaggedLocationDTO> taggedLocationDTOS = landDTO.homes;
                                     if(taggedLocationDTOS != null && taggedLocationDTOS.size() >= rankConfiguration.getHomeSlots()) {
                                         player.sendMessage("You've reached your limit for setting new land homes.");
                                         return;
@@ -637,11 +637,11 @@ public class LandCommands {
 
                                     LocationDTO locationDTO = new LocationDTO(player.getLocation());
                                     TaggedLocationDTO taggedLocationDTO = new TaggedLocationDTO();
-                                    taggedLocationDTO.setName(name);
-                                    taggedLocationDTO.setLocation(locationDTO);
+                                    taggedLocationDTO.name = name;
+                                    taggedLocationDTO.location = locationDTO;
 
-                                    updateLandDTO.getPushHomes().add(taggedLocationDTO);
-                                    LandDTO result = api.getLandAPI().fetch.update(landDTO.getId(), updateLandDTO);
+                                    updateLandDTO.pushHomes.add(taggedLocationDTO);
+                                    LandDTO result = api.getLandAPI().fetch.update(landDTO.id, updateLandDTO);
 
                                     if (result == null) {
                                         player.sendMessage("Could not update your land's home.");
@@ -663,13 +663,13 @@ public class LandCommands {
                                     if (landDTO == null) {
                                         player.sendMessage("Could not find your land");
                                         return;
-                                    } else if (landDTO.getHomes() != null && landDTO.getHomes().stream().noneMatch(taggedLocationDTO -> taggedLocationDTO.getName().equals(name))) {
+                                    } else if (landDTO.homes != null && landDTO.homes.stream().noneMatch(taggedLocationDTO -> taggedLocationDTO.name.equals(name))) {
                                         player.sendMessage("Could not find a home with the name: " + name);
                                         return;
                                     }
 
-                                    updateLandDTO.getSpliceHomes().add(name);
-                                    LandDTO result = api.getLandAPI().fetch.update(landDTO.getId(), updateLandDTO);
+                                    updateLandDTO.spliceHomes.add(name);
+                                    LandDTO result = api.getLandAPI().fetch.update(landDTO.id, updateLandDTO);
 
                                     if (result == null) {
                                         player.sendMessage("Could not update your land's home.");
@@ -691,12 +691,12 @@ public class LandCommands {
                                 return;
                             }
 
-                            if (landDTO.getMemberIDs() == null || landDTO.getMemberIDs().isEmpty()) {
+                            if (landDTO.memberIDs == null || landDTO.memberIDs.isEmpty()) {
                                 player.sendMessage("Could not find any homes yet. Maybe it's time to add one? Type /land homes set");
                                 return;
                             }
 
-                            for (String member : landDTO.getMemberIDs()) {
+                            for (String member : landDTO.memberIDs) {
                                 player.sendMessage(Bukkit.getOfflinePlayer(UUID.fromString(member)).getName() + " is a member of your land");
                             }
                         })
@@ -716,7 +716,7 @@ public class LandCommands {
                                     if (landDTO == null) {
                                         player.sendMessage("Could not find your land");
                                         return;
-                                    } else if (landDTO.getMemberIDs() != null && landDTO.getMemberIDs().contains(memberUuid.toString())) {
+                                    } else if (landDTO.memberIDs != null && landDTO.memberIDs.contains(memberUuid.toString())) {
                                         player.sendMessage("Player is already a member");
                                         return;
                                     }
@@ -734,7 +734,7 @@ public class LandCommands {
                                     ValidateCommand.Builder builder = validateCommand.getBuilder();
                                     RankConfiguration rankConfiguration = builder.getRankConfiguration();
 
-                                    ArrayList<String> memberIDs = landDTO.getMemberIDs();
+                                    ArrayList<String> memberIDs = landDTO.memberIDs;
                                     if(memberIDs != null && memberIDs.size() >= rankConfiguration.getMemberSlots()) {
                                         player.sendMessage("You've reached your limit for setting new land homes.");
                                         return;
@@ -753,8 +753,8 @@ public class LandCommands {
                                         return;
                                     }
 
-                                    updateLandDTO.getConnectMembers().add(new UpdateLandDTO.MemberDTO(memberUuid.toString()));
-                                    LandDTO result = api.getLandAPI().fetch.update(landDTO.getId(), updateLandDTO);
+                                    updateLandDTO.connectMembers.add(new UpdateLandDTO.MemberDTO(memberUuid.toString()));
+                                    LandDTO result = api.getLandAPI().fetch.update(landDTO.id, updateLandDTO);
 
                                     if (result == null) {
                                         player.sendMessage("Could not update your land member.");
@@ -777,13 +777,13 @@ public class LandCommands {
                                     if (landDTO == null) {
                                         player.sendMessage("Could not find your land");
                                         return;
-                                    } else if (landDTO.getMemberIDs() != null && !landDTO.getMemberIDs().contains(memberUuid.toString())) {
+                                    } else if (landDTO.memberIDs != null && !landDTO.memberIDs.contains(memberUuid.toString())) {
                                         player.sendMessage("Player is not a member");
                                         return;
                                     }
 
-                                    updateLandDTO.getDisconnectMembers().add(new UpdateLandDTO.MemberDTO(memberUuid.toString()));
-                                    LandDTO result = api.getLandAPI().fetch.update(landDTO.getId(), updateLandDTO);
+                                    updateLandDTO.disconnectMembers.add(new UpdateLandDTO.MemberDTO(memberUuid.toString()));
+                                    LandDTO result = api.getLandAPI().fetch.update(landDTO.id, updateLandDTO);
 
                                     if (result == null) {
                                         player.sendMessage("Could not update your land member.");
@@ -848,7 +848,7 @@ public class LandCommands {
                                 return;
                             }
 
-                            final String landId = chunkDTO.getLandId();
+                            final String landId = chunkDTO.landId;
 
                             // Verify if the chunk can expire. This is
                             // required because we're checking for 'expirable'
@@ -870,7 +870,7 @@ public class LandCommands {
 
                             // Verify if the chunk is actually owner by the player. You
                             // can only extend your own chunks.
-                            if(!UUID.fromString(landDTO.getOwnerId()).equals(playerUuid)) {
+                            if(!UUID.fromString(landDTO.ownerId).equals(playerUuid)) {
                                 player.sendMessage("This land is not yours.");
                                 return;
                             }

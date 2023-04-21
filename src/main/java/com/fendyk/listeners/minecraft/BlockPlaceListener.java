@@ -75,7 +75,7 @@ public class BlockPlaceListener implements Listener {
                 // Blacklist block by updating and pushing block location into chunk
                 BlacklistedBlockDTO b = new BlacklistedBlockDTO(block.getX(), block.getY(), block.getZ());
                 UpdateChunkDTO update = new UpdateChunkDTO();
-                update.getPushBlacklistedBlocks().add(b);
+                update.pushBlacklistedBlocks.add(b);
                 server.getApi().getChunkAPI().update(chunk, update);
 
             });

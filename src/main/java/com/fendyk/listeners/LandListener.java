@@ -53,7 +53,7 @@ public class LandListener implements RedisPubSubListener<String, String> {
         for (ChunkDTO chunkDTO : chunks) {
             Bukkit.getScheduler().runTask(server, () -> {
                 Chunk chunk = Objects.requireNonNull(Bukkit.getWorld(worldName))
-                        .getChunkAt(chunkDTO.getX(), chunkDTO.getZ());
+                        .getChunkAt(chunkDTO.x, chunkDTO.z);
                 try {
                     WorldguardSyncManager.syncChunkWithRegion(chunk, chunkDTO, land);
                 } catch (StorageException e) {

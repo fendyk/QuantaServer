@@ -39,7 +39,7 @@ public class ChunkListener implements RedisPubSubListener<String, String> {
         ChunkDTO chunkDTO = Main.gson.fromJson(chunkObject, ChunkDTO.class);
 
         if (chunkDTO != null && world != null) {
-            Chunk chunk = world.getChunkAt(chunkDTO.getX(), chunkDTO.getZ());
+            Chunk chunk = world.getChunkAt(chunkDTO.x, chunkDTO.z);
             Bukkit.getScheduler().runTask(server, () -> {
                 try {
                     WorldguardSyncManager.syncChunkWithRegion(chunk, chunkDTO, null);

@@ -73,7 +73,7 @@ public class BlockBreakListener implements Listener {
             if (chunkDTO != null) {
                 if (ChunkAPI.isBlacklistedBlock(chunkDTO, block)) {
                     UpdateChunkDTO update = new UpdateChunkDTO();
-                    update.getSpliceBlacklistedBlocks().add(new BlacklistedBlockDTO(block));
+                    update.spliceBlacklistedBlocks.add(new BlacklistedBlockDTO(block));
                     server.getApi().getChunkAPI().update(chunk, update);
                     return;
                 }
@@ -85,17 +85,17 @@ public class BlockBreakListener implements Listener {
             if (activitiesDTO == null) {
                 amount = ActivityEarnings.getEarningsFromMining(material, 1, 1);
             } else {
-                Optional<ActivityDTO> pvpActivity = activitiesDTO.getMining().stream().filter(activity1 -> activity1.getName().equals(material.name())).findFirst();
-                amount = pvpActivity.map(activityDTO -> ActivityEarnings.getEarningsFromMining(material, (int) activityDTO.getQuantity() + 1, 1))
+                Optional<ActivityDTO> pvpActivity = activitiesDTO.mining.stream().filter(activity1 -> activity1.name.equals(material.name())).findFirst();
+                amount = pvpActivity.map(activityDTO -> ActivityEarnings.getEarningsFromMining(material, (int) activityDTO.quantity + 1, 1))
                         .orElseGet(() -> ActivityEarnings.getEarningsFromMining(material, 1, 1));
             }
 
             UpdateActivitiesDTO updateActivitiesDTO = new UpdateActivitiesDTO();
             ArrayList<ActivityDTO> activities = new ArrayList<>();
             ActivityDTO activity = new ActivityDTO();
-            activity.setName(material.name());
-            activity.setEarnings(amount);
-            activity.setQuantity(1);
+            activity.name = material.name();
+            activity.earnings = amount;
+            activity.quantity = 1;
             activities.add(activity);
             updateActivitiesDTO.setMining(activities);
 
@@ -108,7 +108,7 @@ public class BlockBreakListener implements Listener {
             );
 
             if (updatedActivities != null) {
-                Optional<ActivityDTO> optional = updatedActivities.getMining().stream().filter(item -> item.getName().equalsIgnoreCase(material.name())).findFirst();
+                Optional<ActivityDTO> optional = updatedActivities.mining.stream().filter(item -> item.name.equalsIgnoreCase(material.name())).findFirst();
                 optional.ifPresent(activityDTO -> ActivityBossBarManager.showBossBar(player, activityDTO, ActivityBossBarManager.Type.MINING));
             }
             ActivitySoundManager.play(player);

@@ -36,7 +36,7 @@ public class RewardCommands {
                             double crateKeys = 0;
 
                             UpdateMinecraftUserDTO update = new UpdateMinecraftUserDTO();
-                            List<SubscriptionRewardDTO> unclaimedSubscriptionRewards = minecraftUserDTO.subscriptionRewards.stream().filter(s -> !s.isClaimed()).toList();
+                            List<SubscriptionRewardDTO> unclaimedSubscriptionRewards = minecraftUserDTO.subscriptionRewards.stream().filter(s -> !s.isClaimed).toList();
 
                             if(unclaimedSubscriptionRewards.size() < 1) {
                                 player.sendMessage("We've detected no open subscription rewards. Maybe you've already claimed them all.");
@@ -45,9 +45,9 @@ public class RewardCommands {
 
                             // Iterate over the subscription rewards that are open
                             for(SubscriptionRewardDTO sub : unclaimedSubscriptionRewards) {
-                                quanta += sub.getQuanta();
-                                crateKeys += sub.getCrateKeys();
-                                update.getClaimSubscriptionRewards().add(sub.getCreatedAt().toString());
+                                quanta += sub.quanta;
+                                crateKeys += sub.crateKeys;
+                                update.claimSubscriptionRewards.add(sub.getCreatedAt().toString());
                             }
 
                             if(quanta > 0) server.getApi().getMinecraftUserAPI().depositBalance(player, new BigDecimal(quanta));
@@ -76,10 +76,10 @@ public class RewardCommands {
                             UpdateMinecraftUserDTO update = new UpdateMinecraftUserDTO();
                             SubscriptionRewardDTO subscriptionRewardDTO = new SubscriptionRewardDTO();
                             subscriptionRewardDTO.setClaimed(false);
-                            subscriptionRewardDTO.setQuanta(100);
-                            subscriptionRewardDTO.setCrateKeys(10);
+                            subscriptionRewardDTO.quanta = 100;
+                            subscriptionRewardDTO.crateKeys = 10;
                             subscriptionRewardDTO.setCreatedAt(new DateTime());
-                            update.getPushSubscriptionRewards().add(subscriptionRewardDTO);
+                            update.pushSubscriptionRewards.add(subscriptionRewardDTO);
 
                             MinecraftUserDTO minecraftUserDTO1 = server.getApi().getMinecraftUserAPI().update(uuid, update);
 

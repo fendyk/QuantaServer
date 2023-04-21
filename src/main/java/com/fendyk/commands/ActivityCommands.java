@@ -25,10 +25,10 @@ public class ActivityCommands {
                             player.sendMessage("Could not find TIME activity.");
                             return;
                         }
-                        ActivityDTO activityDTO = activitiesDTO.getTime();
-                        player.sendMessage("Name: " + activityDTO.getName());
-                        player.sendMessage("Earned: " + activityDTO.getEarnings());
-                        player.sendMessage("Amount: " + activityDTO.getQuantity());
+                        ActivityDTO activityDTO = activitiesDTO.time;
+                        player.sendMessage("Name: " + activityDTO.name);
+                        player.sendMessage("Earned: " + activityDTO.earnings);
+                        player.sendMessage("Amount: " + activityDTO.quantity);
                         player.sendMessage("");
                     })
                 )
@@ -37,15 +37,15 @@ public class ActivityCommands {
                             Player player = (Player) sender;
 
                             ActivitiesDTO activitiesDTO = api.getActivitiesAPI().redis.get(player.getUniqueId());
-                            if(activitiesDTO == null || activitiesDTO.getPve() == null || activitiesDTO.getPve().size() < 1) {
+                            if(activitiesDTO == null || activitiesDTO.pve == null || activitiesDTO.pve.size() < 1) {
                                 player.sendMessage("Could not find PVE activities.");
                                 return;
                             }
 
-                            for(ActivityDTO activityDTO : activitiesDTO.getPve()) {
-                                player.sendMessage("Name: " + activityDTO.getName());
-                                player.sendMessage("Earned: " + activityDTO.getEarnings());
-                                player.sendMessage("Amount: " + activityDTO.getQuantity());
+                            for(ActivityDTO activityDTO : activitiesDTO.pve) {
+                                player.sendMessage("Name: " + activityDTO.name);
+                                player.sendMessage("Earned: " + activityDTO.earnings);
+                                player.sendMessage("Amount: " + activityDTO.quantity);
                                 player.sendMessage("");
                             }
                         })
@@ -55,15 +55,15 @@ public class ActivityCommands {
                             Player player = (Player) sender;
 
                             ActivitiesDTO activitiesDTO = api.getActivitiesAPI().redis.get(player.getUniqueId());
-                            if(activitiesDTO == null || activitiesDTO.getPvp() == null || activitiesDTO.getPvp().size() < 1) {
+                            if(activitiesDTO == null || activitiesDTO.pvp == null || activitiesDTO.pvp.size() < 1) {
                                 player.sendMessage("Could not find PVP activities.");
                                 return;
                             }
 
-                            for(ActivityDTO activityDTO : activitiesDTO.getPvp()) {
-                                player.sendMessage("Name: " + activityDTO.getName());
-                                player.sendMessage("Earned: " + activityDTO.getEarnings());
-                                player.sendMessage("Amount: " + activityDTO.getQuantity());
+                            for(ActivityDTO activityDTO : activitiesDTO.pvp) {
+                                player.sendMessage("Name: " + activityDTO.name);
+                                player.sendMessage("Earned: " + activityDTO.earnings);
+                                player.sendMessage("Amount: " + activityDTO.quantity);
                                 player.sendMessage("");
                             }
                         })
@@ -73,15 +73,15 @@ public class ActivityCommands {
                             Player player = (Player) sender;
 
                             ActivitiesDTO activitiesDTO = api.getActivitiesAPI().redis.get(player.getUniqueId());
-                            if(activitiesDTO == null || activitiesDTO.getMining() == null || activitiesDTO.getMining().size() < 1) {
+                            if(activitiesDTO == null || activitiesDTO.mining == null || activitiesDTO.mining.size() < 1) {
                                 player.sendMessage("Could not find MINING activities.");
                                 return;
                             }
 
-                            for(ActivityDTO activityDTO : activitiesDTO.getMining()) {
-                                player.sendMessage("Name: " + activityDTO.getName());
-                                player.sendMessage("Earned: " + activityDTO.getEarnings());
-                                player.sendMessage("Amount: " + activityDTO.getQuantity());
+                            for(ActivityDTO activityDTO : activitiesDTO.mining) {
+                                player.sendMessage("Name: " + activityDTO.name);
+                                player.sendMessage("Earned: " + activityDTO.earnings);
+                                player.sendMessage("Amount: " + activityDTO.quantity);
                                 player.sendMessage("");
                             }
                         })

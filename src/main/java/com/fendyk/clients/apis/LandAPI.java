@@ -62,9 +62,9 @@ public class LandAPI extends ClientAPI<FetchLand, RedisLand, String, LandDTO> {
 
         /* Create the actual land */
         LandDTO landDTO = new LandDTO();
-        landDTO.setName(name);
-        landDTO.setOwnerId(owner.getUniqueId().toString());
-        landDTO.getHomes().add(taggedLocationDTO);
+        landDTO.name = name;
+        landDTO.ownerId = owner.getUniqueId().toString();
+        landDTO.homes.add(taggedLocationDTO);
         landDTO = fetch.create(landDTO);
 
         if(landDTO == null) throw new Exception("Could not create land");
@@ -76,9 +76,9 @@ public class LandAPI extends ClientAPI<FetchLand, RedisLand, String, LandDTO> {
         boolean canExpire = primaryGroup.equalsIgnoreCase("default") || primaryGroup.equalsIgnoreCase("barbarian");
 
         /* Claim the chunk */
-        chunkAPI.claim(chunk, landDTO.getId(), canExpire, canExpire ? expireDate : null);
+        chunkAPI.claim(chunk, landDTO.id, canExpire, canExpire ? expireDate : null);
 
-        cachedRecords.put(landDTO.getId(), landDTO);
+        cachedRecords.put(landDTO.id, landDTO);
 
         return landDTO;
     }

@@ -108,7 +108,7 @@ public final class WorldguardSyncManager {
 
         /* Find the land by landID */
         if(landDTO == null) {
-            landDTO = main.getApi().getLandAPI().redis.getMin(chunkDTO.getLandId());
+            landDTO = main.getApi().getLandAPI().redis.getMin(chunkDTO.landId);
             if(landDTO == null) return;
         }
 
@@ -136,12 +136,12 @@ public final class WorldguardSyncManager {
 
             BlockVector3 min = BlockVector3.at(topLeft.getX(), -256, topLeft.getZ());
             BlockVector3 max = BlockVector3.at(bottomRight.getX(), 256, bottomRight.getZ());
-            region = new ProtectedCuboidRegion(chunkDTO.getId(), min, max);
+            region = new ProtectedCuboidRegion(chunkDTO.id, min, max);
 
             if(!hasExpired) {
                 WorldguardSyncManager.setRegionMembersAndOwner(region,
-                        landDTO.getOwnerId(),
-                        landDTO.getMemberIDs()
+                        landDTO.ownerId,
+                        landDTO.memberIDs
                 );
             }
             main.getOverworldRegionManager().addRegion(region); // Dont forget to save the region
@@ -149,7 +149,7 @@ public final class WorldguardSyncManager {
         else {
             @Nullable ChunkDTO finalChunkDTO = chunkDTO;
 
-            List<ProtectedRegion> regions = set.stream().filter(r -> !r.getId().equalsIgnoreCase(finalChunkDTO.getId())).toList();
+            List<ProtectedRegion> regions = set.stream().filter(r -> !r.getId().equalsIgnoreCase(finalChunkDTO.id)).toList();
 
             // If we find a region that is not matching our requirements, remove it.
             if(regions.size() > 0) {
@@ -159,14 +159,14 @@ public final class WorldguardSyncManager {
             }
 
             // Now Find any id matching ours
-            Optional<ProtectedRegion> optionalRegion = set.stream().filter(r -> r.getId().equalsIgnoreCase(finalChunkDTO.getId())).findFirst();
+            Optional<ProtectedRegion> optionalRegion = set.stream().filter(r -> r.getId().equalsIgnoreCase(finalChunkDTO.id)).findFirst();
 
             if(optionalRegion.isEmpty()) return;
             region = optionalRegion.get();
 
             WorldguardSyncManager.setRegionMembersAndOwner(region,
-                    !hasExpired ? landDTO.getOwnerId() : null,
-                    !hasExpired ? landDTO.getMemberIDs() : null
+                    !hasExpired ? landDTO.ownerId : null,
+                    !hasExpired ? landDTO.memberIDs : null
             ); // Updates the region
         }
 

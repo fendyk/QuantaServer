@@ -35,7 +35,7 @@ public class LandExpansion extends PlaceholderExpansion {
     public @Nullable String onRequest(OfflinePlayer player, @NotNull String params) {
         if(params.equalsIgnoreCase("current_land_name")) {
             LandDTO landDTO = main.getApi().getLandAPI().get(player.getUniqueId());
-            return landDTO != null ? landDTO.getName() : "Not claimed";
+            return landDTO != null ? landDTO.name : "Not claimed";
         }
         return null;
     }

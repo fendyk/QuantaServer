@@ -70,9 +70,11 @@ class MinecraftUserAPI(fetch: FetchMinecraftUser, redis: RedisMinecraftUser) :
             val dto: MinecraftUserDTO = awaitMinecraftUser.get()
             val oldAmount: Double = dto.quanta ?: 0.0
             val newAmount: Double = oldAmount - amount
+
             if (newAmount < 0) {
                 return@supplyAsync false
             }
+
             val updateDTO = UpdateMinecraftUserDTO()
             updateDTO.quanta = newAmount
             return@supplyAsync update(uuid, updateDTO).handleAsync<Boolean> {

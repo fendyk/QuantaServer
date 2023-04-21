@@ -1,6 +1,7 @@
 package com.fendyk.clients.fetch
 
 import com.fendyk.DTOs.MinecraftUserDTO
+import com.fendyk.DTOs.updates.UpdateActivitiesDTO
 import com.fendyk.DTOs.updates.UpdateMinecraftUserDTO
 import com.fendyk.clients.FetchAPI
 import java.util.*

@@ -49,28 +49,28 @@ public class QuantaExpansion extends PlaceholderExpansion {
         if(params.equalsIgnoreCase("activities_mining_daily_earned")) {
             ActivitiesDTO activitiesDTO = main.getApi().getActivitiesAPI().getCached(player.getUniqueId());
             return activitiesDTO != null ?
-                    String.format("%.2f", activitiesDTO.getMining().stream().mapToDouble(ActivityDTO::getEarnings).sum())
+                    String.format("%.2f", activitiesDTO.mining.stream().mapToDouble(ActivityDTO::getEarnings).sum())
                     : "0";
         }
 
         if(params.equalsIgnoreCase("activities_pve_daily_earned")) {
             ActivitiesDTO activitiesDTO = main.getApi().getActivitiesAPI().getCached(player.getUniqueId());
             return activitiesDTO != null ?
-                    String.format("%.2f", activitiesDTO.getPve().stream().mapToDouble(ActivityDTO::getEarnings).sum())
+                    String.format("%.2f", activitiesDTO.pve.stream().mapToDouble(ActivityDTO::getEarnings).sum())
                     : "0";
         }
 
         if(params.equalsIgnoreCase("activities_mining_daily_quantity")) {
             ActivitiesDTO activitiesDTO = main.getApi().getActivitiesAPI().getCached(player.getUniqueId());
             return activitiesDTO != null ?
-                    String.format("%.2f", activitiesDTO.getMining().stream().mapToDouble(ActivityDTO::getQuantity).sum())
+                    String.format("%.2f", activitiesDTO.mining.stream().mapToDouble(ActivityDTO::getQuantity).sum())
                     : "0";
         }
 
         if(params.equalsIgnoreCase("activities_pve_daily_quantity")) {
             ActivitiesDTO activitiesDTO = main.getApi().getActivitiesAPI().getCached(player.getUniqueId());
             return activitiesDTO != null ?
-                    String.format("%.2f", activitiesDTO.getPve().stream().mapToDouble(ActivityDTO::getQuantity).sum())
+                    String.format("%.2f", activitiesDTO.pve.stream().mapToDouble(ActivityDTO::getQuantity).sum())
                     : "0";
         }
 

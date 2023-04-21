@@ -53,7 +53,7 @@ public class ActivityBossBarManager {
         final float percent = Math.min(percentAndThreshold[0], 1);
         final float threshold = percentAndThreshold[1];
         final BossBar.Color color = getColorByType(type);
-        final Component name = Component.text(activityDTO.getName() + " Progression ( " + Math.round(activityDTO.getQuantity()) + " / " + Math.round(threshold) + " )");
+        final Component name = Component.text(activityDTO.name + " Progression ( " + Math.round(activityDTO.quantity) + " / " + Math.round(threshold) + " )");
 
         bossBars.entrySet().stream().filter(item -> item.getKey().equals(player.getUniqueId()))
                 .findFirst()
@@ -110,8 +110,8 @@ public class ActivityBossBarManager {
 
     public static float[] getPercentAndThresholdFromActivity(ActivityDTO activityDTO) {
         float[] result = new float[2];
-        final double quantity = activityDTO.getQuantity();
-        final String name = activityDTO.getName();
+        final double quantity = activityDTO.quantity;
+        final String name = activityDTO.name;
         EarningsConfig earningsConfig = main.getEarningsConfig();
 
         if(name.equalsIgnoreCase("SECONDS")) {
