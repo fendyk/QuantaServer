@@ -23,63 +23,63 @@ class ChunkAPI(fetch: FetchChunk, redis: RedisChunk) : ClientAPI<FetchChunk, Red
     }
 
     operator fun get(chunk: Chunk): CompletableFuture<ChunkDTO> {
-        val chunkPos = Vector2(chunk.x, chunk.z)
-        return redis!!.get(chunkPos)
+        return CompletableFuture.supplyAsync {
+            val chunkPos = Vector2(chunk.x, chunk.z)
+            return@supplyAsync redis.get(chunkPos).get()
+        }
     }
 
     fun create(chunk: Chunk, isClaimable: Boolean): CompletableFuture<ChunkDTO> {
         return CompletableFuture.supplyAsync {
             val newChunkDTO = ChunkDTO(chunk.x, chunk.z)
             newChunkDTO.isClaimable = isClaimable
-            fetch.create(newChunkDTO)
+            return@supplyAsync fetch.create(newChunkDTO).get()
         }
     }
 
     fun update(chunk: Chunk, updates: UpdateChunkDTO): CompletableFuture<ChunkDTO> {
-        val vector2 = Vector2(chunk.x, chunk.z)
-        return fetch!!.update(vector2, updates)
+        return CompletableFuture.supplyAsync {
+            val vector2 = Vector2(chunk.x, chunk.z)
+            return@supplyAsync fetch.update(vector2, updates).get()
+        }
     }
 
-    fun claim(chunk: Chunk, landId: String, canExpire: Boolean, expirationDate: DateTime): Boolean {
-        val updateChunkDTO = UpdateChunkDTO()
-        updateChunkDTO.landId = landId
-        updateChunkDTO.canExpire = canExpire
-        updateChunkDTO.expirationDate = expirationDate
-        return update(chunk, updateChunkDTO) != null
+    fun claim(chunk: Chunk, landId: String, canExpire: Boolean, expirationDate: DateTime): CompletableFuture<Boolean> {
+        return CompletableFuture.supplyAsync {
+            val updateChunkDTO = UpdateChunkDTO()
+            updateChunkDTO.landId = landId
+            updateChunkDTO.canExpire = canExpire
+            updateChunkDTO.expirationDate = expirationDate.toString()
+            return@supplyAsync update(chunk, updateChunkDTO).isDone
+        }
     }
 
-    fun expire(chunk: Chunk): Boolean {
-        val updateChunkDTO = UpdateChunkDTO()
-        updateChunkDTO.resetLandId = true
-        updateChunkDTO.canExpire = false
-        updateChunkDTO.resetExpirationDate = true
-        return update(chunk, updateChunkDTO) != null
+    fun expire(chunk: Chunk): CompletableFuture<Boolean> {
+        return CompletableFuture.supplyAsync {
+            val updateChunkDTO = UpdateChunkDTO()
+            updateChunkDTO.resetLandId = true
+            updateChunkDTO.canExpire = false
+            updateChunkDTO.resetExpirationDate = true
+            return@supplyAsync update(chunk, updateChunkDTO).isDone
+        }
     }
 
-    fun extend(chunk: Chunk, days: Int): Boolean {
-        val chunkDTO = get(chunk) ?: return false
-        val expirationDate = chunkDTO.getExpirationDate() ?: return false
-        val newExpirationDate = expirationDate.plusDays(days)
-        val updateChunkDTO = UpdateChunkDTO()
-        updateChunkDTO.canExpire = true
-        updateChunkDTO.expirationDate = newExpirationDate
-        return update(chunk, updateChunkDTO) != null
+    fun extend(chunk: Chunk, days: Int):  CompletableFuture<Boolean> {
+        return CompletableFuture.supplyAsync {
+            val chunkDTO: ChunkDTO = get(chunk).get()
+            val expirationDate = chunkDTO.getExpirationDate()
+            val newExpirationDate = expirationDate.plusDays(days)
+            val updateChunkDTO = UpdateChunkDTO()
+            updateChunkDTO.canExpire = true
+            updateChunkDTO.expirationDate = newExpirationDate.toString()
+            return@supplyAsync update(chunk, updateChunkDTO).isDone
+        }
     }
 
     companion object {
         @JvmStatic
         fun isBlacklistedBlock(chunkDTO: ChunkDTO, block: Block): Boolean {
             return chunkDTO.blacklistedBlocks.stream().anyMatch { (x, y, z): BlacklistedBlockDTO -> x == block.x && y == block.y && z == block.z }
-        }
-
-        /**
-         * Returns true if chunk is claimable
-         * @param chunkDTO
-         * @return
-         */
-        @JvmStatic
-        fun isClaimable(chunkDTO: ChunkDTO): Boolean {
-            return chunkDTO.isClaimable
         }
     }
 }

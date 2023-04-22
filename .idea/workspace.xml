@@ -4,24 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Update DTO's to kotlin">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/ChunkAPI.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/LandAPI.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/fetch/FetchActivities.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/fetch/FetchChunk.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/fetch/FetchLand.kt" afterDir="false" />
+    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Update fetch classes to kotlin">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/RedisAPI.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/ActivitiesAPI.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisActivities.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisChunk.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisLand.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisMinecraftUser.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/ChunkDTO.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/ChunkDTO.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/LandDTO.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/LandDTO.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/FetchAPI.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/FetchAPI.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/ChunkAPI.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/ConfirmCommandAPI.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/LandAPI.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/MinecraftUserAPI.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/MinecraftUserAPI.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/fetch/FetchActivities.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/fetch/FetchChunk.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/fetch/FetchLand.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/fetch/FetchMinecraftUser.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/fetch/FetchMinecraftUser.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/RedisAPI.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/ActivitiesAPI.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/ChunkAPI.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/ChunkAPI.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisActivities.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisChunk.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisLand.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisMinecraftUser.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,33 +95,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "extract.method.default.visibility": "private",
-    "git-widget-placeholder": "development",
-    "last_opened_file_path": "/Users/raulfernandez/Documents/GitHub/QuantaServer",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;extract.method.default.visibility&quot;: &quot;private&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;development&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/raulfernandez/Documents/GitHub/QuantaServer&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mysql",
-      "mongo"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;,
+      &quot;mongo&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="com.fendyk.clients.redis" />
@@ -288,14 +286,8 @@
       <workItem from="1681685754044" duration="1662000" />
       <workItem from="1681687599653" duration="3318000" />
       <workItem from="1681757824549" duration="531000" />
-      <workItem from="1681766911866" duration="41348000" />
-    </task>
-    <task id="LOCAL-00009" summary="feat: better error handling and overhaul (again) to the api">
-      <created>1676389840312</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1676389840312</updated>
+      <workItem from="1681766911866" duration="42016000" />
+      <workItem from="1682183267345" duration="1609000" />
     </task>
     <task id="LOCAL-00010" summary="feat: DTO implementation">
       <created>1677191889419</created>
@@ -633,7 +625,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682103548100</updated>
     </task>
-    <option name="localTasksCounter" value="58" />
+    <task id="LOCAL-00058" summary="Update fetch classes to kotlin">
+      <created>1682182490601</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1682182490601</updated>
+    </task>
+    <option name="localTasksCounter" value="59" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -651,7 +650,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add new stuff and fix for earnings manager" />
     <MESSAGE value="Add log changes" />
     <MESSAGE value="Add cached option for minecraft user api for visualisation purposes" />
     <MESSAGE value="Add payable commands" />
@@ -676,6 +674,7 @@
     <MESSAGE value="Update to redisAPI" />
     <MESSAGE value="Update stage 1 of kotlin integration" />
     <MESSAGE value="Update DTO's to kotlin" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update DTO's to kotlin" />
+    <MESSAGE value="Update fetch classes to kotlin" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update fetch classes to kotlin" />
   </component>
 </project>

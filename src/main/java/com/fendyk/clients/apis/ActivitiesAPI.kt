@@ -1,26 +1,24 @@
-package com.fendyk.clients.apis;
+package com.fendyk.clients.apis
 
-import com.fendyk.API;
-import com.fendyk.DTOs.ActivitiesDTO;
-import com.fendyk.DTOs.updates.UpdateActivitiesDTO;
-import com.fendyk.clients.ClientAPI;
-import com.fendyk.clients.fetch.FetchActivities;
-import com.fendyk.clients.redis.RedisActivities;
-import org.bukkit.entity.Player;
+import com.fendyk.API
+import com.fendyk.DTOs.ActivitiesDTO
+import com.fendyk.DTOs.updates.UpdateActivitiesDTO
+import com.fendyk.clients.ClientAPI
+import com.fendyk.clients.fetch.FetchActivities
+import com.fendyk.clients.redis.RedisActivities
+import org.bukkit.entity.Player
+import java.util.*
+import java.util.concurrent.CompletableFuture
 
-import java.util.UUID;
-
-public class ActivitiesAPI extends ClientAPI<FetchActivities, RedisActivities, UUID, ActivitiesDTO> {
-
-    public ActivitiesAPI(API api, FetchActivities fetch, RedisActivities redis) {
-        super(api, fetch, redis);
-    }
-
-    public ActivitiesDTO get(Player player) {
-        UUID uuid = player.getUniqueId();
-        ActivitiesDTO dto = redis.get(uuid);
-        cachedRecords.put(player.getUniqueId(), dto);
-        return dto;
+class ActivitiesAPI(fetch: FetchActivities, redis: RedisActivities) :
+        ClientAPI<FetchActivities, RedisActivities, UUID, ActivitiesDTO?>(fetch, redis) {
+     fun get(player: Player): CompletableFuture<ActivitiesDTO> {
+        return CompletableFuture.supplyAsync {
+            val uuid = player.uniqueId
+            val activitiesDTO: ActivitiesDTO = redis.get(uuid).get()
+            cachedRecords[uuid] = activitiesDTO
+            return@supplyAsync activitiesDTO
+        }
     }
 
     /**
@@ -29,8 +27,7 @@ public class ActivitiesAPI extends ClientAPI<FetchActivities, RedisActivities, U
      * @param updated
      * @return
      */
-    public ActivitiesDTO update(Player player, UpdateActivitiesDTO updated) {
-        return fetch.update(player.getUniqueId(), updated);
+    fun update(player: Player, updated: UpdateActivitiesDTO): CompletableFuture<ActivitiesDTO> {
+        return fetch.update(player.uniqueId, updated)
     }
-
 }

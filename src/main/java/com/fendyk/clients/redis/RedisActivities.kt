@@ -1,18 +1,16 @@
-package com.fendyk.clients.redis;
+package com.fendyk.clients.redis
 
-import com.fendyk.DTOs.ActivitiesDTO;
-import com.fendyk.DTOs.ChunkDTO;
-import com.fendyk.DTOs.LandDTO;
-import com.fendyk.Main;
-import com.fendyk.clients.RedisAPI;
-import io.lettuce.core.RedisClient;
-import io.lettuce.core.pubsub.RedisPubSubListener;
+import com.fendyk.DTOs.ActivitiesDTO
+import com.fendyk.clients.RedisAPI
+import java.util.UUID
+import java.util.concurrent.CompletableFuture
 
-import java.util.ArrayList;
-import java.util.UUID;
+class RedisActivities : RedisAPI<UUID, ActivitiesDTO>("activities:", ActivitiesDTO::class.java) {
+    override fun get(key: UUID): CompletableFuture<ActivitiesDTO> {
+        return fetch(key.toString())
+    }
 
-public class RedisActivities extends RedisAPI<ActivitiesDTO> {
-    public RedisActivities() {
-        super("activities:", ActivitiesDTO.class);
+    override fun set(key: UUID, dto: ActivitiesDTO): CompletableFuture<Boolean> {
+        return save(key.toString(), dto)
     }
 }

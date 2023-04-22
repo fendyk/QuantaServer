@@ -61,24 +61,16 @@ abstract class FetchAPI<K, DTO, UpdateDTO>(private val dtoType: Class<DTO>) {
     }
 
     open fun get(key: K): CompletableFuture<DTO> {
-        val future = CompletableFuture<DTO>()
-        future.completeExceptionally(Exception("GET is not implemented yet."))
-        return future;
+        throw Exception("GET is not implemented yet.")
     }
     open fun create(dto: DTO): CompletableFuture<DTO> {
-        val future = CompletableFuture<DTO>()
-        future.completeExceptionally(Exception("CREATE is not implemented yet."))
-        return future;
+        throw Exception("CREATE is not implemented yet.")
     }
     open fun update(key: K, dto: UpdateDTO): CompletableFuture<DTO> {
-        val future = CompletableFuture<DTO>()
-        future.completeExceptionally(Exception("UPDATE is not implemented yet."))
-        return future;
+        throw Exception("UPDATE is not implemented yet.")
     }
     open fun delete(key: K): CompletableFuture<DTO> {
-        val future = CompletableFuture<DTO>()
-        future.completeExceptionally(Exception("DELETE is not implemented yet."))
-        return future;
+        throw Exception("DELETE is not implemented yet.")
     }
 
 
