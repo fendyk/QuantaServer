@@ -12,7 +12,7 @@ class FetchMinecraftUser : FetchAPI<UUID, MinecraftUserDTO, UpdateMinecraftUserD
         return fetch("/minecraftusers/$key", RequestMethod.GET, null)
     }
 
-    override fun update(key: UUID, data: UpdateMinecraftUserDTO): CompletableFuture<MinecraftUserDTO> {
-        return fetch("/minecraftusers/$key", RequestMethod.PATCH, data)
+    override fun update(key: UUID, dto: UpdateMinecraftUserDTO): CompletableFuture<MinecraftUserDTO> {
+        return fetch("/minecraftusers/$key", RequestMethod.PATCH, dto)
     }
 }

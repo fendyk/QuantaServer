@@ -70,7 +70,7 @@ abstract class FetchAPI<K, DTO, UpdateDTO>(private val dtoType: Class<DTO>) {
         future.completeExceptionally(Exception("CREATE is not implemented yet."))
         return future;
     }
-    open fun update(key: K, data: UpdateDTO): CompletableFuture<DTO> {
+    open fun update(key: K, dto: UpdateDTO): CompletableFuture<DTO> {
         val future = CompletableFuture<DTO>()
         future.completeExceptionally(Exception("UPDATE is not implemented yet."))
         return future;

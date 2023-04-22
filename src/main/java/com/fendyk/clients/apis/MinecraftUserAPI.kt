@@ -110,7 +110,7 @@ class MinecraftUserAPI(fetch: FetchMinecraftUser, redis: RedisMinecraftUser) :
      * @param location
      * @return
      */
-    fun updateLastLocation(player: Player, location: Location?): CompletableFuture<Boolean> {
+    fun updateLastLocation(player: Player, location: Location): CompletableFuture<Boolean> {
         return CompletableFuture.supplyAsync {
             val updateDTO = UpdateMinecraftUserDTO()
             updateDTO.lastLocation = LocationDTO(location)

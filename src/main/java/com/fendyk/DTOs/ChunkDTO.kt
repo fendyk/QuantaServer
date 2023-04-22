@@ -4,15 +4,14 @@ import com.google.gson.annotations.SerializedName
 import org.joda.time.DateTime
 
 data class ChunkDTO(
-        val name: String,
         val x: Int,
         val z: Int
 ) {
-    @JvmField var isClaimable: Boolean? = null
-    @JvmField var canExpire: Boolean? = null
-    @JvmField var landId: String? = null
-    @JvmField var expirationDate: String? = null
-    @JvmField var blacklistedBlocks: ArrayList<BlacklistedBlockDTO> = ArrayList()
+    var isClaimable: Boolean? = null
+    var canExpire: Boolean? = null
+    var landId: String? = null
+    var expirationDate: String? = null
+    var blacklistedBlocks: ArrayList<BlacklistedBlockDTO> = ArrayList()
 
     fun setClaimable(claimable: Boolean) {
         isClaimable = claimable

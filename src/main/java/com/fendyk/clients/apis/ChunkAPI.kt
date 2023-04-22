@@ -1,109 +1,85 @@
-package com.fendyk.clients.apis;
+package com.fendyk.clients.apis
 
-import com.fendyk.API;
-import com.fendyk.DTOs.BlacklistedBlockDTO;
-import com.fendyk.DTOs.ChunkDTO;
-import com.fendyk.DTOs.LandDTO;
-import com.fendyk.DTOs.updates.UpdateChunkDTO;
-import com.fendyk.Main;
-import com.fendyk.clients.ClientAPI;
-import com.fendyk.clients.fetch.FetchChunk;
-import com.fendyk.clients.redis.RedisChunk;
-import com.fendyk.utilities.Vector2;
-import net.luckperms.api.model.user.User;
-import org.apache.commons.lang3.ObjectUtils;
-import org.bukkit.Chunk;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Nullable;
-import org.joda.time.DateTime;
+import com.fendyk.API
+import com.fendyk.DTOs.BlacklistedBlockDTO
+import com.fendyk.DTOs.ChunkDTO
+import com.fendyk.DTOs.updates.UpdateChunkDTO
+import com.fendyk.clients.ClientAPI
+import com.fendyk.clients.fetch.FetchChunk
+import com.fendyk.clients.redis.RedisChunk
+import com.fendyk.utilities.Vector2
+import org.bukkit.Chunk
+import org.bukkit.block.Block
+import org.joda.time.DateTime
+import java.util.concurrent.CompletableFuture
 
-import java.util.Date;
-import java.util.UUID;
-
-public class ChunkAPI extends ClientAPI<FetchChunk, RedisChunk, String, ChunkDTO> {
-
-    public ChunkAPI(API api, FetchChunk fetch, RedisChunk redis) {
-        super(api, fetch, redis);
-    }
-
-    public static enum ChunkState {
+class ChunkAPI(fetch: FetchChunk, redis: RedisChunk) : ClientAPI<FetchChunk, RedisChunk, String, ChunkDTO?>(fetch, redis) {
+    enum class ChunkState {
         BLACKLISTED,
         UNCLAIMABLE,
         UNCLAIMED,
         CLAIMED_EXPIRABLE,
-        CLAIMED_PERMANENT,
+        CLAIMED_PERMANENT
     }
 
-
-    @Nullable
-    public ChunkDTO get(Chunk chunk) {
-        Vector2 chunkPos = new Vector2(chunk.getX(), chunk.getZ());
-        return redis.get(chunkPos);
+    operator fun get(chunk: Chunk): CompletableFuture<ChunkDTO> {
+        val chunkPos = Vector2(chunk.x, chunk.z)
+        return redis!!.get(chunkPos)
     }
 
-    public ChunkDTO create(Chunk chunk, boolean isClaimable) {
-        ChunkDTO newChunkDTO = new ChunkDTO();
-        newChunkDTO.setClaimable(isClaimable);
-        newChunkDTO.x = chunk.getX();
-        newChunkDTO.z = chunk.getZ();
-        return fetch.create(newChunkDTO);
+    fun create(chunk: Chunk, isClaimable: Boolean): CompletableFuture<ChunkDTO> {
+        return CompletableFuture.supplyAsync {
+            val newChunkDTO = ChunkDTO(chunk.x, chunk.z)
+            newChunkDTO.isClaimable = isClaimable
+            fetch.create(newChunkDTO)
+        }
     }
 
-    public ChunkDTO update(Chunk chunk, UpdateChunkDTO updates) {
-        Vector2 vector2 = new Vector2(chunk.getX(), chunk.getZ());
-        return fetch.update(vector2, updates);
+    fun update(chunk: Chunk, updates: UpdateChunkDTO): CompletableFuture<ChunkDTO> {
+        val vector2 = Vector2(chunk.x, chunk.z)
+        return fetch!!.update(vector2, updates)
     }
 
-    public boolean claim(Chunk chunk, String landId, boolean canExpire, DateTime expirationDate) {
-        UpdateChunkDTO updateChunkDTO = new UpdateChunkDTO();
-        updateChunkDTO.landId = landId;
-        updateChunkDTO.setCanExpire(canExpire);
-        updateChunkDTO.setExpirationDate(expirationDate);
-
-        return update(chunk, updateChunkDTO) != null;
+    fun claim(chunk: Chunk, landId: String, canExpire: Boolean, expirationDate: DateTime): Boolean {
+        val updateChunkDTO = UpdateChunkDTO()
+        updateChunkDTO.landId = landId
+        updateChunkDTO.canExpire = canExpire
+        updateChunkDTO.expirationDate = expirationDate
+        return update(chunk, updateChunkDTO) != null
     }
 
-    public boolean expire(Chunk chunk) {
-        UpdateChunkDTO updateChunkDTO = new UpdateChunkDTO();
-        updateChunkDTO.resetLandId = true;
-        updateChunkDTO.setCanExpire(false);
-        updateChunkDTO.resetExpirationDate = true;
-
-        return update(chunk, updateChunkDTO) != null;
+    fun expire(chunk: Chunk): Boolean {
+        val updateChunkDTO = UpdateChunkDTO()
+        updateChunkDTO.resetLandId = true
+        updateChunkDTO.canExpire = false
+        updateChunkDTO.resetExpirationDate = true
+        return update(chunk, updateChunkDTO) != null
     }
 
-    public boolean extend(Chunk chunk, int days) {
-        ChunkDTO chunkDTO = get(chunk);
-        if(chunkDTO == null) return false;
-
-        DateTime expirationDate = chunkDTO.getExpirationDate();
-        if(expirationDate == null) return false;
-
-        DateTime newExpirationDate = expirationDate.plusDays(days);
-
-        UpdateChunkDTO updateChunkDTO = new UpdateChunkDTO();
-        updateChunkDTO.setCanExpire(true);
-        updateChunkDTO.setExpirationDate(newExpirationDate);
-        return update(chunk, updateChunkDTO) != null;
+    fun extend(chunk: Chunk, days: Int): Boolean {
+        val chunkDTO = get(chunk) ?: return false
+        val expirationDate = chunkDTO.getExpirationDate() ?: return false
+        val newExpirationDate = expirationDate.plusDays(days)
+        val updateChunkDTO = UpdateChunkDTO()
+        updateChunkDTO.canExpire = true
+        updateChunkDTO.expirationDate = newExpirationDate
+        return update(chunk, updateChunkDTO) != null
     }
 
+    companion object {
+        @JvmStatic
+        fun isBlacklistedBlock(chunkDTO: ChunkDTO, block: Block): Boolean {
+            return chunkDTO.blacklistedBlocks.stream().anyMatch { (x, y, z): BlacklistedBlockDTO -> x == block.x && y == block.y && z == block.z }
+        }
 
-    public static boolean isBlacklistedBlock(ChunkDTO chunkDTO, Block block) {
-        return chunkDTO.blacklistedBlocks.stream().anyMatch(item ->
-            item.x == block.getX() &&
-                    item.y == block.getY() &&
-                    item.z == block.getZ()
-        );
+        /**
+         * Returns true if chunk is claimable
+         * @param chunkDTO
+         * @return
+         */
+        @JvmStatic
+        fun isClaimable(chunkDTO: ChunkDTO): Boolean {
+            return chunkDTO.isClaimable
+        }
     }
-
-    /**
-     * Returns true if chunk is claimable
-     * @param chunkDTO
-     * @return
-     */
-    public static boolean isClaimable(ChunkDTO chunkDTO) {
-        return chunkDTO.isClaimable;
-    }
-
 }

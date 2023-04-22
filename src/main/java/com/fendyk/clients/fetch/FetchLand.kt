@@ -1,39 +1,20 @@
-package com.fendyk.clients.fetch;
+package com.fendyk.clients.fetch
 
-import com.fendyk.DTOs.LandDTO;
-import com.fendyk.DTOs.updates.UpdateLandDTO;
-import com.fendyk.Main;
-import com.fendyk.clients.FetchAPI;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import org.bukkit.Bukkit;
+import com.fendyk.DTOs.LandDTO
+import com.fendyk.DTOs.updates.UpdateLandDTO
+import com.fendyk.clients.FetchAPI
+import java.util.concurrent.CompletableFuture
 
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-
-public class FetchLand extends FetchAPI<String, LandDTO, UpdateLandDTO> {
-
-    public FetchLand() {
-        super(LandDTO.class);
+class FetchLand : FetchAPI<String, LandDTO, UpdateLandDTO>(LandDTO::class.java) {
+    override operator fun get(key: String): CompletableFuture<LandDTO> {
+        return fetch("/lands/$key", RequestMethod.GET, null)
     }
 
-    @Override
-    public CompletableFuture<LandDTO> get(String key) {
-        return fetch("/lands/" + key, RequestMethod.GET, null);
+    override fun create(dto: LandDTO): CompletableFuture<LandDTO> {
+        return fetch("/lands", RequestMethod.POST, dto)
     }
 
-    @Override
-    public CompletableFuture<LandDTO> create(LandDTO data) {
-        return fetch("/lands", RequestMethod.POST, data);
-    }
-
-    @Override
-    public CompletableFuture<LandDTO> update(String key, UpdateLandDTO data) {
-        return fetch("/lands/" + key, RequestMethod.PATCH, data);
-    }
-
-    @Override
-    public CompletableFuture<LandDTO> delete(String key) {
-        return null;
+    override fun update(key: String, dto: UpdateLandDTO): CompletableFuture<LandDTO> {
+        return fetch("/lands/$key", RequestMethod.PATCH, dto)
     }
 }

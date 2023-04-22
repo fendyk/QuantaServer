@@ -1,60 +1,28 @@
-package com.fendyk.clients.fetch;
+package com.fendyk.clients.fetch
 
-import com.fendyk.DTOs.ChunkDTO;
-import com.fendyk.DTOs.updates.UpdateChunkDTO;
-import com.fendyk.Main;
-import com.fendyk.clients.FetchAPI;
-import com.fendyk.utilities.Vector2;
-import okhttp3.Request;
-import okhttp3.RequestBody;
+import com.fendyk.DTOs.ChunkDTO
+import com.fendyk.DTOs.MinecraftUserDTO
+import com.fendyk.DTOs.updates.UpdateChunkDTO
+import com.fendyk.DTOs.updates.UpdateMinecraftUserDTO
+import com.fendyk.Main
+import com.fendyk.clients.FetchAPI
+import com.fendyk.utilities.Vector2
+import okhttp3.Request
+import okhttp3.RequestBody
+import java.util.*
+import java.util.concurrent.CompletableFuture
 
-import java.util.concurrent.CompletableFuture;
+class FetchChunk : FetchAPI<Vector2, ChunkDTO, UpdateChunkDTO>(ChunkDTO::class.java) {
 
-public class FetchChunk extends FetchAPI<Vector2, ChunkDTO, UpdateChunkDTO> {
-    public FetchChunk() {
-        super(ChunkDTO.class);
+    override fun get(key: Vector2): CompletableFuture<ChunkDTO> {
+        return fetch("/chunks/${key.x}/${key.y}", RequestMethod.GET, null)
     }
 
-    @Override
-    public CompletableFuture<ChunkDTO> get(Vector2 key) {
-        Request request = this.requestBuilder
-                .url(url + "/chunks/" + key.getX() + "/" + key.getY())
-                .get()
-                .build();
-        return Main.gson.fromJson(
-                fetchFromApi(request, "getChunk"),
-                ChunkDTO.class
-        );
+    override fun create(dto: ChunkDTO): CompletableFuture<ChunkDTO> {
+        return fetch("/chunks", RequestMethod.PATCH, dto)
     }
 
-    @Override
-    public CompletableFuture<ChunkDTO> create(ChunkDTO data) {
-        RequestBody body = RequestBody.create(Main.gson.toJson(data), JSON);
-        Request request = this.requestBuilder
-                .url(url + "/chunks")
-                .post(body)
-                .build();
-        return Main.gson.fromJson(
-                fetchFromApi(request, "createChunk"),
-                ChunkDTO.class
-        );
-    }
-
-    @Override
-    public ChunkDTO update(Vector2 key, UpdateChunkDTO data) {
-        RequestBody body = RequestBody.create(Main.gson.toJson(data), JSON);
-        Request request = this.requestBuilder
-                .url(url + "/chunks/" + key.getX() + "/" + key.getY())
-                .patch(body)
-                .build();
-        return Main.gson.fromJson(
-                fetchFromApi(request, "updateChunk"),
-                ChunkDTO.class
-        );
-    }
-
-    @Override
-    public ChunkDTO delete(Vector2 key) {
-        return null;
+    override fun update(key: Vector2, dto: UpdateChunkDTO): CompletableFuture<ChunkDTO> {
+        return fetch("/chunks/${key.x}/${key.y}", RequestMethod.PATCH, dto)
     }
 }
