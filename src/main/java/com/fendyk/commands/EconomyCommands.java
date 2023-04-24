@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import java.math.BigDecimal;
 
 public class EconomyCommands {
-    Main main = Main.getInstance();
+    Main main = Main.instance;
 
     public EconomyCommands() {
         new CommandAPICommand("pay")
@@ -23,7 +23,7 @@ public class EconomyCommands {
                     OfflinePlayer toPlayer = (Player) args[0];
                     Double amount = (Double) args[1];
 
-                    BigDecimal balance = main.getApi().getMinecraftUserAPI().getPlayerBalance(fromPlayer.getUniqueId());
+                    BigDecimal balance = main.api.minecraftUserAPI.getPlayerBalance(fromPlayer.getUniqueId());
 
                     if(balance == null || balance.doubleValue() < amount) {
                         fromPlayer.sendMessage("You dont have enough money to send.");
@@ -34,8 +34,8 @@ public class EconomyCommands {
                         return;
                     }
 
-                    boolean isWithdrawn = main.getApi().getMinecraftUserAPI().withDrawBalance(fromPlayer, new BigDecimal(amount));
-                    boolean isDeposited = main.getApi().getMinecraftUserAPI().depositBalance(toPlayer, new BigDecimal(amount));
+                    boolean isWithdrawn = main.api.minecraftUserAPI.withDrawBalance(fromPlayer, new BigDecimal(amount));
+                    boolean isDeposited = main.api.minecraftUserAPI.depositBalance(toPlayer, new BigDecimal(amount));
                     if(!isWithdrawn || !isDeposited) {
                         fromPlayer.sendMessage("Looks like something went wrong. Maybe you dont have enough $Quanta? If you believe this is an error, contact support.");
                         return;

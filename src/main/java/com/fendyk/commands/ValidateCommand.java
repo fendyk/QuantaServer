@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import java.util.UUID;
 
 public class ValidateCommand {
-    private Main main = Main.getInstance();
+    private Main main = Main.instance;
     private Builder builder;
 
     private ValidateCommand(Builder builder) {
@@ -27,7 +27,7 @@ public class ValidateCommand {
     }
 
     public static class Builder {
-        private Main main = Main.getInstance();
+        private Main main = Main.instance;
         private Player player;
         private User user;
         private MinecraftUserDTO minecraftUserDTO;
@@ -52,7 +52,7 @@ public class ValidateCommand {
             if (user != null) {
                 return;
             }
-            this.user = main.getLuckPermsApi().getUserManager().getUser(player.getUniqueId());
+            this.user = main.luckPermsApi.getUserManager().getUser(player.getUniqueId());
             if (user == null) {
                 passed = false;
                 player.sendMessage("We could not determine your user permissions account");
@@ -64,7 +64,7 @@ public class ValidateCommand {
             if (minecraftUserDTO != null) {
                 return;
             }
-            this.minecraftUserDTO = main.getApi().getMinecraftUserAPI().redis.get(player.getUniqueId());
+            this.minecraftUserDTO = main.api.minecraftUserAPI.redis.get(player.getUniqueId());
             if (minecraftUserDTO == null) {
                 passed = false;
                 player.sendMessage("We could not determine your minecraft account data");
@@ -76,7 +76,7 @@ public class ValidateCommand {
             if (landDTO != null) {
                 return;
             }
-            this.landDTO = main.getApi().getLandAPI().get(minecraftUserDTO.userId);
+            this.landDTO = main.api.landAPI.get(minecraftUserDTO.userId);
             if (landDTO == null) {
                 passed = false;
                 player.sendMessage("We could not determine your land");
@@ -95,7 +95,7 @@ public class ValidateCommand {
             if (rankConfiguration != null) {
                 return;
             }
-            this.rankConfiguration = main.getRanksConfig().getRankConfiguration(primaryGroup);
+            this.rankConfiguration = main.ranksConfig.getRankConfiguration(primaryGroup);
             if (rankConfiguration == null) {
                 passed = false;
                 player.sendMessage("We could not determine your rank's configuration");

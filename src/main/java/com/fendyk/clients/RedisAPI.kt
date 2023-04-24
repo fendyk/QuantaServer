@@ -15,7 +15,7 @@ abstract class RedisAPI<K, DTO>(
         private val redisKey: String,
         private val dtoType: Class<DTO>
 ) {
-    fun fetch(key: String): CompletableFuture<DTO> {
+    fun fetch(key: String): CompletableFuture<DTO?> {
         return CompletableFuture.supplyAsync {
             val inDebugMode = main.serverConfig.isInDebugMode
             val data = syncCommands[redisKey + key]
@@ -29,7 +29,7 @@ abstract class RedisAPI<K, DTO>(
                 }
                 Log.info("")
             }
-            if (data == null) throw Exception("Redis data is null")
+            if (data == null) return@supplyAsync null
             return@supplyAsync Main.gson.fromJson<DTO>(data, dtoType)
         }
     }
@@ -63,7 +63,7 @@ abstract class RedisAPI<K, DTO>(
         }
     }
 
-    open fun get(key: K): CompletableFuture<DTO> {
+    open fun get(key: K): CompletableFuture<DTO?> {
         throw Exception("GET is not implemented yet.")
     }
 
@@ -76,7 +76,7 @@ abstract class RedisAPI<K, DTO>(
     }
 
     companion object {
-        var main: Main = Main.getInstance()
+        var main: Main = Main.instance
         var client: RedisClient = RedisClient.create(main.serverConfig.redisUrl)
             protected set
         @JvmStatic

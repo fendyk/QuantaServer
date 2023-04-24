@@ -20,7 +20,7 @@ public class ActivityBossBarManager {
         MINING, PVE, PVP, TIME
     }
 
-    static Main main = Main.getInstance();
+    static Main main = Main.instance;
     static HashMap<UUID, HashMap<Type, BossBar>> bossBars = new HashMap<>();
     static HashMap<UUID, HashMap<Type, Long>> bossBarsExpiresInSeconds = new HashMap<>();
 
@@ -112,7 +112,7 @@ public class ActivityBossBarManager {
         float[] result = new float[2];
         final double quantity = activityDTO.quantity;
         final String name = activityDTO.name;
-        EarningsConfig earningsConfig = main.getEarningsConfig();
+        EarningsConfig earningsConfig = main.earningsConfig;
 
         if(name.equalsIgnoreCase("SECONDS")) {
             float threshold = (float) earningsConfig.getTimeThreshold();

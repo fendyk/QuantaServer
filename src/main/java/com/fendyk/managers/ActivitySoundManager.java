@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public class ActivitySoundManager {
 
-    static Main main = Main.getInstance();
+    static Main main = Main.instance;
 
     public static void play(Player player) {
         UUID uuid = player.getUniqueId();

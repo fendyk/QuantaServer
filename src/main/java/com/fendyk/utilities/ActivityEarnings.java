@@ -16,7 +16,7 @@ public class ActivityEarnings {
      * @return the new earnings
      */
     public static double getEarningsFromPvp(int dailyKills, int workers) {
-        final EarningsConfig config = Main.getInstance().getEarningsConfig();
+        final EarningsConfig config = Main.instance.earningsConfig;
         final double reward = config.getPvpEarnings();
         final double threshold = config.getPvpThreshold();
         final int citizens = Math.min(workers, maxWorkers);
@@ -38,7 +38,7 @@ public class ActivityEarnings {
      * @return the new earnings
      */
     public static double getEarningsFromTime(long secondsPlayed, long dailyTimePlayed, int workers) {
-        final EarningsConfig config = Main.getInstance().getEarningsConfig();
+        final EarningsConfig config = Main.instance.earningsConfig;
         final double reward = config.getTimeEarnings();
         final double threshold = config.getTimeThreshold();
         final int citizens = Math.min(workers, maxWorkers);
@@ -61,7 +61,7 @@ public class ActivityEarnings {
      * @return the new earnings
      */
     public static double getEarningsFromMining(Material ore, int dailyOreMined, int workers) {
-        final EarningsConfig config = Main.getInstance().getEarningsConfig();
+        final EarningsConfig config = Main.instance.earningsConfig;
         final double reward = config.getMaterialEarnings().get(ore);
         final double threshold = config.getMaterialThreshold().get(ore);
         final int citizens = Math.min(workers, maxWorkers);
@@ -83,7 +83,7 @@ public class ActivityEarnings {
      * @return the new earnings
      */
     public static double getEarningsFromPve(EntityType type, int dailyPveKills, int workers) {
-        final EarningsConfig config = Main.getInstance().getEarningsConfig();
+        final EarningsConfig config = Main.instance.earningsConfig;
         final double reward = config.getEntityEarnings().get(type);
         final double threshold = config.getEntityThreshold().get(type);
         final int citizens = Math.min(workers, maxWorkers);

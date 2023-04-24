@@ -3,6 +3,7 @@ package com.fendyk.commands;
 import com.fendyk.API;
 import com.fendyk.DTOs.ActivitiesDTO;
 import com.fendyk.DTOs.ActivityDTO;
+import com.fendyk.Main;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandPermission;
 import dev.jorel.commandapi.arguments.DoubleArgument;
@@ -13,14 +14,14 @@ import java.math.BigDecimal;
 
 public class ActivityCommands {
 
-    public ActivityCommands(API api) {
+    public ActivityCommands() {
         new CommandAPICommand("activities")
                 .withAliases("activity")
                 .withSubcommand(new CommandAPICommand("time")
                     .executes((sender, args) -> {
                         Player player = (Player) sender;
 
-                        ActivitiesDTO activitiesDTO = api.getActivitiesAPI().redis.get(player.getUniqueId());
+                        ActivitiesDTO activitiesDTO = api.activitiesAPI.redis.get(player.getUniqueId());
                         if(activitiesDTO == null) {
                             player.sendMessage("Could not find TIME activity.");
                             return;
@@ -36,7 +37,7 @@ public class ActivityCommands {
                         .executes((sender, args) -> {
                             Player player = (Player) sender;
 
-                            ActivitiesDTO activitiesDTO = api.getActivitiesAPI().redis.get(player.getUniqueId());
+                            ActivitiesDTO activitiesDTO = api.activitiesAPI.redis.get(player.getUniqueId());
                             if(activitiesDTO == null || activitiesDTO.pve == null || activitiesDTO.pve.size() < 1) {
                                 player.sendMessage("Could not find PVE activities.");
                                 return;
@@ -54,7 +55,7 @@ public class ActivityCommands {
                         .executes((sender, args) -> {
                             Player player = (Player) sender;
 
-                            ActivitiesDTO activitiesDTO = api.getActivitiesAPI().redis.get(player.getUniqueId());
+                            ActivitiesDTO activitiesDTO = api.activitiesAPI.redis.get(player.getUniqueId());
                             if(activitiesDTO == null || activitiesDTO.pvp == null || activitiesDTO.pvp.size() < 1) {
                                 player.sendMessage("Could not find PVP activities.");
                                 return;
@@ -72,7 +73,7 @@ public class ActivityCommands {
                         .executes((sender, args) -> {
                             Player player = (Player) sender;
 
-                            ActivitiesDTO activitiesDTO = api.getActivitiesAPI().redis.get(player.getUniqueId());
+                            ActivitiesDTO activitiesDTO = api.activitiesAPI.redis.get(player.getUniqueId());
                             if(activitiesDTO == null || activitiesDTO.mining == null || activitiesDTO.mining.size() < 1) {
                                 player.sendMessage("Could not find MINING activities.");
                                 return;

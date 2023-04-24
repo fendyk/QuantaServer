@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ChunkManager {
 
-    static Main main = Main.getInstance();
+    static Main main = Main.instance;
     static ConcurrentHashMap<DateTime, Chunk> expirableChunks = new ConcurrentHashMap<>();
 
     public static ConcurrentHashMap<DateTime, Chunk> getExpirableChunks() {
@@ -27,7 +27,7 @@ public class ChunkManager {
                 Chunk chunk = entry.getValue();
                 // If expired
                 if (expiredDate.isBeforeNow()) {
-                    boolean isExpired = main.getApi().getChunkAPI().expire(chunk);
+                    boolean isExpired = main.api.chunkAPI.expire(chunk);
                     if(isExpired) Log.success("We've expired the chunk.");
                     return isExpired;
                 }

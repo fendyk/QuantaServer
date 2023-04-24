@@ -32,7 +32,7 @@ import java.util.Optional;
 public class BlockBreakListener implements Listener {
 
     Main server;
-    Main main = Main.getInstance();
+    Main main = Main.instance;
 
     public BlockBreakListener(Main server) {
         this.server = server;
@@ -47,8 +47,8 @@ public class BlockBreakListener implements Listener {
         Chunk chunk = block.getChunk();
         Material material = block.getType();
         ItemStack itemStack = player.getInventory().getItemInMainHand();
-        API api = server.getApi();
-        EarningsConfig config = server.getEarningsConfig();
+        API api = server.api;
+        EarningsConfig config = server.earningsConfig;
 
         // If the current user is either barbarian or default, verify the flag.
         if(!WorldGuardExtension.hasPermissionToBuildAtGlobalLocation(player, block.getLocation())) {
@@ -68,18 +68,18 @@ public class BlockBreakListener implements Listener {
         if(!config.getMaterialEarnings().containsKey(material)) return;
 
         Bukkit.getScheduler().runTaskAsynchronously(server, () -> {
-            ChunkDTO chunkDTO = server.getApi().getChunkAPI().get(chunk);
+            ChunkDTO chunkDTO = server.api.chunkAPI.get(chunk);
 
             if (chunkDTO != null) {
                 if (ChunkAPI.isBlacklistedBlock(chunkDTO, block)) {
                     UpdateChunkDTO update = new UpdateChunkDTO();
                     update.spliceBlacklistedBlocks.add(new BlacklistedBlockDTO(block));
-                    server.getApi().getChunkAPI().update(chunk, update);
+                    server.api.chunkAPI.update(chunk, update);
                     return;
                 }
             }
 
-            ActivitiesDTO activitiesDTO = server.getApi().getActivitiesAPI().redis.get(player.getUniqueId());
+            ActivitiesDTO activitiesDTO = server.api.activitiesAPI.redis.get(player.getUniqueId());
             double amount;
 
             if (activitiesDTO == null) {
@@ -99,8 +99,8 @@ public class BlockBreakListener implements Listener {
             activities.add(activity);
             updateActivitiesDTO.setMining(activities);
 
-            api.getMinecraftUserAPI().depositBalance(player, new BigDecimal(amount));
-            ActivitiesDTO updatedActivities = api.getActivitiesAPI().fetch.update(player.getUniqueId(), updateActivitiesDTO);
+            api.minecraftUserAPI.depositBalance(player, new BigDecimal(amount));
+            ActivitiesDTO updatedActivities = api.activitiesAPI.fetch.update(player.getUniqueId(), updateActivitiesDTO);
 
             player.sendActionBar(
                     Component.text("+" + String.format("%.8f", amount) + " $QTA")

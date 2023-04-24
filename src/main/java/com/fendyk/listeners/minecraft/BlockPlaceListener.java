@@ -18,7 +18,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 
 public class BlockPlaceListener implements Listener {
     Main server;
-    Main main = Main.getInstance();
+    Main main = Main.instance;
 
     public BlockPlaceListener(Main server) {
         this.server = server;
@@ -30,7 +30,7 @@ public class BlockPlaceListener implements Listener {
         Block block = event.getBlock();
         Chunk chunk = block.getChunk();
         Material material = block.getType();
-        EarningsConfig config = server.getEarningsConfig();
+        EarningsConfig config = server.earningsConfig;
 
         // If the current user is either barbarian or default, verify the flag.
         if(!WorldGuardExtension.hasPermissionToBuildAtGlobalLocation(player, block.getLocation())) {
@@ -47,7 +47,7 @@ public class BlockPlaceListener implements Listener {
 
             // If we're not in the 'normal world', disable block place at ALL times
             // Cannot earn
-            if(!player.getWorld().getName().equalsIgnoreCase(server.getServerConfig().getWorldName())) {
+            if(!player.getWorld().getName().equalsIgnoreCase(server.serverConfig.getWorldName())) {
                 player.sendMessage("You're only allowed to place ore blocks in the world.");
                 event.setCancelled(true);
                 return;
@@ -57,17 +57,17 @@ public class BlockPlaceListener implements Listener {
 
                 // Verify if the chunk is blacklisted
                 // Check if the player is within the blacklisted chunk radius
-                if(main.getServerConfig().isWithinBlacklistedChunkRadius(player.getLocation())) {
+                if(main.serverConfig.isWithinBlacklistedChunkRadius(player.getLocation())) {
                     player.sendMessage("The chunk you're currently standing on is considered 'blacklisted' and not claimable.");
                     return;
                 }
 
                 // Find the chunk
-                ChunkDTO chunkDTO = server.getApi().getChunkAPI().get(chunk);
+                ChunkDTO chunkDTO = server.api.chunkAPI.get(chunk);
 
                 // Create chunk if not found
                 if (chunkDTO == null) {
-                    chunkDTO = server.getApi().getChunkAPI().create(chunk, true);
+                    chunkDTO = server.api.chunkAPI.create(chunk, true);
 
                     if (chunkDTO == null) return;
                 }
@@ -76,7 +76,7 @@ public class BlockPlaceListener implements Listener {
                 BlacklistedBlockDTO b = new BlacklistedBlockDTO(block.getX(), block.getY(), block.getZ());
                 UpdateChunkDTO update = new UpdateChunkDTO();
                 update.pushBlacklistedBlocks.add(b);
-                server.getApi().getChunkAPI().update(chunk, update);
+                server.api.chunkAPI.update(chunk, update);
 
             });
 

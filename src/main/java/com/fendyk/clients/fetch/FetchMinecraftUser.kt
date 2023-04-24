@@ -8,11 +8,11 @@ import java.util.*
 import java.util.concurrent.CompletableFuture
 
 class FetchMinecraftUser : FetchAPI<UUID, MinecraftUserDTO, UpdateMinecraftUserDTO>(MinecraftUserDTO::class.java) {
-    override fun get(key: UUID): CompletableFuture<MinecraftUserDTO> {
+    override fun get(key: UUID): CompletableFuture<MinecraftUserDTO?> {
         return fetch("/minecraftusers/$key", RequestMethod.GET, null)
     }
 
-    override fun update(key: UUID, dto: UpdateMinecraftUserDTO): CompletableFuture<MinecraftUserDTO> {
+    override fun update(key: UUID, dto: UpdateMinecraftUserDTO): CompletableFuture<MinecraftUserDTO?> {
         return fetch("/minecraftusers/$key", RequestMethod.PATCH, dto)
     }
 }

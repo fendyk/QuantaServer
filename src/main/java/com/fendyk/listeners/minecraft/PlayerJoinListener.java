@@ -25,7 +25,7 @@ import java.util.List;
 
 public class PlayerJoinListener implements Listener {
 
-    Main main = Main.getInstance();
+    Main main = Main.instance;
     Main server;
     public PlayerJoinListener(Main server) {
         this.server = server;
@@ -34,7 +34,7 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        World world = Bukkit.getWorld(server.getServerConfig().getWorldName());
+        World world = Bukkit.getWorld(server.serverConfig.getWorldName());
         Audience audience = server.adventure().player(player);
         User luckPermsUser = server.getLuckPermsApi().getPlayerAdapter(Player.class).getUser(player);
         String primaryGroup = luckPermsUser.getPrimaryGroup();
@@ -46,15 +46,15 @@ public class PlayerJoinListener implements Listener {
         }
 
         if(primaryGroup.equalsIgnoreCase("default") && !player.isOp()) {
-            player.teleport(main.getServerConfig().getSpawnLocation());
+            player.teleport(main.serverConfig.getSpawnLocation());
             server.getFrozenPlayers().add(player.getUniqueId());
             player.sendMessage("You've been frozen because you're not authorized to the server.");
         }
         else {
-            server.getFrozenPlayers().remove(player.getUniqueId());
+            server.frozenPlayers.remove(player.getUniqueId());
         }
 
-        MinecraftUserDTO minecraftUserDTO = server.getApi().getMinecraftUserAPI().get(player.getUniqueId());
+        MinecraftUserDTO minecraftUserDTO = server.api.minecraftUserAPI.get(player.getUniqueId());
 
         // Verify if user still has a reward that needs to be claimed
         if(minecraftUserDTO != null) {
@@ -108,7 +108,7 @@ public class PlayerJoinListener implements Listener {
         }
 
         // Retrieve data (From redis) for using it as caching purposes later
-        main.getApi().getActivitiesAPI().get(player);
+        main.api.activitiesAPI.get(player);
 
         // Set Placeholder api values
         PlaceholderAPI.setPlaceholders(player, "%quantum_eco_balance%");

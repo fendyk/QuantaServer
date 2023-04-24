@@ -10,7 +10,7 @@ import org.bukkit.event.block.BlockRedstoneEvent;
 
 public class RedStoneListener implements Listener {
 
-    Main main = Main.getInstance();
+    Main main = Main.instance;
 
     @EventHandler
     public void onBlockRedstoneEvent(BlockRedstoneEvent event) {

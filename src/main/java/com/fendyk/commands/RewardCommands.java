@@ -20,13 +20,13 @@ import java.util.UUID;
 
 public class RewardCommands {
 
-    public RewardCommands(Main server) {
+    public RewardCommands() {
         new CommandAPICommand("reward")
                 .withSubcommand(new CommandAPICommand("claim")
                         .executes((sender, args) -> {
                             Player player = (Player) sender;
 
-                            MinecraftUserDTO minecraftUserDTO = server.getApi().getMinecraftUserAPI().get(player.getUniqueId());
+                            MinecraftUserDTO minecraftUserDTO = server.api.minecraftUserAPI.get(player.getUniqueId());
                             if(minecraftUserDTO == null) {
                                 player.sendMessage("Could not find your minecraft user account, try again.");
                                 return;
@@ -50,14 +50,14 @@ public class RewardCommands {
                                 update.claimSubscriptionRewards.add(sub.getCreatedAt().toString());
                             }
 
-                            if(quanta > 0) server.getApi().getMinecraftUserAPI().depositBalance(player, new BigDecimal(quanta));
+                            if(quanta > 0) server.api.minecraftUserAPI.depositBalance(player, new BigDecimal(quanta));
                             player.sendMessage(ChatColor.GREEN + "You've received " + quanta + " $QUANTA.");
 
                             if(crateKeys > 0) Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "crate key give " + player.getName() + " legendary " + crateKeys);
                             player.sendMessage(ChatColor.GREEN + "You've received " + crateKeys + " crate keys.");
 
                             // Make sure we're updating the 'isClaimed' boolean
-                            server.getApi().getMinecraftUserAPI().update(player.getUniqueId(), update);
+                            server.api.minecraftUserAPI.update(player.getUniqueId(), update);
 
                         })
                 )
@@ -67,7 +67,7 @@ public class RewardCommands {
                         .executesPlayer((player, args) -> {
                             UUID uuid = player.getUniqueId();
 
-                            MinecraftUserDTO minecraftUserDTO = server.getApi().getMinecraftUserAPI().get(uuid);
+                            MinecraftUserDTO minecraftUserDTO = server.api.minecraftUserAPI.get(uuid);
                             if(minecraftUserDTO == null) {
                                 player.sendMessage("Could not find your minecraft user account, try again.");
                                 return;
@@ -81,7 +81,7 @@ public class RewardCommands {
                             subscriptionRewardDTO.setCreatedAt(new DateTime());
                             update.pushSubscriptionRewards.add(subscriptionRewardDTO);
 
-                            MinecraftUserDTO minecraftUserDTO1 = server.getApi().getMinecraftUserAPI().update(uuid, update);
+                            MinecraftUserDTO minecraftUserDTO1 = server.api.minecraftUserAPI.update(uuid, update);
 
                             if(minecraftUserDTO1 == null) {
                                 player.sendMessage(ChatColor.RED + "Could not update minecraft user");

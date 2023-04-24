@@ -18,7 +18,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.permissions.ServerOperator;
 
 public class GeneralCommands {
-    Main main = Main.getInstance();
+    Main main = Main.instance;
     public GeneralCommands() {
         new CommandAPICommand("speed")
                 .withRequirement(ServerOperator::isOp)

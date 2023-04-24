@@ -21,7 +21,7 @@ abstract class FetchAPI<K, DTO, UpdateDTO>(private val dtoType: Class<DTO>) {
         DELETE("DELETE")
     }
 
-    fun fetch(url: String, requestMethod: RequestMethod, data: Any?): CompletableFuture<DTO> {
+    fun fetch(url: String, requestMethod: RequestMethod, data: Any?): CompletableFuture<DTO?> {
         val body: RequestBody? = if (data != null) Main.gson.toJson(data).toRequestBody(JSON) else null
         val request: Request = requestBuilder
                 .url(Companion.url + "/minecraftusers/" + url)
@@ -60,22 +60,22 @@ abstract class FetchAPI<K, DTO, UpdateDTO>(private val dtoType: Class<DTO>) {
         }
     }
 
-    open fun get(key: K): CompletableFuture<DTO> {
+    open fun get(key: K): CompletableFuture<DTO?> {
         throw Exception("GET is not implemented yet.")
     }
-    open fun create(dto: DTO): CompletableFuture<DTO> {
+    open fun create(dto: DTO): CompletableFuture<DTO?> {
         throw Exception("CREATE is not implemented yet.")
     }
-    open fun update(key: K, dto: UpdateDTO): CompletableFuture<DTO> {
+    open fun update(key: K, dto: UpdateDTO): CompletableFuture<DTO?> {
         throw Exception("UPDATE is not implemented yet.")
     }
-    open fun delete(key: K): CompletableFuture<DTO> {
+    open fun delete(key: K): CompletableFuture<DTO?> {
         throw Exception("DELETE is not implemented yet.")
     }
 
 
     companion object {
-        var main: Main = Main.getInstance()
+        var main: Main = Main.instance
         protected var client: OkHttpClient = OkHttpClient.Builder()
                 .readTimeout(10, TimeUnit.SECONDS)
                 .connectTimeout(10, TimeUnit.SECONDS)

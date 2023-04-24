@@ -30,16 +30,16 @@ import java.util.*;
 
 public final class WorldguardSyncManager {
 
-    static Main main = Main.getInstance();
+    static Main main = Main.instance;
 
     public static void initialize(int radius, int minYHeight, int maxYHeight) throws StorageException {
         Location[] areaCorners = ChunkUtils.getAreaCorners(radius);
         BlockVector3 topLeft = BlockVector3.at(areaCorners[0].getX(), minYHeight, areaCorners[0].getZ());
         BlockVector3 topBottomRight = BlockVector3.at(areaCorners[3].getX(), maxYHeight, areaCorners[3].getZ());
 
-        RegionManager overworldRegionManager = main.getOverworldRegionManager();
-        RegionManager endRegionManager = main.getEndRegionManager();
-        RegionManager netherRegionManager = main.getNetherRegionManager();
+        RegionManager overworldRegionManager = main.overworldRegionManager;
+        RegionManager endRegionManager = main.endRegionManager;
+        RegionManager netherRegionManager = main.netherRegionManager;
 
         Set<ProtectedRegion> set = overworldRegionManager.getApplicableRegions(
                 BlockVector3.at(0, 0, 0)
@@ -100,21 +100,21 @@ public final class WorldguardSyncManager {
         /* If it's cached, we're going to do stuff with it. */
         if(chunkDTO == null) {
             /* To avoid unnecessary calls to the api, first check if we already CACHED the chunk  */
-            boolean isCached = main.getApi().getChunkAPI().redis.exists(new Vector2(chunk.getX(), chunk.getZ()));
+            boolean isCached = main.api.chunkAPI.redis.exists(new Vector2(chunk.getX(), chunk.getZ()));
             if(!isCached) return;
-            chunkDTO = main.getApi().getChunkAPI().get(chunk);
+            chunkDTO = main.api.chunkAPI.get(chunk);
             if(chunkDTO == null) return; // Could not find so no need for check
         }
 
         /* Find the land by landID */
         if(landDTO == null) {
-            landDTO = main.getApi().getLandAPI().redis.getMin(chunkDTO.landId);
+            landDTO = main.api.landAPI.redis.getMin(chunkDTO.landId);
             if(landDTO == null) return;
         }
 
         /* Find the region */
         Location center = ChunkUtils.getChunkCenter(chunk);
-        Set<ProtectedRegion> set = main.getOverworldRegionManager().getApplicableRegions(
+        Set<ProtectedRegion> set = main.overworldRegionManager.getApplicableRegions(
                 BlockVector3.at(center.x(), center.y(), center.z())
         ).getRegions();
 
@@ -144,7 +144,7 @@ public final class WorldguardSyncManager {
                         landDTO.memberIDs
                 );
             }
-            main.getOverworldRegionManager().addRegion(region); // Dont forget to save the region
+            main.overworldRegionManager.addRegion(region); // Dont forget to save the region
         }
         else {
             @Nullable ChunkDTO finalChunkDTO = chunkDTO;
@@ -154,7 +154,7 @@ public final class WorldguardSyncManager {
             // If we find a region that is not matching our requirements, remove it.
             if(regions.size() > 0) {
                 regions.forEach(r -> {
-                    main.getOverworldRegionManager().removeRegion(r.getId());
+                    main.overworldRegionManager.removeRegion(r.getId());
                 });
             }
 
@@ -173,7 +173,7 @@ public final class WorldguardSyncManager {
         resetRegionFlags(region); // Resets all old flags
         region.setFlag(Main.BARBARIAN_BUILD, StateFlag.State.ALLOW); // Allow barbarians to build on regions of players
 
-        main.getOverworldRegionManager().save(); // Don't forget to save the region
+        main.overworldRegionManager.save(); // Don't forget to save the region
         Log.success(chunk.getX() + "/" + chunk.getZ() + " is synced");
     }
 

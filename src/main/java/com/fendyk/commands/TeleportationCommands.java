@@ -18,7 +18,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 
 public class TeleportationCommands {
-    Main main = Main.getInstance();
+    Main main = Main.instance;
 
     public TeleportationCommands() {
         new CommandAPICommand("spawn")
@@ -37,10 +37,10 @@ public class TeleportationCommands {
 
                     ValidateCommand.Builder builder = validateCommand.getBuilder();
                     Location playerLocation = player.getLocation();
-                    Location spawnLocation = main.getServerConfig().getSpawnLocation();
+                    Location spawnLocation = main.serverConfig.getSpawnLocation();
 
                     // Calculate the distance in blocks between both locations
-                    double basePrice = main.getPricesConfig().getTeleportCommandPrice(); // example base price
+                    double basePrice = main.pricesConfig.getTeleportCommandPrice(); // example base price
                     double distance = playerLocation.getWorld().equals(spawnLocation.getWorld()) ? playerLocation.distance(spawnLocation) : 2500;
                     double price = Math.log(distance + 1) * basePrice;
                     double discountPercentage = builder.getRankConfiguration().getDiscountPercentage();
@@ -58,7 +58,7 @@ public class TeleportationCommands {
                         return;
                     }
 
-                    boolean isWithdrawn = main.getApi().getMinecraftUserAPI().withDrawBalance(player, new BigDecimal(price));
+                    boolean isWithdrawn = main.api.minecraftUserAPI.withDrawBalance(player, new BigDecimal(price));
 
                     if (!isWithdrawn) {
                         player.sendMessage(ChatColor.RED + "Could not withdraw money.");
@@ -85,7 +85,7 @@ public class TeleportationCommands {
                         Location targetLocation = LocationDTO.toLocation(builder.getMinecraftUserDTO().lastLocation);
 
                         // Calculate the distance in blocks between both locations
-                        double basePrice = main.getPricesConfig().getTeleportCommandPrice(); // example base price
+                        double basePrice = main.pricesConfig.getTeleportCommandPrice(); // example base price
                         double distance = playerLocation.distance(targetLocation);
                         double price = Math.log(distance + 1) * basePrice * 2; // * 2 because it's not cheap
                         double discountPercentage = builder.getRankConfiguration().getDiscountPercentage();
@@ -103,7 +103,7 @@ public class TeleportationCommands {
                             return;
                         }
 
-                        boolean isWithdrawn = main.getApi().getMinecraftUserAPI().withDrawBalance(player, new BigDecimal(price));
+                        boolean isWithdrawn = main.api.minecraftUserAPI.withDrawBalance(player, new BigDecimal(price));
 
                         if (!isWithdrawn) {
                             player.sendMessage(ChatColor.RED + "Could not withdraw money.");
@@ -111,7 +111,7 @@ public class TeleportationCommands {
                         }
 
                         // Set the last location to the existing one before teeporting
-                        boolean isUpdated = main.getApi().getMinecraftUserAPI().updateLastLocation(player, playerLocation);
+                        boolean isUpdated = main.api.minecraftUserAPI.updateLastLocation(player, playerLocation);
 
                         if(!isUpdated) {
                             player.sendMessage(ChatColor.RED + "Could not update your last location");
@@ -142,10 +142,10 @@ public class TeleportationCommands {
                         RankConfiguration configuration = builder.getRankConfiguration();
 
                         Location playerLocation = player.getLocation();
-                        Location targetLocation = main.getServerConfig().getSpawnLocation(); // TODO:
+                        Location targetLocation = main.serverConfig.getSpawnLocation(); // TODO:
 
                         // Calculate the distance in blocks between both locations
-                        double basePrice = main.getPricesConfig().getTeleportCommandPrice(); // example base price
+                        double basePrice = main.pricesConfig.getTeleportCommandPrice(); // example base price
                         double distance = playerLocation.distance(targetLocation);
                         double price = Math.log(distance + 1) * basePrice * 2;
                         double discountPercentage = configuration.getDiscountPercentage();
@@ -164,7 +164,7 @@ public class TeleportationCommands {
                             return;
                         }
 
-                        boolean isWithdrawn = main.getApi().getMinecraftUserAPI().withDrawBalance(player, new BigDecimal(price));
+                        boolean isWithdrawn = main.api.minecraftUserAPI.withDrawBalance(player, new BigDecimal(price));
 
                         if (!isWithdrawn) {
                             player.sendMessage(ChatColor.RED + "Could not withdraw money.");
@@ -183,7 +183,7 @@ public class TeleportationCommands {
                             String name = (String) args[0];
 
                             String rankName = LuckPermsExtension.getHighestGroup(player);
-                            RankConfiguration configuration = main.getRanksConfig().getRankConfiguration(rankName);
+                            RankConfiguration configuration = main.ranksConfig.getRankConfiguration(rankName);
                         })
                 )
                 .register();

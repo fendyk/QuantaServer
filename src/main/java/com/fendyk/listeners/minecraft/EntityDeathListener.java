@@ -35,8 +35,8 @@ public class EntityDeathListener implements Listener {
         Entity killed = event.getEntity();
         Player killer = event.getEntity().getKiller();
 
-        EarningsConfig config = server.getEarningsConfig();
-        API api = server.getApi();
+        EarningsConfig config = server.earningsConfig;
+        API api = server.api;
 
         if(killer == null) return;
 
@@ -46,7 +46,7 @@ public class EntityDeathListener implements Listener {
             ActivityDTO activity = new ActivityDTO();
 
             if(killed instanceof Player) {
-                ActivitiesDTO activitiesDTO = server.getApi().getActivitiesAPI().redis.get(killer.getUniqueId());
+                ActivitiesDTO activitiesDTO = server.api.activitiesAPI.redis.get(killer.getUniqueId());
                 double amount = 0;
                 if(activitiesDTO != null) {
                     Optional<ActivityDTO> pvpActivity = activitiesDTO.pvp.stream().filter(activity1 -> activity1.name.equals(killed.getUniqueId().toString())).findFirst();
@@ -69,8 +69,8 @@ public class EntityDeathListener implements Listener {
                 activities.add(activity);
                 updateActivitiesDTO.setPvp(activities);
 
-                api.getMinecraftUserAPI().depositBalance(killer, new BigDecimal(amount));
-                ActivitiesDTO updatedActivities = api.getActivitiesAPI().update(killer, updateActivitiesDTO);
+                api.minecraftUserAPI.depositBalance(killer, new BigDecimal(amount));
+                ActivitiesDTO updatedActivities = api.activitiesAPI.update(killer, updateActivitiesDTO);
 
                 ActivityBossBarManager.showBossBar(killer, activity, ActivityBossBarManager.Type.PVP);
                 ActivitySoundManager.play(killer);
@@ -85,7 +85,7 @@ public class EntityDeathListener implements Listener {
                 }
             }
             else if(config.getEntityEarnings().containsKey(killed.getType())) {
-                ActivitiesDTO activitiesDTO = server.getApi().getActivitiesAPI().redis.get(killer.getUniqueId());
+                ActivitiesDTO activitiesDTO = server.api.activitiesAPI.redis.get(killer.getUniqueId());
                 double amount = 0;
                 if(activitiesDTO != null) {
                     Optional<ActivityDTO> pvpActivity = activitiesDTO.pve.stream().filter(item -> item.name.equalsIgnoreCase(killed.getType().name())).findFirst();
@@ -102,8 +102,8 @@ public class EntityDeathListener implements Listener {
                 activities.add(activity);
                 updateActivitiesDTO.setPve(activities);
 
-                api.getMinecraftUserAPI().depositBalance(killer, new BigDecimal(amount));
-                ActivitiesDTO updatedActivities = api.getActivitiesAPI().update(killer, updateActivitiesDTO);
+                api.minecraftUserAPI.depositBalance(killer, new BigDecimal(amount));
+                ActivitiesDTO updatedActivities = api.activitiesAPI.update(killer, updateActivitiesDTO);
 
                 ActivityBossBarManager.showBossBar(killer, activity, ActivityBossBarManager.Type.PVE);
                 ActivitySoundManager.play(killer);

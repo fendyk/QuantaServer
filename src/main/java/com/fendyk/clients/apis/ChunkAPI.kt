@@ -22,14 +22,14 @@ class ChunkAPI(fetch: FetchChunk, redis: RedisChunk) : ClientAPI<FetchChunk, Red
         CLAIMED_PERMANENT
     }
 
-    operator fun get(chunk: Chunk): CompletableFuture<ChunkDTO> {
+    fun get(chunk: Chunk): CompletableFuture<ChunkDTO?> {
         return CompletableFuture.supplyAsync {
             val chunkPos = Vector2(chunk.x, chunk.z)
             return@supplyAsync redis.get(chunkPos).get()
         }
     }
 
-    fun create(chunk: Chunk, isClaimable: Boolean): CompletableFuture<ChunkDTO> {
+    fun create(chunk: Chunk, isClaimable: Boolean): CompletableFuture<ChunkDTO?> {
         return CompletableFuture.supplyAsync {
             val newChunkDTO = ChunkDTO(chunk.x, chunk.z)
             newChunkDTO.isClaimable = isClaimable
@@ -37,14 +37,14 @@ class ChunkAPI(fetch: FetchChunk, redis: RedisChunk) : ClientAPI<FetchChunk, Red
         }
     }
 
-    fun update(chunk: Chunk, updates: UpdateChunkDTO): CompletableFuture<ChunkDTO> {
+    fun update(chunk: Chunk, updates: UpdateChunkDTO): CompletableFuture<ChunkDTO?> {
         return CompletableFuture.supplyAsync {
             val vector2 = Vector2(chunk.x, chunk.z)
             return@supplyAsync fetch.update(vector2, updates).get()
         }
     }
 
-    fun claim(chunk: Chunk, landId: String, canExpire: Boolean, expirationDate: DateTime): CompletableFuture<Boolean> {
+    fun claim(chunk: Chunk, landId: String, canExpire: Boolean, expirationDate: DateTime?): CompletableFuture<Boolean> {
         return CompletableFuture.supplyAsync {
             val updateChunkDTO = UpdateChunkDTO()
             updateChunkDTO.landId = landId
@@ -66,7 +66,7 @@ class ChunkAPI(fetch: FetchChunk, redis: RedisChunk) : ClientAPI<FetchChunk, Red
 
     fun extend(chunk: Chunk, days: Int):  CompletableFuture<Boolean> {
         return CompletableFuture.supplyAsync {
-            val chunkDTO: ChunkDTO = get(chunk).get()
+            val chunkDTO: ChunkDTO = get(chunk).get() ?: throw Exception("Could not find the chunk.")
             val expirationDate = chunkDTO.getExpirationDate()
             val newExpirationDate = expirationDate.plusDays(days)
             val updateChunkDTO = UpdateChunkDTO()

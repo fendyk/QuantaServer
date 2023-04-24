@@ -17,8 +17,8 @@ import java.util.Arrays;
 
 public class PlayerCommandListener implements Listener {
 
-    Main main = Main.getInstance();
-    PricesConfig pricesConfig = main.getPricesConfig();
+    Main main = Main.instance;
+    PricesConfig pricesConfig = main.pricesConfig;
 
     @EventHandler
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
@@ -39,13 +39,13 @@ public class PlayerCommandListener implements Listener {
         String commandName = commandParts[0]; // Remove the slash from the command name
         String[] args = Arrays.copyOfRange(commandParts, 1, commandParts.length);
 
-        int commandIndex = main.getPricesConfig().getCommandIndex(commandName, args);
+        int commandIndex = main.pricesConfig.getCommandIndex(commandName, args);
 
         if (commandIndex >= 0) {
             Log.success("Payed command found!");
 
             PayableCommand payableCommand = pricesConfig.getCommandByIndex(commandIndex);
-            RankConfiguration configuration = main.getRanksConfig().getRankConfiguration(rankName);
+            RankConfiguration configuration = main.ranksConfig.getRankConfiguration(rankName);
 
             if(configuration == null || payableCommand == null) {
                 player.sendMessage(ChatColor.RED + "Something went wrong when processing this command as 'payable'.");

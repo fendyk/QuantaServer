@@ -15,14 +15,14 @@ import java.math.BigDecimal;
 
 @Command(aliases = {"balance", "quanta", "bal", "money"}, desc = "Shows your current balance in-game")
 public class QuantaCommands {
-    Main main = Main.getInstance();
+    Main main = Main.instance;
 
     public QuantaCommands() {
         new CommandAPICommand("balance")
                 .withAliases("bal", "quanta", "money")
                 .executes((sender, args) -> {
                     Player player = (Player) sender;
-                    BigDecimal amount = main.getApi().getMinecraftUserAPI().getPlayerBalance(player.getUniqueId());
+                    BigDecimal amount = main.api.minecraftUserAPI.getPlayerBalance(player.getUniqueId());
                     player.sendMessage("Your balance is: " + amount);
                 })
                 .withSubcommand(new CommandAPICommand("deposit")
@@ -34,7 +34,7 @@ public class QuantaCommands {
                         .executes((sender, args) -> {
                             Player player = (Player) args[0];
                             Double amount = (Double) args[1];
-                            boolean success = main.getApi().getMinecraftUserAPI().depositBalance(player, new BigDecimal(amount));
+                            boolean success = main.api.minecraftUserAPI.depositBalance(player, new BigDecimal(amount));
                             if(!success) {
                                 player.sendMessage("Something went wrong when depositing. Please try again.");
                                 return;
@@ -51,7 +51,7 @@ public class QuantaCommands {
                         .executes((sender, args) -> {
                             Player player = (Player) args[0];
                             Double amount = (Double) args[1];
-                            boolean success = main.getApi().getMinecraftUserAPI().withDrawBalance(player, new BigDecimal(amount));
+                            boolean success = main.api.minecraftUserAPI.withDrawBalance(player, new BigDecimal(amount));
                             if(!success) {
                                 player.sendMessage("Something went wrong when withdrawing. Please try again.");
                                 return;

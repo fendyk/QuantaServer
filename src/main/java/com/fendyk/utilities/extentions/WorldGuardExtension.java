@@ -18,10 +18,10 @@ import org.bukkit.entity.Player;
 
 public class WorldGuardExtension {
 
-    static Main main = Main.getInstance();
+    static Main main = Main.instance;
 
     public static boolean hasPermissionToBuildAtGlobalLocation(Player player, Location location) {
-        User user = main.getLuckPermsApi().getUserManager().getUser(player.getUniqueId());
+        User user = main.luckPermsApi.getUserManager().getUser(player.getUniqueId());
 
         LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
         com.sk89q.worldedit.util.Location location1 = BukkitAdapter.adapt(location);

@@ -12,10 +12,11 @@ import java.util.concurrent.CompletableFuture
 
 class ActivitiesAPI(fetch: FetchActivities, redis: RedisActivities) :
         ClientAPI<FetchActivities, RedisActivities, UUID, ActivitiesDTO?>(fetch, redis) {
-     fun get(player: Player): CompletableFuture<ActivitiesDTO> {
+
+     fun get(player: Player): CompletableFuture<ActivitiesDTO?> {
         return CompletableFuture.supplyAsync {
             val uuid = player.uniqueId
-            val activitiesDTO: ActivitiesDTO = redis.get(uuid).get()
+            val activitiesDTO: ActivitiesDTO? = redis.get(uuid).get()
             cachedRecords[uuid] = activitiesDTO
             return@supplyAsync activitiesDTO
         }
@@ -27,7 +28,7 @@ class ActivitiesAPI(fetch: FetchActivities, redis: RedisActivities) :
      * @param updated
      * @return
      */
-    fun update(player: Player, updated: UpdateActivitiesDTO): CompletableFuture<ActivitiesDTO> {
+    fun update(player: Player, updated: UpdateActivitiesDTO): CompletableFuture<ActivitiesDTO?> {
         return fetch.update(player.uniqueId, updated)
     }
 }

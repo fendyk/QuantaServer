@@ -18,7 +18,7 @@ public class PlayerQuitListener implements Listener {
     public void onPlayerQuitEvent(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
-        server.getFrozenPlayers().remove(player.getUniqueId());
+        server.frozenPlayers.remove(player.getUniqueId());
 
         ActivityBossBarManager.getBossBars().remove(uuid);
         ActivityBossBarManager.getBossBarsExpiresInSeconds().remove(uuid);

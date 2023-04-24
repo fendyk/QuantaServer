@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 
 public class PreferencesCommands {
 
-    Main main = Main.getInstance();
+    Main main = Main.instance;
 
     public PreferencesCommands() {
         new CommandAPICommand("main")
@@ -20,9 +20,9 @@ public class PreferencesCommands {
                 .withPermission(CommandPermission.OP)
                 .withSubcommand(new CommandAPICommand("reload")
                         .executesPlayer((player, args) -> {
-                            main.getPricesConfig().initialize();
-                            main.getRanksConfig().initialize();
-                            main.getEarningsConfig().initialize();
+                            main.pricesConfig.initialize();
+                            main.ranksConfig.initialize();
+                            main.earningsConfig.initialize();
                             player.sendMessage(ChatColor.GREEN + "Plugin configurations have been reloaded");
                         })
                 )

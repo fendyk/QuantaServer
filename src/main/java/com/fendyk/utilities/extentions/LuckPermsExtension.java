@@ -14,8 +14,8 @@ import java.util.Optional;
 
 public class LuckPermsExtension {
 
-    static Main main = Main.getInstance();
-    static LuckPerms luckPerms = main.getLuckPermsApi();
+    static Main main = Main.instance;
+    static LuckPerms luckPerms = main.luckPermsApi;
 
     /**
      * Get the group with the highest weight from a user
@@ -24,7 +24,7 @@ public class LuckPermsExtension {
      */
     public static String getHighestGroup(Player player) {
 
-        User user = main.getLuckPermsApi().getPlayerAdapter(Player.class).getUser(player);
+        User user = main.luckPermsApi.getPlayerAdapter(Player.class).getUser(player);
 
         // Find the group with the highest weight
         Optional<InheritanceNode> bestGroupNode = user.getNodes(NodeType.INHERITANCE)

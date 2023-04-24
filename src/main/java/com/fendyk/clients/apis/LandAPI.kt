@@ -1,12 +1,14 @@
 package com.fendyk.clients.apis
 
 import com.fendyk.API
+import com.fendyk.DTOs.ChunkDTO
 import com.fendyk.DTOs.LandDTO
 import com.fendyk.DTOs.TaggedLocationDTO
 import com.fendyk.Main
 import com.fendyk.clients.ClientAPI
 import com.fendyk.clients.fetch.FetchLand
 import com.fendyk.clients.redis.RedisLand
+import com.fendyk.utilities.Vector2
 import net.luckperms.api.model.user.User
 import org.bukkit.Chunk
 import org.bukkit.Location
@@ -17,7 +19,7 @@ import java.util.concurrent.CompletableFuture
 
 class LandAPI(fetch: FetchLand, redis: RedisLand) : ClientAPI<FetchLand, RedisLand, String, LandDTO>(fetch, redis) {
     companion object {
-        var main: Main = Main.getInstance()
+        var main: Main = Main.instance
         var api: API = main.api
     }
 
@@ -32,36 +34,36 @@ class LandAPI(fetch: FetchLand, redis: RedisLand) : ClientAPI<FetchLand, RedisLa
     fun create(owner: Player, name: String, chunk: Chunk, location: Location): CompletableFuture<LandDTO> {
         return CompletableFuture.supplyAsync {
             val uuid = owner.uniqueId
-            val user: User? = Main.getInstance().luckPermsApi.userManager.getUser(uuid)
+            val user: User? = Main.instance.luckPermsApi?.userManager?.getUser(uuid)
 
-            /* Get references */
-            val chunkAPI: ChunkAPI = api.chunkAPI
-
-            /* Get chunk */
-            var chunkDTO = chunkAPI[chunk]
+            // Find chunk
+            var chunkDTO: ChunkDTO? = api.chunkAPI.redis.get(Vector2(chunk.x, chunk.z)).get()
 
             /* If we cannot find one, create new */
-            if (chunkDTO == null) { //TODO: Make async
-                chunkDTO = chunkAPI.create(chunk, false)
-                if (chunkDTO == null) throw Exception("Could not create chunk when creating land")
+            if (chunkDTO == null) {
+                chunkDTO = api.chunkAPI.fetch.create(ChunkDTO(chunk.x, chunk.z)).get() ?:
+                throw Exception("Could not create chunk when trying to creating land")
             }
+
             val taggedLocationDTO = TaggedLocationDTO("spawn", location)
 
             /* Create the actual land */
-            val landDTO = LandDTO()
-            landDTO.name = name
-            landDTO.ownerId = owner.uniqueId.toString()
-            landDTO.homes.add(taggedLocationDTO)
+            val newLandDTO = LandDTO()
+            newLandDTO.name = name
+            newLandDTO.ownerId = owner.uniqueId.toString()
+            newLandDTO.homes.add(taggedLocationDTO)
 
-            val res: CompletableFuture<LandDTO> = fetch.create(landDTO)
-            val newLandDTO: LandDTO = res.get()
+            val createdLandDTO: LandDTO = fetch.create(newLandDTO).get() ?:
+            throw Exception("Could not create land")
 
             val expireDate = DateTime()
             expireDate.plusMinutes(2)
             val primaryGroup = user?.primaryGroup
-            val canExpire = primaryGroup.equals("default", ignoreCase = true) || primaryGroup.equals("barbarian", ignoreCase = true)
+            val canExpire: Boolean = primaryGroup.equals("default", ignoreCase = true) || primaryGroup.equals("barbarian", ignoreCase = true)
 
-            /* Claim the chunk */chunkAPI.claim(chunk, newLandDTO.id, canExpire, if (canExpire) expireDate else null)
+            /* Claim the chunk */
+            val isClaimed: Boolean = api.chunkAPI.claim(chunk, newLandDTO.id, canExpire, if (canExpire) expireDate else null).get() ?:
+            throw Exception("Could not claim the chunk you're standing in.")
             cachedRecords[newLandDTO.id] = newLandDTO
             return@supplyAsync newLandDTO
         }
@@ -72,12 +74,11 @@ class LandAPI(fetch: FetchLand, redis: RedisLand) : ClientAPI<FetchLand, RedisLa
      * @param id
      * @return LandDTO or null if not found
      */
-    operator fun get(id: String): CompletableFuture<LandDTO> {
+    fun get(id: String): CompletableFuture<LandDTO> {
         return CompletableFuture.supplyAsync {
-            val res: CompletableFuture<LandDTO> = redis.get(id)
-            val dto = res.get()
-            cachedRecords[id] = dto
-            return@supplyAsync dto
+            val landDTO: LandDTO? = redis.get(id).get()
+            if (landDTO != null) cachedRecords[id] = landDTO
+            return@supplyAsync landDTO
         }
     }
 
@@ -86,12 +87,11 @@ class LandAPI(fetch: FetchLand, redis: RedisLand) : ClientAPI<FetchLand, RedisLa
      * @param player
      * @return LandDTO or null if not found
      */
-    operator fun get(player: UUID): CompletableFuture<LandDTO> {
+    fun get(player: UUID): CompletableFuture<LandDTO> {
         return CompletableFuture.supplyAsync {
-            val res: CompletableFuture<LandDTO> = redis.get(player.toString())
-            val dto = res.get()
-            cachedRecords[dto.id] = dto
-            return@supplyAsync dto
+            val landDTO: LandDTO? = redis.get(player.toString()).get()
+            if (landDTO != null) cachedRecords[landDTO.id] = landDTO
+            return@supplyAsync landDTO
         }
     }
 }

@@ -22,7 +22,7 @@ public class PlayerMoveListener implements Listener {
     public void onPlayerMove(PlayerMoveEvent e) {
         Player player = e.getPlayer();
         UUID uuid = player.getUniqueId();
-        if (server.getFrozenPlayers().contains(uuid)) {
+        if (server.frozenPlayers.contains(uuid)) {
             e.setCancelled(true);
             return;
         }

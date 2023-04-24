@@ -13,7 +13,7 @@ import java.util.*
 import java.util.concurrent.CompletableFuture
 
 class FetchActivities : FetchAPI<UUID, ActivitiesDTO, UpdateActivitiesDTO>(ActivitiesDTO::class.java) {
-    override fun update(key: UUID, dto: UpdateActivitiesDTO): CompletableFuture<ActivitiesDTO> {
+    override fun update(key: UUID, dto: UpdateActivitiesDTO): CompletableFuture<ActivitiesDTO?> {
         return fetch("/chunks/$key", RequestMethod.PATCH, dto)
     }
 

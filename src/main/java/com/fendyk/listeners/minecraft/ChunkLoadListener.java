@@ -26,7 +26,7 @@ import java.util.UUID;
 
 public class ChunkLoadListener implements Listener {
 
-    Main main = Main.getInstance();
+    Main main = Main.instance;
     HashMap<String, Chunk> checkedChunks;
     Main server;
 
@@ -36,7 +36,7 @@ public class ChunkLoadListener implements Listener {
         this.server = server;
         this.checkedChunks = new HashMap<>();
 
-        this.worldName = server.getServerConfig().getWorldName();
+        this.worldName = server.serverConfig.getWorldName();
     }
 
     /**
@@ -65,7 +65,7 @@ public class ChunkLoadListener implements Listener {
             checkedChunks.put(key, chunk);
 
             // Check if the player is within the blacklisted chunk radius
-            if(main.getServerConfig().isWithinBlacklistedChunkRadius(ChunkUtils.getChunkCenter(chunk))) {
+            if(main.serverConfig.isWithinBlacklistedChunkRadius(ChunkUtils.getChunkCenter(chunk))) {
                 Bukkit.getLogger().info(chunk.getX() + "/" + chunk.getZ() + " chunk is considered blacklisted, no need for check.");
                 return;
             }

@@ -34,7 +34,7 @@ class MinecraftUserAPI(fetch: FetchMinecraftUser, redis: RedisMinecraftUser) :
      */
      fun get(player: UUID): CompletableFuture<MinecraftUserDTO> {
         return CompletableFuture.supplyAsync {
-            val awaitMinecraftUser = redis.get(player.toString())
+            val awaitMinecraftUser = redis.get(player)
             cachedRecords[player] = awaitMinecraftUser.get()
             return@supplyAsync awaitMinecraftUser.get()
         }

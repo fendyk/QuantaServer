@@ -20,7 +20,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class ConfirmCommandManager {
 
-    static Main main = Main.getInstance();
+    static Main main = Main.instance;
 
     static HashMap<UUID, Boolean> unconfirmedStates = new HashMap<>();
     static HashMap<UUID, PayableCommand> unconfirmedPayableCommands = new HashMap<>();
@@ -143,7 +143,7 @@ public class ConfirmCommandManager {
         final double discountPrice = Math.max(0, price * (1 - discountPercentage / 100));
 
         // Verify balance exists
-        final BigDecimal bal = main.getApi().getMinecraftUserAPI().getPlayerBalance(uuid);
+        final BigDecimal bal = main.api.minecraftUserAPI.getPlayerBalance(uuid);
         if(bal == null) {
             player.sendMessage(ChatColor.RED + "Could not find your balance.");
             return;
@@ -158,7 +158,7 @@ public class ConfirmCommandManager {
         }
 
         // Verify if is withdrawn
-        final boolean isWithdrawn = main.getApi().getMinecraftUserAPI().withDrawBalance(player, new BigDecimal(discountPrice));
+        final boolean isWithdrawn = main.api.minecraftUserAPI.withDrawBalance(player, new BigDecimal(discountPrice));
         if(!isWithdrawn) {
             player.sendMessage(ChatColor.RED + "Could not withdraw money.");
             return;

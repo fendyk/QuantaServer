@@ -14,15 +14,15 @@ import java.util.concurrent.CompletableFuture
 
 class FetchChunk : FetchAPI<Vector2, ChunkDTO, UpdateChunkDTO>(ChunkDTO::class.java) {
 
-    override fun get(key: Vector2): CompletableFuture<ChunkDTO> {
+    override fun get(key: Vector2): CompletableFuture<ChunkDTO?> {
         return fetch("/chunks/${key.x}/${key.y}", RequestMethod.GET, null)
     }
 
-    override fun create(dto: ChunkDTO): CompletableFuture<ChunkDTO> {
+    override fun create(dto: ChunkDTO): CompletableFuture<ChunkDTO?> {
         return fetch("/chunks", RequestMethod.PATCH, dto)
     }
 
-    override fun update(key: Vector2, dto: UpdateChunkDTO): CompletableFuture<ChunkDTO> {
+    override fun update(key: Vector2, dto: UpdateChunkDTO): CompletableFuture<ChunkDTO?> {
         return fetch("/chunks/${key.x}/${key.y}", RequestMethod.PATCH, dto)
     }
 }

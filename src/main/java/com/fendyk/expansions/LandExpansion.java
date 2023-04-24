@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class LandExpansion extends PlaceholderExpansion {
 
-    Main main = Main.getInstance();
+    Main main = Main.instance;
 
     @Override
     public @NotNull String getIdentifier() {
@@ -34,7 +34,7 @@ public class LandExpansion extends PlaceholderExpansion {
     @Override
     public @Nullable String onRequest(OfflinePlayer player, @NotNull String params) {
         if(params.equalsIgnoreCase("current_land_name")) {
-            LandDTO landDTO = main.getApi().getLandAPI().get(player.getUniqueId());
+            LandDTO landDTO = main.api.landAPI.get(player.getUniqueId());
             return landDTO != null ? landDTO.name : "Not claimed";
         }
         return null;
