@@ -24,18 +24,22 @@ import io.lettuce.core.pubsub.RedisPubSubListener
 
 class API(server: Main?) {
     var main = Main.instance
+
     @JvmField
     var activitiesAPI: ActivitiesAPI
+
     @JvmField
     var minecraftUserAPI: MinecraftUserAPI
+
     @JvmField
     var landAPI: LandAPI
+
     @JvmField
     var chunkAPI: ChunkAPI
 
     init {
-        val serverConfig = main!!.serverConfig
-        val redisUrl = serverConfig!!.redisUrl
+        val serverConfig = main.serverConfig
+        val redisUrl = serverConfig.redisUrl
         val apiUrl = serverConfig.apiUrl
         val jwtToken = serverConfig.jwtToken
         val listeners = ArrayList<RedisPubSubListener<String, String>?>()

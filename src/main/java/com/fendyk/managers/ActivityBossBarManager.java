@@ -12,13 +12,12 @@ import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 public class ActivityBossBarManager {
-
-    public enum Type {
-        MINING, PVE, PVP, TIME
-    }
 
     static Main main = Main.instance;
     static HashMap<UUID, HashMap<Type, BossBar>> bossBars = new HashMap<>();
@@ -34,7 +33,7 @@ public class ActivityBossBarManager {
                     Type type = entry2.getKey();
                     Long seconds = entry2.getValue();
 
-                    if(seconds <= 0) { // Hide the bossbar
+                    if (seconds <= 0) { // Hide the bossbar
                         main.adventure().player(uuid).hideBossBar(bossBars.get(uuid).get(type));
                         return true;
                     }
@@ -114,27 +113,27 @@ public class ActivityBossBarManager {
         final String name = activityDTO.name;
         EarningsConfig earningsConfig = main.earningsConfig;
 
-        if(name.equalsIgnoreCase("SECONDS")) {
+        if (name.equalsIgnoreCase("SECONDS")) {
             float threshold = (float) earningsConfig.getTimeThreshold();
             result[0] = (float) (quantity / threshold);
             result[1] = threshold;
         }
 
-        if(UUIDChecker.isValidUuid(name)) {
+        if (UUIDChecker.isValidUuid(name)) {
             float threshold = (float) earningsConfig.getPvpThreshold();
             result[0] = (float) (quantity / threshold);
             result[1] = threshold;
         }
 
         Optional<Map.Entry<EntityType, Double>> optionalEntityThreshold = earningsConfig.getEntityThreshold().entrySet().stream().filter(item -> item.getKey().toString().equalsIgnoreCase(name)).findFirst();
-        if(optionalEntityThreshold.isPresent()) {
+        if (optionalEntityThreshold.isPresent()) {
             float threshold = optionalEntityThreshold.get().getValue().floatValue();
             result[0] = (float) (quantity / threshold);
             result[1] = threshold;
         }
 
         Optional<Map.Entry<Material, Double>> optionalMaterialThreshold = earningsConfig.getMaterialThreshold().entrySet().stream().filter(item -> item.getKey().toString().equalsIgnoreCase(name)).findFirst();
-        if(optionalMaterialThreshold.isPresent()) {
+        if (optionalMaterialThreshold.isPresent()) {
             float threshold = optionalMaterialThreshold.get().getValue().floatValue();
             result[0] = (float) (quantity / threshold);
             result[1] = threshold;
@@ -149,5 +148,9 @@ public class ActivityBossBarManager {
 
     public static HashMap<UUID, HashMap<Type, Long>> getBossBarsExpiresInSeconds() {
         return bossBarsExpiresInSeconds;
+    }
+
+    public enum Type {
+        MINING, PVE, PVP, TIME
     }
 }

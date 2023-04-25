@@ -1,7 +1,6 @@
 package com.fendyk.utilities;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
@@ -109,7 +108,6 @@ public class PluginTextComponent {
                         .color(NamedTextColor.WHITE)
                 );
     }
-
 
 
 }

@@ -2,7 +2,7 @@ package com.fendyk.clients.redis
 
 import com.fendyk.DTOs.ActivitiesDTO
 import com.fendyk.clients.RedisAPI
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.CompletableFuture
 
 class RedisActivities : RedisAPI<UUID, ActivitiesDTO>("activities:", ActivitiesDTO::class.java) {

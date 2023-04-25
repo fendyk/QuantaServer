@@ -1,20 +1,17 @@
 package com.fendyk.commands;
 
-import com.fendyk.DTOs.*;
+import com.fendyk.DTOs.MinecraftUserDTO;
+import com.fendyk.DTOs.SubscriptionRewardDTO;
 import com.fendyk.DTOs.updates.UpdateMinecraftUserDTO;
-import com.fendyk.Main;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandPermission;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.ServerOperator;
-import org.checkerframework.checker.units.qual.A;
 import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,7 +24,7 @@ public class RewardCommands {
                             Player player = (Player) sender;
 
                             MinecraftUserDTO minecraftUserDTO = server.api.minecraftUserAPI.get(player.getUniqueId());
-                            if(minecraftUserDTO == null) {
+                            if (minecraftUserDTO == null) {
                                 player.sendMessage("Could not find your minecraft user account, try again.");
                                 return;
                             }
@@ -38,22 +35,23 @@ public class RewardCommands {
                             UpdateMinecraftUserDTO update = new UpdateMinecraftUserDTO();
                             List<SubscriptionRewardDTO> unclaimedSubscriptionRewards = minecraftUserDTO.subscriptionRewards.stream().filter(s -> !s.isClaimed).toList();
 
-                            if(unclaimedSubscriptionRewards.size() < 1) {
+                            if (unclaimedSubscriptionRewards.size() < 1) {
                                 player.sendMessage("We've detected no open subscription rewards. Maybe you've already claimed them all.");
                                 return;
                             }
 
                             // Iterate over the subscription rewards that are open
-                            for(SubscriptionRewardDTO sub : unclaimedSubscriptionRewards) {
+                            for (SubscriptionRewardDTO sub : unclaimedSubscriptionRewards) {
                                 quanta += sub.quanta;
                                 crateKeys += sub.crateKeys;
-                                update.claimSubscriptionRewards.add(sub.getCreatedAt().toString());
+                                update.claimSubscriptionRewards.add(sub.getCreatedAt());
                             }
 
-                            if(quanta > 0) server.api.minecraftUserAPI.depositBalance(player, new BigDecimal(quanta));
+                            if (quanta > 0) server.api.minecraftUserAPI.depositBalance(player, new BigDecimal(quanta));
                             player.sendMessage(ChatColor.GREEN + "You've received " + quanta + " $QUANTA.");
 
-                            if(crateKeys > 0) Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "crate key give " + player.getName() + " legendary " + crateKeys);
+                            if (crateKeys > 0)
+                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "crate key give " + player.getName() + " legendary " + crateKeys);
                             player.sendMessage(ChatColor.GREEN + "You've received " + crateKeys + " crate keys.");
 
                             // Make sure we're updating the 'isClaimed' boolean
@@ -68,7 +66,7 @@ public class RewardCommands {
                             UUID uuid = player.getUniqueId();
 
                             MinecraftUserDTO minecraftUserDTO = server.api.minecraftUserAPI.get(uuid);
-                            if(minecraftUserDTO == null) {
+                            if (minecraftUserDTO == null) {
                                 player.sendMessage("Could not find your minecraft user account, try again.");
                                 return;
                             }
@@ -83,12 +81,12 @@ public class RewardCommands {
 
                             MinecraftUserDTO minecraftUserDTO1 = server.api.minecraftUserAPI.update(uuid, update);
 
-                            if(minecraftUserDTO1 == null) {
+                            if (minecraftUserDTO1 == null) {
                                 player.sendMessage(ChatColor.RED + "Could not update minecraft user");
                                 return;
                             }
 
-                            player.sendMessage(ChatColor.GREEN  + "Successfully created subscriptionReward");
+                            player.sendMessage(ChatColor.GREEN + "Successfully created subscriptionReward");
 
                         })
                 )

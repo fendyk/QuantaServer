@@ -63,12 +63,15 @@ abstract class FetchAPI<K, DTO, UpdateDTO>(private val dtoType: Class<DTO>) {
     open fun get(key: K): CompletableFuture<DTO?> {
         throw Exception("GET is not implemented yet.")
     }
+
     open fun create(dto: DTO): CompletableFuture<DTO?> {
         throw Exception("CREATE is not implemented yet.")
     }
+
     open fun update(key: K, dto: UpdateDTO): CompletableFuture<DTO?> {
         throw Exception("UPDATE is not implemented yet.")
     }
+
     open fun delete(key: K): CompletableFuture<DTO?> {
         throw Exception("DELETE is not implemented yet.")
     }
@@ -80,15 +83,18 @@ abstract class FetchAPI<K, DTO, UpdateDTO>(private val dtoType: Class<DTO>) {
                 .readTimeout(10, TimeUnit.SECONDS)
                 .connectTimeout(10, TimeUnit.SECONDS)
                 .build()
+
         @JvmField
         protected val JSON: MediaType? = ("application/json; charset=utf-8").toMediaTypeOrNull()
-        protected lateinit var url: String;
+        protected lateinit var url: String
         protected const val authHeader: String = "Authorization"
+
         @JvmField
         protected var requestBuilder: Request.Builder = Request.Builder()
+
         @JvmStatic
         fun connect(url: String, jwtKey: String) {
-            FetchAPI.url = url;
+            FetchAPI.url = url
             requestBuilder.addHeader(authHeader, "Bearer $jwtKey")
         }
     }

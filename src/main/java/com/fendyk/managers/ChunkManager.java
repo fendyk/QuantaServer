@@ -2,13 +2,10 @@ package com.fendyk.managers;
 
 import com.fendyk.Main;
 import com.fendyk.utilities.Log;
-import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.joda.time.DateTime;
 
-import java.time.Instant;
-import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ChunkManager {
@@ -28,7 +25,7 @@ public class ChunkManager {
                 // If expired
                 if (expiredDate.isBeforeNow()) {
                     boolean isExpired = main.api.chunkAPI.expire(chunk);
-                    if(isExpired) Log.success("We've expired the chunk.");
+                    if (isExpired) Log.success("We've expired the chunk.");
                     return isExpired;
                 }
                 return false;

@@ -1,16 +1,13 @@
 package com.fendyk.commands;
 
 import com.fendyk.DTOs.LocationDTO;
-import com.fendyk.DTOs.MinecraftUserDTO;
 import com.fendyk.Main;
 import com.fendyk.managers.ConfirmCommandManager;
 import com.fendyk.utilities.PayableCommand;
 import com.fendyk.utilities.RankConfiguration;
 import com.fendyk.utilities.extentions.LuckPermsExtension;
-import de.leonhard.storage.util.Valid;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.StringArgument;
-import net.luckperms.api.model.user.User;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
@@ -30,7 +27,7 @@ public class TeleportationCommands {
                             .checkMinecraftUserDTO()
                             .build();
 
-                    if(!validateCommand.passed()) {
+                    if (!validateCommand.passed()) {
                         player.sendMessage("We could not pass the validation of the command.");
                         return;
                     }
@@ -79,7 +76,7 @@ public class TeleportationCommands {
                             .checkLastLocation()
                             .build();
 
-                    if(validateCommand.passed()) {
+                    if (validateCommand.passed()) {
                         ValidateCommand.Builder builder = validateCommand.getBuilder();
                         Location playerLocation = player.getLocation();
                         Location targetLocation = LocationDTO.toLocation(builder.getMinecraftUserDTO().lastLocation);
@@ -113,7 +110,7 @@ public class TeleportationCommands {
                         // Set the last location to the existing one before teeporting
                         boolean isUpdated = main.api.minecraftUserAPI.updateLastLocation(player, playerLocation);
 
-                        if(!isUpdated) {
+                        if (!isUpdated) {
                             player.sendMessage(ChatColor.RED + "Could not update your last location");
                             return;
                         }
@@ -135,7 +132,7 @@ public class TeleportationCommands {
                             .checkRankConfiguration()
                             .build();
 
-                    if(validateCommand.passed()) {
+                    if (validateCommand.passed()) {
                         ValidateCommand.Builder builder = validateCommand.getBuilder();
                         String rankName = builder.getPrimaryGroup();
 

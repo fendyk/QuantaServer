@@ -5,19 +5,14 @@ import com.fendyk.DTOs.LandDTO;
 import com.fendyk.Main;
 import com.fendyk.managers.WorldguardSyncManager;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import io.lettuce.core.pubsub.RedisPubSubListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
-import org.bukkit.World;
-import org.bukkit.entity.Player;
 
 import java.util.Objects;
-import java.util.UUID;
-import java.util.logging.Level;
 
 public class LandListener implements RedisPubSubListener<String, String> {
 

@@ -11,6 +11,7 @@ public class ChunkUtils {
 
     /**
      * Return an array length of 4 - (topLeft, topRight, bottomLeft, bottomRight)
+     *
      * @return
      */
     public static Location[] getAreaCorners(int radius) {
@@ -28,6 +29,7 @@ public class ChunkUtils {
 
     /**
      * Returns total radius of the chunk count
+     *
      * @param chunkCount
      * @return
      */
@@ -38,6 +40,7 @@ public class ChunkUtils {
 
     /**
      * Verifies if both chunks are the same by validating their coordinates.
+     *
      * @param chunk1
      * @param chunk2
      * @return
@@ -51,30 +54,12 @@ public class ChunkUtils {
 
         for (int x = -radius; x <= radius; x++) {
             for (int z = -radius; z <= radius; z++) {
-                if (x*x + z*z <= radius*radius) {
+                if (x * x + z * z <= radius * radius) {
                     coords.add(new Vector2(centerX + x, centerX + z));
                 }
             }
         }
         return coords;
-    }
-
-    /**
-     * Finds out if the chunk is inside the radius of the center
-     * @param location
-     * @param chunk
-     * @param radius
-     * @return
-     */
-    public boolean isChunkInRadius(Location location, Chunk chunk, int radius) {
-        World world = location.getWorld();
-        int centerX = location.getBlockX() >> 4;
-        int centerZ = location.getBlockZ() >> 4;
-        int chunkX = chunk.getX();
-        int chunkZ = chunk.getZ();
-        int dx = Math.abs(centerX - chunkX);
-        int dz = Math.abs(centerZ - chunkZ);
-        return dx <= radius && dz <= radius;
     }
 
     public static Location getChunkCenter(Chunk chunk) {
@@ -115,6 +100,25 @@ public class ChunkUtils {
             }
         }
         return bounds;
+    }
+
+    /**
+     * Finds out if the chunk is inside the radius of the center
+     *
+     * @param location
+     * @param chunk
+     * @param radius
+     * @return
+     */
+    public boolean isChunkInRadius(Location location, Chunk chunk, int radius) {
+        World world = location.getWorld();
+        int centerX = location.getBlockX() >> 4;
+        int centerZ = location.getBlockZ() >> 4;
+        int chunkX = chunk.getX();
+        int chunkZ = chunk.getZ();
+        int dx = Math.abs(centerX - chunkX);
+        int dz = Math.abs(centerZ - chunkZ);
+        return dx <= radius && dz <= radius;
     }
 
 

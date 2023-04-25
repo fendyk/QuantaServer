@@ -33,21 +33,21 @@ public class BlockPlaceListener implements Listener {
         EarningsConfig config = server.earningsConfig;
 
         // If the current user is either barbarian or default, verify the flag.
-        if(!WorldGuardExtension.hasPermissionToBuildAtGlobalLocation(player, block.getLocation())) {
+        if (!WorldGuardExtension.hasPermissionToBuildAtGlobalLocation(player, block.getLocation())) {
             event.setCancelled(true);
             player.sendMessage(ChatColor.RED + "You are not allowed to build.");
             return;
         }
 
         // Ignore if player is Operator
-        if(player.isOp()) return;
+        if (player.isOp()) return;
 
         // If material is supported.
-        if(config.getMaterialEarnings().containsKey(material)) {
+        if (config.getMaterialEarnings().containsKey(material)) {
 
             // If we're not in the 'normal world', disable block place at ALL times
             // Cannot earn
-            if(!player.getWorld().getName().equalsIgnoreCase(server.serverConfig.getWorldName())) {
+            if (!player.getWorld().getName().equalsIgnoreCase(server.serverConfig.getWorldName())) {
                 player.sendMessage("You're only allowed to place ore blocks in the world.");
                 event.setCancelled(true);
                 return;
@@ -57,7 +57,7 @@ public class BlockPlaceListener implements Listener {
 
                 // Verify if the chunk is blacklisted
                 // Check if the player is within the blacklisted chunk radius
-                if(main.serverConfig.isWithinBlacklistedChunkRadius(player.getLocation())) {
+                if (main.serverConfig.isWithinBlacklistedChunkRadius(player.getLocation())) {
                     player.sendMessage("The chunk you're currently standing on is considered 'blacklisted' and not claimable.");
                     return;
                 }

@@ -1,24 +1,21 @@
 package com.fendyk.configs;
 
-import com.fendyk.Main;
 import com.fendyk.utilities.LocationUtil;
 import de.leonhard.storage.Toml;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-import java.util.List;
-
 public class ServerConfig {
 
-    Toml config;
-    World overworld;
     final String worldName;
     final boolean inDebugMode;
     final String redisUrl;
     final String apiUrl;
     final String jwtToken;
     final Location spawnLocation;
+    Toml config;
+    World overworld;
     int blacklistedChunkRadius;
 
     public ServerConfig() {
@@ -31,7 +28,7 @@ public class ServerConfig {
         double x = config.getOrSetDefault("spawnLocation.x", 0);
         double y = config.getOrSetDefault("spawnLocation.y", 120);
         double z = config.getOrSetDefault("spawnLocation.z", 0);
-        this.spawnLocation = new Location(overworld, x,y,z, 0, 0);
+        this.spawnLocation = new Location(overworld, x, y, z, 0, 0);
 
         this.redisUrl = config.getOrSetDefault("redisUrl", "<url>");
         this.apiUrl = config.getOrSetDefault("apiUrl", "<url>");
@@ -69,9 +66,13 @@ public class ServerConfig {
         return jwtToken;
     }
 
-    public int getBlacklistedChunkRadius() {return blacklistedChunkRadius;
+    public int getBlacklistedChunkRadius() {
+        return blacklistedChunkRadius;
     }
-    public int getBlacklistedBlockRadius() {return blacklistedChunkRadius * 16;}
+
+    public int getBlacklistedBlockRadius() {
+        return blacklistedChunkRadius * 16;
+    }
 
     public World getOverworld() {
         return overworld;

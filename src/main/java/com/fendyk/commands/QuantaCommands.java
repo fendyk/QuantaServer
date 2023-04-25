@@ -1,13 +1,11 @@
 package com.fendyk.commands;
 
-import com.fendyk.API;
 import com.fendyk.Main;
 import com.sk89q.minecraft.util.commands.Command;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandPermission;
 import dev.jorel.commandapi.arguments.DoubleArgument;
 import dev.jorel.commandapi.arguments.PlayerArgument;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.ServerOperator;
 
@@ -35,7 +33,7 @@ public class QuantaCommands {
                             Player player = (Player) args[0];
                             Double amount = (Double) args[1];
                             boolean success = main.api.minecraftUserAPI.depositBalance(player, new BigDecimal(amount));
-                            if(!success) {
+                            if (!success) {
                                 player.sendMessage("Something went wrong when depositing. Please try again.");
                                 return;
                             }
@@ -52,7 +50,7 @@ public class QuantaCommands {
                             Player player = (Player) args[0];
                             Double amount = (Double) args[1];
                             boolean success = main.api.minecraftUserAPI.withDrawBalance(player, new BigDecimal(amount));
-                            if(!success) {
+                            if (!success) {
                                 player.sendMessage("Something went wrong when withdrawing. Please try again.");
                                 return;
                             }

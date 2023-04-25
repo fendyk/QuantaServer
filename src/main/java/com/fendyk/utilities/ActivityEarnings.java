@@ -12,6 +12,7 @@ public class ActivityEarnings {
 
     /**
      * Sets the new kill earnings
+     *
      * @param workers amount of citizens the person has
      * @return the new earnings
      */
@@ -33,8 +34,9 @@ public class ActivityEarnings {
 
     /**
      * Sets the new time earnings
+     *
      * @param secondsPlayed Amount of seconds played
-     * @param workers amount of citizens the person has
+     * @param workers       amount of citizens the person has
      * @return the new earnings
      */
     public static double getEarningsFromTime(long secondsPlayed, long dailyTimePlayed, int workers) {
@@ -55,9 +57,10 @@ public class ActivityEarnings {
 
     /**
      * Sets the new ore earnings
-     * @param ore Which ore?
+     *
+     * @param ore           Which ore?
      * @param dailyOreMined How many ores did the player previously mined?
-     * @param workers amount of citizens the person has
+     * @param workers       amount of citizens the person has
      * @return the new earnings
      */
     public static double getEarningsFromMining(Material ore, int dailyOreMined, int workers) {
@@ -78,7 +81,8 @@ public class ActivityEarnings {
 
     /**
      * Sets the new pve earnings
-     * @param type Which entity?
+     *
+     * @param type    Which entity?
      * @param workers amount of citizens the person has
      * @return the new earnings
      */

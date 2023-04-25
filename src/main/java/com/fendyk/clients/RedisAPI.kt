@@ -79,6 +79,7 @@ abstract class RedisAPI<K, DTO>(
         var main: Main = Main.instance
         var client: RedisClient = RedisClient.create(main.serverConfig.redisUrl)
             protected set
+
         @JvmStatic
         var connection: StatefulRedisConnection<String, String> = client.connect()
             protected set

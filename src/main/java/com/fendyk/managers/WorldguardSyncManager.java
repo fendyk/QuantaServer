@@ -17,7 +17,9 @@ import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.jetbrains.annotations.Nullable;
 import org.joda.time.DateTime;
 import xyz.xenondevs.particle.ParticleBuilder;
@@ -74,17 +76,17 @@ public final class WorldguardSyncManager {
         overworldRegionManager.save();
     }
 
-    public static void setRegionMembersAndOwner(ProtectedRegion region, @Nullable  String landOwnerId, @Nullable  ArrayList<String> memberIds) {
+    public static void setRegionMembersAndOwner(ProtectedRegion region, @Nullable String landOwnerId, @Nullable ArrayList<String> memberIds) {
         DefaultDomain newOwners = new DefaultDomain();
         DefaultDomain newMembers = new DefaultDomain();
 
-        if(landOwnerId != null) {
+        if (landOwnerId != null) {
             UUID landOwnerUuid = UUID.fromString(landOwnerId);
             newOwners.addPlayer(landOwnerUuid);
         }
 
-        if(memberIds != null) {
-            for(String memberId : memberIds) {
+        if (memberIds != null) {
+            for (String memberId : memberIds) {
                 newMembers.addPlayer(UUID.fromString(memberId));
             }
         }
@@ -98,18 +100,18 @@ public final class WorldguardSyncManager {
         Log.info(chunk.getX() + "/" + chunk.getZ() + " is trying to sync with region");
 
         /* If it's cached, we're going to do stuff with it. */
-        if(chunkDTO == null) {
+        if (chunkDTO == null) {
             /* To avoid unnecessary calls to the api, first check if we already CACHED the chunk  */
             boolean isCached = main.api.chunkAPI.redis.exists(new Vector2(chunk.getX(), chunk.getZ()));
-            if(!isCached) return;
+            if (!isCached) return;
             chunkDTO = main.api.chunkAPI.get(chunk);
-            if(chunkDTO == null) return; // Could not find so no need for check
+            if (chunkDTO == null) return; // Could not find so no need for check
         }
 
         /* Find the land by landID */
-        if(landDTO == null) {
+        if (landDTO == null) {
             landDTO = main.api.landAPI.redis.getMin(chunkDTO.landId);
-            if(landDTO == null) return;
+            if (landDTO == null) return;
         }
 
         /* Find the region */
@@ -124,35 +126,34 @@ public final class WorldguardSyncManager {
         boolean hasExpired = expireDate != null && expireDate.isBeforeNow();
 
         // If the chunk can expire, keep track of it
-        if(chunkDTO.canExpire() && expireDate != null) {
+        if (chunkDTO.canExpire() && expireDate != null) {
             Log.info("We've detected a expirable chunk : " + expireDate);
             ChunkManager.getExpirableChunks().put(expireDate, chunk);
         }
 
         /* If we cannot find the region but the land has a landOwnerId, we need to sync */
-        if(set.size() < 1) {
-            Location topLeft = chunk.getBlock(0,-64,0).getLocation();
-            Location bottomRight = chunk.getBlock(15,320,15).getLocation();
+        if (set.size() < 1) {
+            Location topLeft = chunk.getBlock(0, -64, 0).getLocation();
+            Location bottomRight = chunk.getBlock(15, 320, 15).getLocation();
 
             BlockVector3 min = BlockVector3.at(topLeft.getX(), -256, topLeft.getZ());
             BlockVector3 max = BlockVector3.at(bottomRight.getX(), 256, bottomRight.getZ());
             region = new ProtectedCuboidRegion(chunkDTO.id, min, max);
 
-            if(!hasExpired) {
+            if (!hasExpired) {
                 WorldguardSyncManager.setRegionMembersAndOwner(region,
                         landDTO.ownerId,
                         landDTO.memberIDs
                 );
             }
             main.overworldRegionManager.addRegion(region); // Dont forget to save the region
-        }
-        else {
+        } else {
             @Nullable ChunkDTO finalChunkDTO = chunkDTO;
 
             List<ProtectedRegion> regions = set.stream().filter(r -> !r.getId().equalsIgnoreCase(finalChunkDTO.id)).toList();
 
             // If we find a region that is not matching our requirements, remove it.
-            if(regions.size() > 0) {
+            if (regions.size() > 0) {
                 regions.forEach(r -> {
                     main.overworldRegionManager.removeRegion(r.getId());
                 });
@@ -161,7 +162,7 @@ public final class WorldguardSyncManager {
             // Now Find any id matching ours
             Optional<ProtectedRegion> optionalRegion = set.stream().filter(r -> r.getId().equalsIgnoreCase(finalChunkDTO.id)).findFirst();
 
-            if(optionalRegion.isEmpty()) return;
+            if (optionalRegion.isEmpty()) return;
             region = optionalRegion.get();
 
             WorldguardSyncManager.setRegionMembersAndOwner(region,
@@ -189,7 +190,7 @@ public final class WorldguardSyncManager {
         List<Object> packets = new ArrayList<>();
         ParticleBuilder particle = new ParticleBuilder(ParticleEffect.DUST_COLOR_TRANSITION)
                 .setParticleData(particleData);
-        for(Location l : bounds) {
+        for (Location l : bounds) {
             packets.add(particle.setLocation(l).toPacket());
         }
         int task = TaskManager.startWorldTask(packets, 5, chunk.getWorld());
@@ -199,7 +200,7 @@ public final class WorldguardSyncManager {
             TaskManager.getTaskManager().stopTask(task);
         }, 600L); // 30 seconds
     }
-    
+
     public static void showParticleEffectAtChunk(Chunk chunk, Location location, ChunkAPI.ChunkState chunkState) {
         ParticleData particleData;
         switch (chunkState) {

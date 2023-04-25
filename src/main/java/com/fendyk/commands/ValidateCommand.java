@@ -5,14 +5,13 @@ import com.fendyk.DTOs.MinecraftUserDTO;
 import com.fendyk.Main;
 import com.fendyk.utilities.RankConfiguration;
 import net.luckperms.api.model.user.User;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
 public class ValidateCommand {
-    private Main main = Main.instance;
-    private Builder builder;
+    private final Main main = Main.instance;
+    private final Builder builder;
 
     private ValidateCommand(Builder builder) {
         this.builder = builder;
@@ -27,8 +26,8 @@ public class ValidateCommand {
     }
 
     public static class Builder {
-        private Main main = Main.instance;
-        private Player player;
+        private final Main main = Main.instance;
+        private final Player player;
         private User user;
         private MinecraftUserDTO minecraftUserDTO;
         private LandDTO landDTO;
@@ -37,15 +36,15 @@ public class ValidateCommand {
 
         private boolean passed = true;
 
-        public boolean isPassed() {
-            return passed;
-        }
-
         public Builder(Player player) {
             this.player = player;
             if (player == null) {
                 throw new IllegalStateException("Player is required");
             }
+        }
+
+        public boolean isPassed() {
+            return passed;
         }
 
         private void validateUser() {
@@ -110,7 +109,7 @@ public class ValidateCommand {
 
         public Builder checkLastLocation() {
             validateMinecraftUserDTO();
-            if(minecraftUserDTO.lastLocation == null) {
+            if (minecraftUserDTO.lastLocation == null) {
                 passed = false;
                 player.sendMessage("We could not find your last location");
                 throw new IllegalStateException("Last location could not be found");
@@ -147,7 +146,7 @@ public class ValidateCommand {
 
         public Builder isPlayerOwnerOfLand(Player player, LandDTO landDTO) {
             boolean isOwner = UUID.fromString(landDTO.ownerId).equals(player.getUniqueId());
-            if(!isOwner) {
+            if (!isOwner) {
 
                 passed = false;
             }

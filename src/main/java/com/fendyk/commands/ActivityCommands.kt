@@ -1,18 +1,10 @@
 package com.fendyk.commands
 
-import com.fendyk.DTOs.ActivitiesDTO
 import com.fendyk.Main
-import com.fendyk.utilities.Log
-import dev.jorel.commandapi.CommandAPICommand
-import dev.jorel.commandapi.executors.CommandExecutor
-import dev.jorel.commandapi.executors.PlayerCommandExecutor
-import org.bukkit.command.CommandSender
-import org.bukkit.entity.Player
-import java.util.concurrent.CompletableFuture
 
 class ActivityCommands {
 
-    val main: Main = Main.instance;
+    val main: Main = Main.instance
 
     /*
     init {

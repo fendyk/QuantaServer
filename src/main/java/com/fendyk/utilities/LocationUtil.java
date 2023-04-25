@@ -6,6 +6,7 @@ public class LocationUtil {
 
     /**
      * Verify if the target location is within the radius
+     *
      * @param center is where the radius will be based on
      * @param target is the actual location
      * @param radius is the size (in blocks)

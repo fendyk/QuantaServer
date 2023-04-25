@@ -1,9 +1,8 @@
 package com.fendyk.DTOs.updates
 
 import com.fendyk.DTOs.BlacklistedBlockDTO
-import org.joda.time.DateTime
 
-data class UpdateChunkDTO (
+data class UpdateChunkDTO(
         var isClaimable: Boolean? = null,
         var canExpire: Boolean? = null,
         var landId: String? = null,

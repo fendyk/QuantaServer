@@ -1,4 +1,5 @@
 package com.fendyk.listeners.minecraft;
+
 import com.fendyk.API;
 import com.fendyk.DTOs.ActivitiesDTO;
 import com.fendyk.DTOs.ActivityDTO;
@@ -10,8 +11,8 @@ import com.fendyk.Main;
 import com.fendyk.clients.apis.ChunkAPI;
 import com.fendyk.configs.EarningsConfig;
 import com.fendyk.managers.ActivityBossBarManager;
-import com.fendyk.utilities.ActivityEarnings;
 import com.fendyk.managers.ActivitySoundManager;
+import com.fendyk.utilities.ActivityEarnings;
 import com.fendyk.utilities.extentions.WorldGuardExtension;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -40,7 +41,7 @@ public class BlockBreakListener implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) throws IOException {
-        if(event.isCancelled()) return;
+        if (event.isCancelled()) return;
 
         Player player = event.getPlayer();
         Block block = event.getBlock();
@@ -51,7 +52,7 @@ public class BlockBreakListener implements Listener {
         EarningsConfig config = server.earningsConfig;
 
         // If the current user is either barbarian or default, verify the flag.
-        if(!WorldGuardExtension.hasPermissionToBuildAtGlobalLocation(player, block.getLocation())) {
+        if (!WorldGuardExtension.hasPermissionToBuildAtGlobalLocation(player, block.getLocation())) {
             event.setCancelled(true);
             player.sendMessage(ChatColor.RED + "You are not allowed to build.");
             return;
@@ -59,13 +60,13 @@ public class BlockBreakListener implements Listener {
 
 
         // Player can only receive the block IF in survival mode, unless you are operator
-        if(player.getGameMode() != GameMode.SURVIVAL && !player.isOp()) return;
+        if (player.getGameMode() != GameMode.SURVIVAL && !player.isOp()) return;
 
         // If the player uses silk touch, we simply deny
-        if(itemStack.containsEnchantment(Enchantment.SILK_TOUCH)) return;
+        if (itemStack.containsEnchantment(Enchantment.SILK_TOUCH)) return;
 
         // Check if Material is supported
-        if(!config.getMaterialEarnings().containsKey(material)) return;
+        if (!config.getMaterialEarnings().containsKey(material)) return;
 
         Bukkit.getScheduler().runTaskAsynchronously(server, () -> {
             ChunkDTO chunkDTO = server.api.chunkAPI.get(chunk);

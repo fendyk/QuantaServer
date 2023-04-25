@@ -11,9 +11,11 @@ import java.util.UUID;
 
 public class PlayerQuitListener implements Listener {
     Main server;
+
     public PlayerQuitListener(Main server) {
         this.server = server;
     }
+
     @EventHandler
     public void onPlayerQuitEvent(PlayerQuitEvent event) {
         Player player = event.getPlayer();

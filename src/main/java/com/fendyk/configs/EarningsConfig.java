@@ -6,9 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.Map;
 
 public class EarningsConfig {
 
@@ -36,7 +34,7 @@ public class EarningsConfig {
         pvpEarnings = config.getOrSetDefault("pvpEarnings", 3);
         pvpThreshold = config.getOrSetDefault("pvpThreshold", 2.5);
 
-        if(config.get("materials") == null) {
+        if (config.get("materials") == null) {
             // Make default
             config.setDefault("materials.COPPER_ORE.earnings", 0.05D);
             config.setDefault("materials.COPPER_ORE.threshold", 2D);
@@ -44,7 +42,7 @@ public class EarningsConfig {
             config.setDefault("materials.IRON_ORE.threshold", 2D);
         }
 
-        if(config.get("entities") == null) {
+        if (config.get("entities") == null) {
             // Make default
             config.setDefault("entities.ZOMBIE.earnings", 0.05D);
             config.setDefault("entities.ZOMBIE.threshold", 2D);
@@ -54,8 +52,8 @@ public class EarningsConfig {
 
         config.getMap("materials").forEach((name, data) -> {
             Log.info("Adding Ore '" + name.toString() + "' to the server.");
-            double earnings = config.getDouble("materials." + name +  ".earnings");
-            double threshold = config.getDouble("materials." + name +  ".threshold");
+            double earnings = config.getDouble("materials." + name + ".earnings");
+            double threshold = config.getDouble("materials." + name + ".threshold");
             Bukkit.getLogger().info("Earnings set to: " + earnings);
             Bukkit.getLogger().info("threshold set to: " + threshold);
 
@@ -65,8 +63,8 @@ public class EarningsConfig {
 
         config.getMap("entities").forEach((name, data) -> {
             Log.info("Adding Entity '" + name.toString() + "' to the server.");
-            double earnings = config.getDouble("entities." + name +  ".earnings");
-            double threshold = config.getDouble("entities." + name +  ".threshold");
+            double earnings = config.getDouble("entities." + name + ".earnings");
+            double threshold = config.getDouble("entities." + name + ".threshold");
             Bukkit.getLogger().info("Earnings set to: " + earnings);
             Bukkit.getLogger().info("threshold set to: " + threshold);
 

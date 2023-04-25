@@ -9,7 +9,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
-import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
@@ -20,13 +19,13 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
-import java.util.Collection;
 import java.util.List;
 
 public class PlayerJoinListener implements Listener {
 
     Main main = Main.instance;
     Main server;
+
     public PlayerJoinListener(Main server) {
         this.server = server;
     }
@@ -40,35 +39,34 @@ public class PlayerJoinListener implements Listener {
         String primaryGroup = luckPermsUser.getPrimaryGroup();
 
         // Give the player a starterpack
-        if(!player.hasPlayedBefore()) {
+        if (!player.hasPlayedBefore()) {
             giveStarterKit(player);
             player.sendMessage(ChatColor.GREEN + "We've given you some starter items to start your adventure!");
         }
 
-        if(primaryGroup.equalsIgnoreCase("default") && !player.isOp()) {
+        if (primaryGroup.equalsIgnoreCase("default") && !player.isOp()) {
             player.teleport(main.serverConfig.getSpawnLocation());
             server.getFrozenPlayers().add(player.getUniqueId());
             player.sendMessage("You've been frozen because you're not authorized to the server.");
-        }
-        else {
+        } else {
             server.frozenPlayers.remove(player.getUniqueId());
         }
 
         MinecraftUserDTO minecraftUserDTO = server.api.minecraftUserAPI.get(player.getUniqueId());
 
         // Verify if user still has a reward that needs to be claimed
-        if(minecraftUserDTO != null) {
+        if (minecraftUserDTO != null) {
             Bukkit.getLogger().info("Found it");
             List<SubscriptionRewardDTO> subscriptions = minecraftUserDTO.subscriptionRewards.stream().filter(s -> !s.isClaimed).toList();
 
             Bukkit.getLogger().info(subscriptions.size() + " :");
-            if(subscriptions.size() > 0) {
+            if (subscriptions.size() > 0) {
                 player.sendMessage("You have unclaimed rewards awaiting to be redeemed. To claim your reward, type /claim");
             }
         }
 
         // If player joins first time
-        if(!player.hasPlayedBefore()) {
+        if (!player.hasPlayedBefore()) {
             // Finally show a title saying welcome!
             final Component mainTitle = Component.text("Welcome to QuantumCity,", NamedTextColor.AQUA);
             final Component subtitle = Component.text(player.getName(), NamedTextColor.WHITE);
@@ -86,8 +84,7 @@ public class PlayerJoinListener implements Listener {
                     .build();
 
             event.joinMessage(msg);
-        }
-        else {
+        } else {
             // Finally show a title saying welcome!
             final Component mainTitle = Component.text("Welcome back,", NamedTextColor.AQUA);
             final Component subtitle = Component.text(player.getName(), NamedTextColor.WHITE);

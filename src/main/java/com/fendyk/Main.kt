@@ -25,7 +25,7 @@ import java.util.*
 
 class Main : JavaPlugin(), Listener {
 
-    val api: API get() = API(this);
+    val api: API get() = API(this)
     val messagesConfig: MessagesConfig get() = MessagesConfig()
     val earningsConfig: EarningsConfig get() = EarningsConfig()
     val serverConfig: ServerConfig get() = ServerConfig()
@@ -128,8 +128,10 @@ class Main : JavaPlugin(), Listener {
     companion object {
         @JvmStatic
         lateinit var instance: Main
+
         @JvmField
         var gson = Gson()
+
         @JvmField
         val BARBARIAN_BUILD = StateFlag("barbarian-build", true)
     }

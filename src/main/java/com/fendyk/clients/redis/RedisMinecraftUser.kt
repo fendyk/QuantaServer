@@ -1,10 +1,8 @@
 package com.fendyk.clients.redis
 
 import com.fendyk.DTOs.MinecraftUserDTO
-import com.fendyk.Main
 import com.fendyk.clients.RedisAPI
-import com.fendyk.configs.ServerConfig
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.CompletableFuture
 
 class RedisMinecraftUser : RedisAPI<UUID, MinecraftUserDTO>("minecraftuser:", MinecraftUserDTO::class.java) {
@@ -12,6 +10,7 @@ class RedisMinecraftUser : RedisAPI<UUID, MinecraftUserDTO>("minecraftuser:", Mi
     override fun get(key: UUID): CompletableFuture<MinecraftUserDTO?> {
         return fetch(key.toString())
     }
+
     override fun set(key: UUID, dto: MinecraftUserDTO): CompletableFuture<Boolean> {
         return save(key.toString(), dto)
     }

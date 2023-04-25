@@ -1,13 +1,10 @@
 package com.fendyk.listeners;
 
-import com.fendyk.DTOs.ChunkDTO;
 import com.fendyk.Main;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.lettuce.core.pubsub.RedisPubSubListener;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -23,7 +20,7 @@ public class AuthenticationListener implements RedisPubSubListener<String, Strin
 
     @Override
     public void message(String channel, String message) {
-        if(!channel.equals("authentication")) return;
+        if (!channel.equals("authentication")) return;
         Bukkit.getLogger().info("Authentication");
         Bukkit.getLogger().info(channel + ", " + message);
 

@@ -1,28 +1,16 @@
 package com.fendyk.listeners.minecraft;
 
-import com.fendyk.DTOs.ChunkDTO;
-import com.fendyk.DTOs.LandDTO;
 import com.fendyk.Main;
 import com.fendyk.managers.WorldguardSyncManager;
 import com.fendyk.utilities.ChunkUtils;
-import com.fendyk.utilities.Log;
-import com.fendyk.utilities.Vector2;
-import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldguard.domains.DefaultDomain;
 import com.sk89q.worldguard.protection.managers.storage.StorageException;
-import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import io.papermc.paper.event.packet.PlayerChunkLoadEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
-import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
-import java.util.UUID;
 
 public class ChunkLoadListener implements Listener {
 
@@ -43,6 +31,7 @@ public class ChunkLoadListener implements Listener {
      * We need to verify if chunks are up-to-date.
      * If it does not exist, we can simply return.
      * We keep track of the chunks that are verified
+     *
      * @param event
      */
     @EventHandler
@@ -65,7 +54,7 @@ public class ChunkLoadListener implements Listener {
             checkedChunks.put(key, chunk);
 
             // Check if the player is within the blacklisted chunk radius
-            if(main.serverConfig.isWithinBlacklistedChunkRadius(ChunkUtils.getChunkCenter(chunk))) {
+            if (main.serverConfig.isWithinBlacklistedChunkRadius(ChunkUtils.getChunkCenter(chunk))) {
                 Bukkit.getLogger().info(chunk.getX() + "/" + chunk.getZ() + " chunk is considered blacklisted, no need for check.");
                 return;
             }

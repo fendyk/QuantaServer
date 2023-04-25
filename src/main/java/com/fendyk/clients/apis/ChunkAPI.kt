@@ -1,6 +1,5 @@
 package com.fendyk.clients.apis
 
-import com.fendyk.API
 import com.fendyk.DTOs.BlacklistedBlockDTO
 import com.fendyk.DTOs.ChunkDTO
 import com.fendyk.DTOs.updates.UpdateChunkDTO
@@ -25,7 +24,14 @@ class ChunkAPI(fetch: FetchChunk, redis: RedisChunk) : ClientAPI<FetchChunk, Red
     fun get(chunk: Chunk): CompletableFuture<ChunkDTO?> {
         return CompletableFuture.supplyAsync {
             val chunkPos = Vector2(chunk.x, chunk.z)
-            return@supplyAsync redis.get(chunkPos).get()
+            return@supplyAsync redis.get(chunkPos).join()
+        }
+    }
+
+    fun get(coordinates: Vector2): CompletableFuture<ChunkDTO?> {
+        return CompletableFuture.supplyAsync {
+            val chunkPos = Vector2(coordinates.x, coordinates.y)
+            return@supplyAsync redis.get(chunkPos).join()
         }
     }
 
@@ -33,14 +39,14 @@ class ChunkAPI(fetch: FetchChunk, redis: RedisChunk) : ClientAPI<FetchChunk, Red
         return CompletableFuture.supplyAsync {
             val newChunkDTO = ChunkDTO(chunk.x, chunk.z)
             newChunkDTO.isClaimable = isClaimable
-            return@supplyAsync fetch.create(newChunkDTO).get()
+            return@supplyAsync fetch.create(newChunkDTO).join()
         }
     }
 
     fun update(chunk: Chunk, updates: UpdateChunkDTO): CompletableFuture<ChunkDTO?> {
         return CompletableFuture.supplyAsync {
             val vector2 = Vector2(chunk.x, chunk.z)
-            return@supplyAsync fetch.update(vector2, updates).get()
+            return@supplyAsync fetch.update(vector2, updates).join()
         }
     }
 
@@ -64,9 +70,9 @@ class ChunkAPI(fetch: FetchChunk, redis: RedisChunk) : ClientAPI<FetchChunk, Red
         }
     }
 
-    fun extend(chunk: Chunk, days: Int):  CompletableFuture<Boolean> {
+    fun extend(chunk: Chunk, days: Int): CompletableFuture<Boolean> {
         return CompletableFuture.supplyAsync {
-            val chunkDTO: ChunkDTO = get(chunk).get() ?: throw Exception("Could not find the chunk.")
+            val chunkDTO: ChunkDTO = get(chunk).join() ?: throw Exception("Could not find the chunk.")
             val expirationDate = chunkDTO.getExpirationDate()
             val newExpirationDate = expirationDate.plusDays(days)
             val updateChunkDTO = UpdateChunkDTO()

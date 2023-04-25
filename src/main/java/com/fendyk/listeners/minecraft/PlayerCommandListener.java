@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -47,7 +48,7 @@ public class PlayerCommandListener implements Listener {
             PayableCommand payableCommand = pricesConfig.getCommandByIndex(commandIndex);
             RankConfiguration configuration = main.ranksConfig.getRankConfiguration(rankName);
 
-            if(configuration == null || payableCommand == null) {
+            if (configuration == null || payableCommand == null) {
                 player.sendMessage(ChatColor.RED + "Something went wrong when processing this command as 'payable'.");
                 event.setCancelled(true);
                 return;
@@ -59,11 +60,11 @@ public class PlayerCommandListener implements Listener {
 
             if (!ConfirmCommandManager.isConfirmed(player)) {
                 ConfirmCommandManager.requestCommandConfirmation(player, new PayableCommand(
-                        command,
-                        new ArrayList<>(),
-                        price,
-                        time,
-                        discount
+                                command,
+                                new ArrayList<>(),
+                                price,
+                                time,
+                                discount
                         )
                 );
                 event.setCancelled(true);

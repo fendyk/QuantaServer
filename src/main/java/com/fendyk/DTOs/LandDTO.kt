@@ -1,7 +1,5 @@
 package com.fendyk.DTOs
 
-import com.google.gson.annotations.SerializedName
-
 data class LandDTO(
         val id: String = "",
         var name: String? = null,

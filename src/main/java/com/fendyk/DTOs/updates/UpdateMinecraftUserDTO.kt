@@ -4,7 +4,7 @@ import com.fendyk.DTOs.LocationDTO
 import com.fendyk.DTOs.SubscriptionRewardDTO
 import com.fendyk.DTOs.TaggedLocationDTO
 
-class UpdateMinecraftUserDTO (
+class UpdateMinecraftUserDTO(
         var quanta: Double = 0.0,
         var pushHomes: ArrayList<TaggedLocationDTO> = ArrayList(),
         var spliceHomes: ArrayList<String> = ArrayList(),

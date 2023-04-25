@@ -15,27 +15,27 @@ class EconomyCommands {
 
     init {
         CommandAPICommand("pay")
-            .withArguments(OfflinePlayerArgument("player"))
-            .withArguments(DoubleArgument("amount"))
-            .executesPlayer(PlayerCommandExecutor { sender: Player, args: Array<Any> ->
-                val toPlayer: OfflinePlayer = args[0] as OfflinePlayer
-                val amount = args[1] as Double
+                .withArguments(OfflinePlayerArgument("player"))
+                .withArguments(DoubleArgument("amount"))
+                .executesPlayer(PlayerCommandExecutor { sender: Player, args: Array<Any> ->
+                    val toPlayer: OfflinePlayer = args[0] as OfflinePlayer
+                    val amount = args[1] as Double
 
-                val futWithdrawBalance = main.api.minecraftUserAPI.withDrawBalance(sender, amount)
-                val futDepositBalance = main.api.minecraftUserAPI.depositBalance(toPlayer, amount)
+                    val futWithdrawBalance = main.api.minecraftUserAPI.withDrawBalance(sender, amount)
+                    val futDepositBalance = main.api.minecraftUserAPI.depositBalance(toPlayer, amount)
 
-                CompletableFuture.allOf(futWithdrawBalance, futDepositBalance).handleAsync { t, u ->
-                    if(u != null) {
-                        sender.sendMessage(u.message.toString())
+                    CompletableFuture.allOf(futWithdrawBalance, futDepositBalance).handleAsync { t, u ->
+                        if (u != null) {
+                            sender.sendMessage(u.message.toString())
+                        }
+
+                        sender.sendMessage("Your have payed " + amount + " to " + toPlayer.name)
+
+                        if (toPlayer.isOnline && toPlayer.player != null) {
+                            toPlayer.player!!.sendMessage("Your have received " + amount + " from " + sender.name)
+                        }
                     }
-
-                    sender.sendMessage("Your have payed " + amount + " to " + toPlayer.name)
-
-                    if (toPlayer.isOnline && toPlayer.player != null) {
-                        toPlayer.player!!.sendMessage("Your have received " + amount + " from " + sender.name)
-                    }
-                }
-            })
-            .register()
+                })
+                .register()
     }
 }

@@ -4,7 +4,6 @@ import com.fendyk.Main;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.FloatArgument;
 import dev.jorel.commandapi.arguments.IntegerArgument;
-import dev.jorel.commandapi.arguments.LocationArgument;
 import dev.jorel.commandapi.arguments.PlayerArgument;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -12,13 +11,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.permissions.ServerOperator;
 
 public class GeneralCommands {
     Main main = Main.instance;
+
     public GeneralCommands() {
         new CommandAPICommand("speed")
                 .withRequirement(ServerOperator::isOp)
@@ -45,7 +44,7 @@ public class GeneralCommands {
                 .withRequirement(ServerOperator::isOp)
                 .withArguments(new PlayerArgument("player"))
                 .executesPlayer((player, args) -> {
-                    player.teleport((Player)args[0]);
+                    player.teleport((Player) args[0]);
                 })
                 .register();
 

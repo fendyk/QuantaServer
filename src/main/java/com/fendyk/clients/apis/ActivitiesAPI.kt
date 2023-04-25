@@ -1,6 +1,5 @@
 package com.fendyk.clients.apis
 
-import com.fendyk.API
 import com.fendyk.DTOs.ActivitiesDTO
 import com.fendyk.DTOs.updates.UpdateActivitiesDTO
 import com.fendyk.clients.ClientAPI
@@ -13,10 +12,10 @@ import java.util.concurrent.CompletableFuture
 class ActivitiesAPI(fetch: FetchActivities, redis: RedisActivities) :
         ClientAPI<FetchActivities, RedisActivities, UUID, ActivitiesDTO?>(fetch, redis) {
 
-     fun get(player: Player): CompletableFuture<ActivitiesDTO?> {
+    fun get(player: Player): CompletableFuture<ActivitiesDTO?> {
         return CompletableFuture.supplyAsync {
             val uuid = player.uniqueId
-            val activitiesDTO: ActivitiesDTO? = redis.get(uuid).get()
+            val activitiesDTO: ActivitiesDTO? = redis.get(uuid).join()
             cachedRecords[uuid] = activitiesDTO
             return@supplyAsync activitiesDTO
         }

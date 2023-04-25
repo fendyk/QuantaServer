@@ -7,8 +7,8 @@ import com.fendyk.DTOs.updates.UpdateActivitiesDTO;
 import com.fendyk.Main;
 import com.fendyk.configs.EarningsConfig;
 import com.fendyk.managers.ActivityBossBarManager;
-import com.fendyk.utilities.ActivityEarnings;
 import com.fendyk.managers.ActivitySoundManager;
+import com.fendyk.utilities.ActivityEarnings;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -38,28 +38,26 @@ public class EntityDeathListener implements Listener {
         EarningsConfig config = server.earningsConfig;
         API api = server.api;
 
-        if(killer == null) return;
+        if (killer == null) return;
 
         Bukkit.getScheduler().runTaskAsynchronously(server, () -> {
             UpdateActivitiesDTO updateActivitiesDTO = new UpdateActivitiesDTO();
             ArrayList<ActivityDTO> activities = new ArrayList<>();
             ActivityDTO activity = new ActivityDTO();
 
-            if(killed instanceof Player) {
+            if (killed instanceof Player) {
                 ActivitiesDTO activitiesDTO = server.api.activitiesAPI.redis.get(killer.getUniqueId());
                 double amount = 0;
-                if(activitiesDTO != null) {
+                if (activitiesDTO != null) {
                     Optional<ActivityDTO> pvpActivity = activitiesDTO.pvp.stream().filter(activity1 -> activity1.name.equals(killed.getUniqueId().toString())).findFirst();
 
-                    if(pvpActivity.isPresent()) {
+                    if (pvpActivity.isPresent()) {
                         amount = pvpActivity.map(
-                                activityDTO ->  ActivityEarnings.getEarningsFromPvp((int) activityDTO.quantity, 1)).get();
-                    }
-                    else {
+                                activityDTO -> ActivityEarnings.getEarningsFromPvp((int) activityDTO.quantity, 1)).get();
+                    } else {
                         amount = ActivityEarnings.getEarningsFromPvp(1, 1);
                     }
-                }
-                else {
+                } else {
                     amount = ActivityEarnings.getEarningsFromPvp(1, 1);
                 }
 
@@ -79,20 +77,18 @@ public class EntityDeathListener implements Listener {
                                 .color(NamedTextColor.GREEN)
                 );
 
-                if(updatedActivities != null) {
+                if (updatedActivities != null) {
                     Optional<ActivityDTO> optional = updatedActivities.pvp.stream().filter(item -> item.name.equalsIgnoreCase(killed.getUniqueId().toString())).findFirst();
                     optional.ifPresent(activityDTO -> ActivityBossBarManager.showBossBar(killer, activityDTO, ActivityBossBarManager.Type.PVP));
                 }
-            }
-            else if(config.getEntityEarnings().containsKey(killed.getType())) {
+            } else if (config.getEntityEarnings().containsKey(killed.getType())) {
                 ActivitiesDTO activitiesDTO = server.api.activitiesAPI.redis.get(killer.getUniqueId());
                 double amount = 0;
-                if(activitiesDTO != null) {
+                if (activitiesDTO != null) {
                     Optional<ActivityDTO> pvpActivity = activitiesDTO.pve.stream().filter(item -> item.name.equalsIgnoreCase(killed.getType().name())).findFirst();
                     amount = pvpActivity.map(activityDTO -> ActivityEarnings.getEarningsFromPve(killed.getType(), (int) activityDTO.quantity, 1))
                             .orElseGet(() -> ActivityEarnings.getEarningsFromPve(killed.getType(), 1, 1));
-                }
-                else {
+                } else {
                     amount = ActivityEarnings.getEarningsFromPve(killed.getType(), 1, 1);
                 }
 
@@ -112,7 +108,7 @@ public class EntityDeathListener implements Listener {
                                 .color(NamedTextColor.GREEN)
                 );
 
-                if(updatedActivities != null) {
+                if (updatedActivities != null) {
                     Optional<ActivityDTO> optional = updatedActivities.pve.stream().filter(item -> item.name.equalsIgnoreCase(killed.getType().name())).findFirst();
                     optional.ifPresent(activityDTO -> ActivityBossBarManager.showBossBar(killer, activityDTO, ActivityBossBarManager.Type.PVE));
                 }

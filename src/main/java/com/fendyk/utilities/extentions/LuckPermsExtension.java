@@ -19,6 +19,7 @@ public class LuckPermsExtension {
 
     /**
      * Get the group with the highest weight from a user
+     *
      * @param user
      * @return the rank or 'default' if not found.
      */

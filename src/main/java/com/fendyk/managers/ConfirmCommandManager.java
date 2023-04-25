@@ -1,7 +1,6 @@
 package com.fendyk.managers;
 
 import com.fendyk.Main;
-import com.fendyk.utilities.Log;
 import com.fendyk.utilities.PayableCommand;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -9,14 +8,12 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 public class ConfirmCommandManager {
 
@@ -59,6 +56,7 @@ public class ConfirmCommandManager {
 
     /**
      * Checks if the player's command is unchecked
+     *
      * @param player
      * @return
      */
@@ -132,7 +130,7 @@ public class ConfirmCommandManager {
 
     public static void confirmedCommand(Player player) {
         final UUID uuid = player.getUniqueId();
-        if(!unconfirmedPayableCommands.containsKey(uuid)) {
+        if (!unconfirmedPayableCommands.containsKey(uuid)) {
             player.sendMessage("It looks like you have not confirmed your command in time and has been expired.");
             return;
         }
@@ -144,14 +142,14 @@ public class ConfirmCommandManager {
 
         // Verify balance exists
         final BigDecimal bal = main.api.minecraftUserAPI.getPlayerBalance(uuid);
-        if(bal == null) {
+        if (bal == null) {
             player.sendMessage(ChatColor.RED + "Could not find your balance.");
             return;
         }
 
         // Verify balance is enough
         final double balDouble = bal.doubleValue();
-        if(balDouble < discountPrice) {
+        if (balDouble < discountPrice) {
             player.sendMessage(ChatColor.RED + "You have insufficient balance in your account." +
                     " You need at least " + (discountPrice - balDouble) + " $QTA");
             return;
@@ -159,7 +157,7 @@ public class ConfirmCommandManager {
 
         // Verify if is withdrawn
         final boolean isWithdrawn = main.api.minecraftUserAPI.withDrawBalance(player, new BigDecimal(discountPrice));
-        if(!isWithdrawn) {
+        if (!isWithdrawn) {
             player.sendMessage(ChatColor.RED + "Could not withdraw money.");
             return;
         }
@@ -168,7 +166,7 @@ public class ConfirmCommandManager {
 
         // Perform command after checks
         boolean isPerformed = player.performCommand(cmd.substring(1));
-        if(!isPerformed) return;
+        if (!isPerformed) return;
 
         player.sendActionBar(
                 Component.text("You've purchased the " + cmd + " command for " + String.format("%.4f", discountPrice) + " $QTA")

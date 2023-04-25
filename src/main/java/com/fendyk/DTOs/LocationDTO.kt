@@ -1,6 +1,5 @@
 package com.fendyk.DTOs
 
-import com.google.gson.annotations.SerializedName
 import org.bukkit.Bukkit
 import org.bukkit.Location
 
@@ -13,7 +12,7 @@ data class LocationDTO(
         val world: String
 ) {
 
-    constructor(location: Location): this(
+    constructor(location: Location) : this(
             location.x,
             location.y,
             location.z,

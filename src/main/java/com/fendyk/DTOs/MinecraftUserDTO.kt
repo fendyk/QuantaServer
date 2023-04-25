@@ -1,8 +1,5 @@
 package com.fendyk.DTOs
 
-import com.google.gson.annotations.SerializedName
-import java.util.*
-
 data class MinecraftUserDTO(val id: String) {
     val userId: String? = null
     var authorizeExpireDate: String? = null

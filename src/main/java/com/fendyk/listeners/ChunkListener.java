@@ -3,7 +3,6 @@ package com.fendyk.listeners;
 import com.fendyk.DTOs.ChunkDTO;
 import com.fendyk.Main;
 import com.fendyk.managers.WorldguardSyncManager;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.sk89q.worldguard.protection.managers.storage.StorageException;
@@ -11,9 +10,6 @@ import io.lettuce.core.pubsub.RedisPubSubListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
-
-import java.util.Objects;
-import java.util.logging.Level;
 
 public class ChunkListener implements RedisPubSubListener<String, String> {
 

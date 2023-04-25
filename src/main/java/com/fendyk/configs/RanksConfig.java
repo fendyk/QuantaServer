@@ -5,7 +5,6 @@ import com.fendyk.utilities.RankConfiguration;
 import de.leonhard.storage.Toml;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 public class RanksConfig {
 
@@ -20,7 +19,7 @@ public class RanksConfig {
         config = new Toml("ranks", "plugins/QuantaServer");
         rankConfigurations = new ArrayList<>();
 
-        if(config.get("ranks") == null) {
+        if (config.get("ranks") == null) {
             config.setDefault("ranks.default.name", "default");
             config.setDefault("ranks.default.renewableChunkSlots", 1);
             config.setDefault("ranks.default.chunkSlots", 1);
