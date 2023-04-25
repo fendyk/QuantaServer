@@ -1,16 +1,17 @@
-package com.fendyk.commands;
+package com.fendyk.commands
 
-import com.fendyk.Main;
-import com.fendyk.managers.ConfirmCommandManager;
-import dev.jorel.commandapi.CommandAPICommand;
+import com.fendyk.managers.ConfirmCommandManager
+import dev.jorel.commandapi.CommandAPICommand
+import dev.jorel.commandapi.executors.PlayerCommandExecutor
+import org.bukkit.entity.Player
 
-public class ConfirmCommands {
-
-    public ConfirmCommands() {
-        new CommandAPICommand("confirm")
-                .executesPlayer((player, args) -> {
-                    ConfirmCommandManager.confirmedCommand(player);
-                }).register();
+class ConfirmCommands {
+    init {
+        CommandAPICommand("confirm")
+            .executesPlayer(PlayerCommandExecutor { player: Player, args: Array<Any?>? ->
+                ConfirmCommandManager.confirmedCommand(
+                    player
+                )
+            }).register()
     }
-
 }

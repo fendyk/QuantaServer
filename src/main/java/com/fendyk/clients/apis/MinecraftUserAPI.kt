@@ -20,10 +20,22 @@ class MinecraftUserAPI(fetch: FetchMinecraftUser, redis: RedisMinecraftUser) :
      * @param player
      * @return
      */
-    fun getPlayerBalance(player: UUID): CompletableFuture<Double> {
+    fun getPlayerBalance(player: OfflinePlayer): CompletableFuture<Double> {
         return CompletableFuture.supplyAsync {
-            val awaitMinecraftUser = get(player)
+            val awaitMinecraftUser = get(player.uniqueId)
             return@supplyAsync awaitMinecraftUser.get().quanta
+        }
+    }
+
+    /**
+     * Gets the player's balance
+     * @param player
+     * @return
+     */
+    fun hasEnoughBalance(player: OfflinePlayer, amount: Double): CompletableFuture<Boolean> {
+        return CompletableFuture.supplyAsync {
+            val minecraftUser = get(player.uniqueId).get()
+            return@supplyAsync minecraftUser.quanta > amount
         }
     }
 
@@ -56,10 +68,10 @@ class MinecraftUserAPI(fetch: FetchMinecraftUser, redis: RedisMinecraftUser) :
      */
     fun update(player: UUID, minecraftUserDTO: UpdateMinecraftUserDTO): CompletableFuture<MinecraftUserDTO> {
         return CompletableFuture.supplyAsync {
-            val awaitMinecraftUser: CompletableFuture<MinecraftUserDTO> = fetch.update(player, minecraftUserDTO)
-            val dto = awaitMinecraftUser.get()
-            cachedRecords[player] = dto
-            return@supplyAsync dto
+            val minecraftUser: MinecraftUserDTO = fetch.update(player, minecraftUserDTO).get() ?:
+            throw Exception("Could not fetch your minecraft user")
+            cachedRecords[player] = minecraftUser
+            return@supplyAsync minecraftUser
         }
     }
 
@@ -71,9 +83,7 @@ class MinecraftUserAPI(fetch: FetchMinecraftUser, redis: RedisMinecraftUser) :
             val oldAmount: Double = dto.quanta ?: 0.0
             val newAmount: Double = oldAmount - amount
 
-            if (newAmount < 0) {
-                return@supplyAsync false
-            }
+            if (newAmount < 0) throw Exception("you cannot withdraw money that does not exist!")
 
             val updateDTO = UpdateMinecraftUserDTO()
             updateDTO.quanta = newAmount
