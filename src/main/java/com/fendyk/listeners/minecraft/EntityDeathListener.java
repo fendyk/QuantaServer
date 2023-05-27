@@ -64,7 +64,7 @@ public class EntityDeathListener implements Listener {
                 }
 
                 activity.setName(killed.getUniqueId().toString());
-                activity.setEarnings(amount);
+                activity.setEarnings(new BigDecimal(amount).floatValue());
                 activity.setQuantity(1);
                 activities.add(activity);
                 updateActivitiesDTO.setPvp(activities);
@@ -75,7 +75,7 @@ public class EntityDeathListener implements Listener {
                 ActivityBossBarManager.showBossBar(killer, activity, ActivityBossBarManager.Type.PVP);
                 ActivitySoundManager.play(killer);
                 killer.sendActionBar(
-                        Component.text("+ " + String.format("%.2f", amount) + " $QTA")
+                        Component.text("+ " + String.format("%.4f", amount) + " $QTA has been added to your account.")
                                 .color(NamedTextColor.GREEN)
                 );
 
@@ -97,7 +97,7 @@ public class EntityDeathListener implements Listener {
                 }
 
                 activity.setName(killed.getType().name());
-                activity.setEarnings(amount);
+                activity.setEarnings(new BigDecimal(amount).floatValue());
                 activity.setQuantity(1);
                 activities.add(activity);
                 updateActivitiesDTO.setPve(activities);
@@ -108,7 +108,7 @@ public class EntityDeathListener implements Listener {
                 ActivityBossBarManager.showBossBar(killer, activity, ActivityBossBarManager.Type.PVE);
                 ActivitySoundManager.play(killer);
                 killer.sendActionBar(
-                        Component.text("+ " + String.format("%.2f", amount) + " $QTA has been added to your account.")
+                        Component.text("+ " + String.format("%.4f", amount) + " $QTA has been added to your account.")
                                 .color(NamedTextColor.GREEN)
                 );
 

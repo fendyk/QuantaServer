@@ -3,8 +3,8 @@ package com.fendyk.DTOs;
 public class ActivityDTO {
 
     String name;
-    double earnings;
-    double quantity;
+    float earnings;
+    float quantity;
 
     public String getName() {
         return name;
@@ -18,7 +18,7 @@ public class ActivityDTO {
         return earnings;
     }
 
-    public void setEarnings(double earnings) {
+    public void setEarnings(float earnings) {
         this.earnings = earnings;
     }
 
@@ -26,7 +26,7 @@ public class ActivityDTO {
         return quantity;
     }
 
-    public void setQuantity(double quantity) {
+    public void setQuantity(float quantity) {
         this.quantity = quantity;
     }
 }

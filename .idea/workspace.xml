@@ -4,10 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Add more config prices for in-game actions">
+    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Optimise for lands">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/ActivityDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/ActivityDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/BlacklistedBlockAPI.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/ConfirmCommandAPI.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/BlockBreakListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/BlockBreakListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/EntityDeathListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/EntityDeathListener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/ActivityEarnings.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/ActivityEarnings.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/CommandPrices.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -158,6 +163,8 @@
       <list>
         <item itemvalue="Gradle.QuantaServer [shadowJar]" />
         <item itemvalue="Gradle.QuantaServer [knows]" />
+        <item itemvalue="Gradle.QuantaServer [shadowJar]" />
+        <item itemvalue="Gradle.QuantaServer [knows]" />
       </list>
     </recent_temporary>
   </component>
@@ -266,6 +273,8 @@
       <workItem from="1681399312558" duration="17000" />
       <workItem from="1681685754044" duration="1662000" />
       <workItem from="1681687599653" duration="3318000" />
+      <workItem from="1685184609775" duration="1000" />
+      <workItem from="1685213965151" duration="2035000" />
     </task>
     <task id="LOCAL-00005" summary="feat: play to earn">
       <created>1675721559531</created>
@@ -621,7 +630,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/development" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>

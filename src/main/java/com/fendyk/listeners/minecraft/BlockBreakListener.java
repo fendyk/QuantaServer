@@ -94,7 +94,7 @@ public class BlockBreakListener implements Listener {
             ArrayList<ActivityDTO> activities = new ArrayList<>();
             ActivityDTO activity = new ActivityDTO();
             activity.setName(material.name());
-            activity.setEarnings(amount);
+            activity.setEarnings(new BigDecimal(amount).floatValue());
             activity.setQuantity(1);
             activities.add(activity);
             updateActivitiesDTO.setMining(activities);
