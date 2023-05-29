@@ -1,5 +1,6 @@
 package com.fendyk;
 
+import com.fendyk.DTOs.MinecraftUserDTO;
 import com.fendyk.clients.FetchAPI;
 import com.fendyk.clients.RedisAPI;
 import com.fendyk.clients.apis.*;
@@ -12,6 +13,7 @@ import com.fendyk.configs.ServerConfig;
 import com.fendyk.listeners.AuthenticationListener;
 import com.fendyk.listeners.ChunkListener;
 import com.fendyk.listeners.LandListener;
+import com.fendyk.utilities.Log;
 import de.leonhard.storage.Toml;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.pubsub.RedisPubSubListener;
@@ -20,29 +22,17 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 
 public class API {
-    final String worldName;
-    final boolean inDebugMode;
-    private final RedisClient client;
-    Main server;
+    Main main = Main.getInstance();
     ActivitiesAPI activitiesAPI;
     MinecraftUserAPI minecraftUserAPI;
     LandAPI landAPI;
     ChunkAPI chunkAPI;
 
-    FetchAPI<String, Object,  Object> fetchAPI;
-    RedisAPI<String, Object> redisAPI;
-
     public API(Main server) {
-        this.server = server;
-        ServerConfig serverConfig = server.getServerConfig();
-        this.inDebugMode = serverConfig.isInDebugMode();
-        this.worldName = serverConfig.getWorldName();
-
+        ServerConfig serverConfig = main.getServerConfig();
         String redisUrl = serverConfig.getRedisUrl();
         String apiUrl = serverConfig.getApiUrl();
         String jwtToken = serverConfig.getJwtToken();
-
-        this.client = RedisClient.create(redisUrl);
 
         ArrayList<RedisPubSubListener<String, String>> listeners = new ArrayList<>();
         listeners.add(new AuthenticationListener(server));
@@ -54,49 +44,46 @@ public class API {
         subscriptions.add("chunk");
         subscriptions.add("land");
 
+        // Connect to the REST api
+        FetchAPI.connect(apiUrl, jwtToken);
 
-        /* Sometimes we need to access certain api methods like redis's pubsub commands */
-        redisAPI = new RedisAPI<>(server, client, inDebugMode, listeners, subscriptions) {
-            @Override
-            public @Nullable Object get(String key) {return null;}
-            @Override
-            public boolean set(String key, Object data) {return false;}
+        // Make the connection to redis
+        RedisAPI.connect(redisUrl);
+        RedisAPI.setListeners(listeners);
+        RedisAPI.setSubscriptions(subscriptions);
 
-            @Override
-            public boolean exists(String key) {
-                return false;
-            }
-        };
+        if(!RedisAPI.getConnection().isOpen()) {
+            Log.error("Could not connect to redis, is the server offline?");
+        }
+        Log.success("Connection to the redis server has been successful!");
 
         activitiesAPI = new ActivitiesAPI(
                 this,
-                new FetchActivities(server, apiUrl, inDebugMode, jwtToken),
-                new RedisActivities(server, client, inDebugMode, null, null)
+                new FetchActivities("/activities"),
+                new RedisActivities("activities:")
         );
 
         minecraftUserAPI = new MinecraftUserAPI(
                 this,
-                new FetchMinecraftUser(server, apiUrl, inDebugMode, jwtToken),
-                new RedisMinecraftUser(server, client, inDebugMode, null, null)
+                new FetchMinecraftUser("/minecraftusers"),
+                new RedisMinecraftUser("minecraftuser:")
         );
 
         landAPI = new LandAPI(
                 this,
-                new FetchLand(server, apiUrl, inDebugMode, jwtToken),
-                new RedisLand(server, client, inDebugMode, null, null)
+                new FetchLand("/lands"),
+                new RedisLand("land:")
         );
 
         chunkAPI = new ChunkAPI(
                 this,
-                new FetchChunk(server, apiUrl, inDebugMode, jwtToken),
-                new RedisChunk(server, client, inDebugMode, null, null)
+                new FetchChunk("/chunks"),
+                new RedisChunk("chunk:")
         );
 
     }
 
     public ActivitiesAPI getActivitiesAPI() {return activitiesAPI;}
-    public FetchAPI<String, Object, Object> getFetchAPI() {return fetchAPI;}
-    public RedisAPI<String, Object> getRedisAPI() {return redisAPI;}
     public MinecraftUserAPI getMinecraftUserAPI() {return this.minecraftUserAPI;}
     public LandAPI getLandAPI() {return this.landAPI;}
     public ChunkAPI getChunkAPI() {return this.chunkAPI;}

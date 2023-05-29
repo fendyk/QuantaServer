@@ -18,6 +18,8 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecraftUser, UUID, MinecraftUserDTO> {
 
@@ -31,7 +33,7 @@ public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecra
      * @return
      */
     @Nullable
-    public BigDecimal getPlayerBalance(UUID player) {
+    public BigDecimal getPlayerBalance(UUID player) throws ExecutionException, InterruptedException {
         MinecraftUserDTO minecraftUser = get(player);
         if(minecraftUser == null) return null;
         return BigDecimal.valueOf(minecraftUser.getQuanta());
@@ -43,10 +45,11 @@ public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecra
      * @return
      */
     @Nullable
-    public MinecraftUserDTO get(UUID player) {
-        MinecraftUserDTO dto = redis.get(player);
-        cachedRecords.put(player, dto);
-        return dto;
+    public MinecraftUserDTO get(UUID player) throws ExecutionException, InterruptedException {
+        CompletableFuture<MinecraftUserDTO> aFuture = redis.get(player.toString());
+        MinecraftUserDTO mcUser = aFuture.get();
+        cachedRecords.put(player, mcUser);
+        return mcUser;
     }
 
     /**
@@ -63,13 +66,14 @@ public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecra
      * @param player
      * @return
      */
-    public MinecraftUserDTO update(UUID player, UpdateMinecraftUserDTO minecraftUserDTO) {
-        MinecraftUserDTO dto = fetch.update(player, minecraftUserDTO);
-        cachedRecords.put(player, dto);
-        return dto;
+    public MinecraftUserDTO update(UUID player, UpdateMinecraftUserDTO minecraftUserDTO) throws ExecutionException, InterruptedException {
+        CompletableFuture<MinecraftUserDTO> aFuture = fetch.update(player.toString(), minecraftUserDTO);
+        MinecraftUserDTO mcUser = aFuture.get();
+        cachedRecords.put(player, mcUser);
+        return mcUser;
     }
 
-    public boolean withDrawBalance(OfflinePlayer player, BigDecimal amount) {
+    public boolean withDrawBalance(OfflinePlayer player, BigDecimal amount) throws ExecutionException, InterruptedException {
         UUID uuid = player.getUniqueId();
         MinecraftUserDTO minecraftUser = get(uuid);
         if(minecraftUser == null) return false;
@@ -92,7 +96,7 @@ public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecra
      * @param amount
      * @return
      */
-    public boolean depositBalance(OfflinePlayer player, BigDecimal amount) {
+    public boolean depositBalance(OfflinePlayer player, BigDecimal amount) throws ExecutionException, InterruptedException {
         UUID uuid = player.getUniqueId();
         MinecraftUserDTO minecraftUser = get(uuid);
         if(minecraftUser == null) return false;
@@ -111,7 +115,7 @@ public class MinecraftUserAPI extends ClientAPI<FetchMinecraftUser, RedisMinecra
      * @param location
      * @return
      */
-    public boolean updateLastLocation(Player player, Location location) {
+    public boolean updateLastLocation(Player player, Location location) throws ExecutionException, InterruptedException {
         UpdateMinecraftUserDTO update = new UpdateMinecraftUserDTO();
         update.setLastLocation(new LocationDTO(location));
         return update(player.getUniqueId(), update) != null;

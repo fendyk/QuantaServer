@@ -19,6 +19,8 @@ import org.joda.time.DateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class LandAPI extends ClientAPI<FetchLand, RedisLand, String, LandDTO> {
 
@@ -65,7 +67,9 @@ public class LandAPI extends ClientAPI<FetchLand, RedisLand, String, LandDTO> {
         landDTO.setName(name);
         landDTO.setOwnerId(owner.getUniqueId().toString());
         landDTO.getHomes().add(taggedLocationDTO);
-        landDTO = fetch.create(landDTO);
+
+        CompletableFuture<LandDTO> aFuture = fetch.create(landDTO);
+        landDTO = aFuture.get();
 
         if(landDTO == null) throw new Exception("Could not create land");
 
@@ -88,10 +92,10 @@ public class LandAPI extends ClientAPI<FetchLand, RedisLand, String, LandDTO> {
      * @param id
      * @return LandDTO or null if not found
      */
-    public LandDTO get(String id) {
-        LandDTO dto = getRedis().get(id);
-        cachedRecords.put(id, dto);
-        return dto;
+    public LandDTO get(String id) throws ExecutionException, InterruptedException {
+        CompletableFuture<LandDTO> dto = redis.get(id);
+        cachedRecords.put(id, dto.get());
+        return dto.get();
     }
 
     /**
@@ -99,10 +103,10 @@ public class LandAPI extends ClientAPI<FetchLand, RedisLand, String, LandDTO> {
      * @param player
      * @return LandDTO or null if not found
      */
-    public LandDTO get(UUID player) {
-        LandDTO dto =  getRedis().get(player.toString());
-        cachedRecords.put(player.toString(), dto);
-        return dto;
+    public LandDTO get(UUID player) throws ExecutionException, InterruptedException {
+        CompletableFuture<LandDTO> dto = redis.get(player.toString());
+        cachedRecords.put(player.toString(), dto.get());
+        return dto.get();
     }
 
 }

@@ -7,32 +7,13 @@ import com.fendyk.clients.RedisAPI;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.pubsub.RedisPubSubListener;
 
+import javax.xml.stream.events.DTD;
 import java.util.ArrayList;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
-public class RedisActivities extends RedisAPI<UUID, ActivitiesDTO> {
-    public RedisActivities(Main server,
-                     RedisClient client,
-                     boolean inDebugMode,
-                     ArrayList<RedisPubSubListener<String, String>> listeners,
-                     ArrayList<String> subscriptions) {
-        super(server, client, inDebugMode, listeners, subscriptions);
-    }
-
-    public ActivitiesDTO get(UUID player) {
-        return Main.gson.fromJson(
-                getCache("activities:" + player.toString()),
-                ActivitiesDTO.class
-        );
-    }
-
-    @Override
-    public boolean set(UUID player, ActivitiesDTO data) {
-        return false;
-    }
-
-    @Override
-    public boolean exists(UUID player) {
-        return existsInCache("activities:" + player.toString());
+public class RedisActivities extends RedisAPI<ActivitiesDTO> {
+    public RedisActivities(String redisKey) {
+        super(redisKey, ActivitiesDTO.class);
     }
 }

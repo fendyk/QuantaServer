@@ -21,6 +21,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 public class EntityDeathListener implements Listener {
 
@@ -45,78 +46,85 @@ public class EntityDeathListener implements Listener {
             ArrayList<ActivityDTO> activities = new ArrayList<>();
             ActivityDTO activity = new ActivityDTO();
 
-            if(killed instanceof Player) {
-                ActivitiesDTO activitiesDTO = server.getApi().getActivitiesAPI().getRedis().get(killer.getUniqueId());
-                double amount = 0;
-                if(activitiesDTO != null) {
-                    Optional<ActivityDTO> pvpActivity = activitiesDTO.getPvp().stream().filter(activity1 -> activity1.getName().equals(killed.getUniqueId().toString())).findFirst();
+            CompletableFuture.runAsync(() -> {
+                try {
+                    if(killed instanceof Player) {
+                        ActivitiesDTO activitiesDTO = server.getApi().getActivitiesAPI().get(killer);
+                        double amount = 0;
+                        if(activitiesDTO != null) {
+                            Optional<ActivityDTO> pvpActivity = activitiesDTO.getPvp().stream().filter(activity1 -> activity1.getName().equals(killed.getUniqueId().toString())).findFirst();
 
-                    if(pvpActivity.isPresent()) {
-                        amount = pvpActivity.map(
-                                activityDTO ->  ActivityEarnings.getEarningsFromPvp((int) activityDTO.getQuantity(), 1)).get();
+                            if(pvpActivity.isPresent()) {
+                                amount = pvpActivity.map(
+                                        activityDTO ->  ActivityEarnings.getEarningsFromPvp((int) activityDTO.getQuantity(), 1)).get();
+                            }
+                            else {
+                                amount = ActivityEarnings.getEarningsFromPvp(1, 1);
+                            }
+                        }
+                        else {
+                            amount = ActivityEarnings.getEarningsFromPvp(1, 1);
+                        }
+
+                        activity.setName(killed.getUniqueId().toString());
+                        activity.setEarnings(new BigDecimal(amount).floatValue());
+                        activity.setQuantity(1);
+                        activities.add(activity);
+                        updateActivitiesDTO.setPvp(activities);
+
+                        api.getMinecraftUserAPI().depositBalance(killer, new BigDecimal(amount));
+                        ActivitiesDTO updatedActivities = api.getActivitiesAPI().update(killer, updateActivitiesDTO);
+
+                        ActivityBossBarManager.showBossBar(killer, activity, ActivityBossBarManager.Type.PVP);
+                        ActivitySoundManager.play(killer);
+                        killer.sendActionBar(
+                                Component.text("+ " + String.format("%.4f", amount) + " $QTA has been added to your account.")
+                                        .color(NamedTextColor.GREEN)
+                        );
+
+                        if(updatedActivities != null) {
+                            Optional<ActivityDTO> optional = updatedActivities.getPvp().stream().filter(item -> item.getName().equalsIgnoreCase(killed.getUniqueId().toString())).findFirst();
+                            optional.ifPresent(activityDTO -> ActivityBossBarManager.showBossBar(killer, activityDTO, ActivityBossBarManager.Type.PVP));
+                        }
                     }
-                    else {
-                        amount = ActivityEarnings.getEarningsFromPvp(1, 1);
+                    else if(config.getEntityEarnings().containsKey(killed.getType())) {
+                        ActivitiesDTO activitiesDTO = server.getApi().getActivitiesAPI().get(killer);
+                        double amount = 0;
+                        if(activitiesDTO != null) {
+                            Optional<ActivityDTO> pvpActivity = activitiesDTO.getPve().stream().filter(item -> item.getName().equalsIgnoreCase(killed.getType().name())).findFirst();
+                            amount = pvpActivity.map(activityDTO -> ActivityEarnings.getEarningsFromPve(killed.getType(), (int) activityDTO.getQuantity(), 1))
+                                    .orElseGet(() -> ActivityEarnings.getEarningsFromPve(killed.getType(), 1, 1));
+                        }
+                        else {
+                            amount = ActivityEarnings.getEarningsFromPve(killed.getType(), 1, 1);
+                        }
+
+                        activity.setName(killed.getType().name());
+                        activity.setEarnings(new BigDecimal(amount).floatValue());
+                        activity.setQuantity(1);
+                        activities.add(activity);
+                        updateActivitiesDTO.setPve(activities);
+
+                        api.getMinecraftUserAPI().depositBalance(killer, new BigDecimal(amount));
+                        ActivitiesDTO updatedActivities = api.getActivitiesAPI().update(killer, updateActivitiesDTO);
+
+                        ActivityBossBarManager.showBossBar(killer, activity, ActivityBossBarManager.Type.PVE);
+                        ActivitySoundManager.play(killer);
+                        killer.sendActionBar(
+                                Component.text("+ " + String.format("%.4f", amount) + " $QTA has been added to your account.")
+                                        .color(NamedTextColor.GREEN)
+                        );
+
+                        if(updatedActivities != null) {
+                            Optional<ActivityDTO> optional = updatedActivities.getPve().stream().filter(item -> item.getName().equalsIgnoreCase(killed.getType().name())).findFirst();
+                            optional.ifPresent(activityDTO -> ActivityBossBarManager.showBossBar(killer, activityDTO, ActivityBossBarManager.Type.PVE));
+                        }
                     }
-                }
-                else {
-                    amount = ActivityEarnings.getEarningsFromPvp(1, 1);
-                }
+                } catch (Exception e) {
 
-                activity.setName(killed.getUniqueId().toString());
-                activity.setEarnings(new BigDecimal(amount).floatValue());
-                activity.setQuantity(1);
-                activities.add(activity);
-                updateActivitiesDTO.setPvp(activities);
-
-                api.getMinecraftUserAPI().depositBalance(killer, new BigDecimal(amount));
-                ActivitiesDTO updatedActivities = api.getActivitiesAPI().update(killer, updateActivitiesDTO);
-
-                ActivityBossBarManager.showBossBar(killer, activity, ActivityBossBarManager.Type.PVP);
-                ActivitySoundManager.play(killer);
-                killer.sendActionBar(
-                        Component.text("+ " + String.format("%.4f", amount) + " $QTA has been added to your account.")
-                                .color(NamedTextColor.GREEN)
-                );
-
-                if(updatedActivities != null) {
-                    Optional<ActivityDTO> optional = updatedActivities.getPvp().stream().filter(item -> item.getName().equalsIgnoreCase(killed.getUniqueId().toString())).findFirst();
-                    optional.ifPresent(activityDTO -> ActivityBossBarManager.showBossBar(killer, activityDTO, ActivityBossBarManager.Type.PVP));
-                }
-            }
-            else if(config.getEntityEarnings().containsKey(killed.getType())) {
-                ActivitiesDTO activitiesDTO = server.getApi().getActivitiesAPI().getRedis().get(killer.getUniqueId());
-                double amount = 0;
-                if(activitiesDTO != null) {
-                    Optional<ActivityDTO> pvpActivity = activitiesDTO.getPve().stream().filter(item -> item.getName().equalsIgnoreCase(killed.getType().name())).findFirst();
-                    amount = pvpActivity.map(activityDTO -> ActivityEarnings.getEarningsFromPve(killed.getType(), (int) activityDTO.getQuantity(), 1))
-                            .orElseGet(() -> ActivityEarnings.getEarningsFromPve(killed.getType(), 1, 1));
-                }
-                else {
-                    amount = ActivityEarnings.getEarningsFromPve(killed.getType(), 1, 1);
                 }
 
-                activity.setName(killed.getType().name());
-                activity.setEarnings(new BigDecimal(amount).floatValue());
-                activity.setQuantity(1);
-                activities.add(activity);
-                updateActivitiesDTO.setPve(activities);
-
-                api.getMinecraftUserAPI().depositBalance(killer, new BigDecimal(amount));
-                ActivitiesDTO updatedActivities = api.getActivitiesAPI().update(killer, updateActivitiesDTO);
-
-                ActivityBossBarManager.showBossBar(killer, activity, ActivityBossBarManager.Type.PVE);
-                ActivitySoundManager.play(killer);
-                killer.sendActionBar(
-                        Component.text("+ " + String.format("%.4f", amount) + " $QTA has been added to your account.")
-                                .color(NamedTextColor.GREEN)
-                );
-
-                if(updatedActivities != null) {
-                    Optional<ActivityDTO> optional = updatedActivities.getPve().stream().filter(item -> item.getName().equalsIgnoreCase(killed.getType().name())).findFirst();
-                    optional.ifPresent(activityDTO -> ActivityBossBarManager.showBossBar(killer, activityDTO, ActivityBossBarManager.Type.PVE));
-                }
-            }
+            });
 
         });
 

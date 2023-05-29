@@ -16,6 +16,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
 public class BlockPlaceListener implements Listener {
     Main server;
     Main main = Main.getInstance();
@@ -53,31 +56,33 @@ public class BlockPlaceListener implements Listener {
                 return;
             }
 
-            Bukkit.getScheduler().runTaskAsynchronously(server, () -> {
+            CompletableFuture.runAsync(() -> {
+                try {
+                    // Verify if the chunk is blacklisted
+                    // Check if the player is within the blacklisted chunk radius
+                    if(main.getServerConfig().isWithinBlacklistedChunkRadius(player.getLocation())) {
+                        player.sendMessage("The chunk you're currently standing on is considered 'blacklisted' and not claimable.");
+                        return;
+                    }
 
-                // Verify if the chunk is blacklisted
-                // Check if the player is within the blacklisted chunk radius
-                if(main.getServerConfig().isWithinBlacklistedChunkRadius(player.getLocation())) {
-                    player.sendMessage("The chunk you're currently standing on is considered 'blacklisted' and not claimable.");
-                    return;
+                    // Find the chunk
+                    ChunkDTO chunkDTO = server.getApi().getChunkAPI().get(chunk);
+
+                    // Create chunk if not found
+                    if (chunkDTO == null) {
+                        chunkDTO = server.getApi().getChunkAPI().create(chunk, true);
+
+                        if (chunkDTO == null) return;
+                    }
+
+                    // Blacklist block by updating and pushing block location into chunk
+                    BlacklistedBlockDTO b = new BlacklistedBlockDTO(block.getX(), block.getY(), block.getZ());
+                    UpdateChunkDTO update = new UpdateChunkDTO();
+                    update.getPushBlacklistedBlocks().add(b);
+                    server.getApi().getChunkAPI().update(chunk, update);
+                } catch (Exception e) {
+                    player.sendMessage(e.getMessage());
                 }
-
-                // Find the chunk
-                ChunkDTO chunkDTO = server.getApi().getChunkAPI().get(chunk);
-
-                // Create chunk if not found
-                if (chunkDTO == null) {
-                    chunkDTO = server.getApi().getChunkAPI().create(chunk, true);
-
-                    if (chunkDTO == null) return;
-                }
-
-                // Blacklist block by updating and pushing block location into chunk
-                BlacklistedBlockDTO b = new BlacklistedBlockDTO(block.getX(), block.getY(), block.getZ());
-                UpdateChunkDTO update = new UpdateChunkDTO();
-                update.getPushBlacklistedBlocks().add(b);
-                server.getApi().getChunkAPI().update(chunk, update);
-
             });
 
         }

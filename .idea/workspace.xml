@@ -4,15 +4,30 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Optimise for lands">
+    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Add clamps for activity earnings and improved type safety from float to decimal with DB and scripts">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/ActivityDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/ActivityDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/BlacklistedBlockAPI.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/ConfirmCommandAPI.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/API.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/API.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/ChunkDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/ChunkDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/FetchAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/FetchAPI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/RedisAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/RedisAPI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/ActivitiesAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/ActivitiesAPI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/ChunkAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/ChunkAPI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/LandAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/LandAPI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/MinecraftUserAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/MinecraftUserAPI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/fetch/FetchActivities.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/fetch/FetchActivities.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/fetch/FetchBlacklistedBlock.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/fetch/FetchChunk.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/fetch/FetchChunk.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/fetch/FetchLand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/fetch/FetchLand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/fetch/FetchMinecraftUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/fetch/FetchMinecraftUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisActivities.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisActivities.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisBlacklistedBlock.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisBlacklistedChunk.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisChunk.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisChunk.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisLand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisLand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisMinecraftUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisMinecraftUser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/BlockBreakListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/BlockBreakListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/BlockPlaceListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/BlockPlaceListener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/EntityDeathListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/EntityDeathListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/ActivityEarnings.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/ActivityEarnings.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/CommandPrices.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,6 +91,9 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="PhpWorkspaceProjectConfiguration" interpreter_name="/opt/homebrew/Cellar/php/8.2.2/bin/php" />
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
   <component name="ProjectId" id="2L1AVRZA9i1nfHckVNyWYkAyCTE" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -274,14 +292,9 @@
       <workItem from="1681685754044" duration="1662000" />
       <workItem from="1681687599653" duration="3318000" />
       <workItem from="1685184609775" duration="1000" />
-      <workItem from="1685213965151" duration="2035000" />
-    </task>
-    <task id="LOCAL-00005" summary="feat: play to earn">
-      <created>1675721559531</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1675721559531</updated>
+      <workItem from="1685213965151" duration="2127000" />
+      <workItem from="1685264225926" duration="2469000" />
+      <workItem from="1685381546471" duration="9926000" />
     </task>
     <task id="LOCAL-00006" summary="feat: splitting the api's into different classes">
       <created>1675894960962</created>
@@ -619,7 +632,14 @@
       <option name="project" value="LOCAL" />
       <updated>1681687409996</updated>
     </task>
-    <option name="localTasksCounter" value="54" />
+    <task id="LOCAL-00054" summary="Add clamps for activity earnings and improved type safety from float to decimal with DB and scripts">
+      <created>1685216666142</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1685216666142</updated>
+    </task>
+    <option name="localTasksCounter" value="55" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -649,7 +669,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add more features to activity bossbar ui" />
     <MESSAGE value="Fix for activities bossbar ui" />
     <MESSAGE value="Add lots of stuff and fix for shadowjar" />
     <MESSAGE value="Add PlaceholderAPI support" />
@@ -674,6 +693,7 @@
     <MESSAGE value="Fix payable commands duplicating glitch and now performing command after balance check" />
     <MESSAGE value="Hotfix set unconfirmedCommand state to true before excecuting after balance check" />
     <MESSAGE value="Add more config prices for in-game actions" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add more config prices for in-game actions" />
+    <MESSAGE value="Add clamps for activity earnings and improved type safety from float to decimal with DB and scripts" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add clamps for activity earnings and improved type safety from float to decimal with DB and scripts" />
   </component>
 </project>

@@ -20,6 +20,8 @@ import org.joda.time.DateTime;
 
 import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class ChunkAPI extends ClientAPI<FetchChunk, RedisChunk, String, ChunkDTO> {
 
@@ -37,22 +39,25 @@ public class ChunkAPI extends ClientAPI<FetchChunk, RedisChunk, String, ChunkDTO
 
 
     @Nullable
-    public ChunkDTO get(Chunk chunk) {
+    public ChunkDTO get(Chunk chunk) throws ExecutionException, InterruptedException {
         Vector2 chunkPos = new Vector2(chunk.getX(), chunk.getZ());
-        return redis.get(chunkPos);
+        CompletableFuture<ChunkDTO> aFuture = redis.get(chunk.getX() + ":" + chunk.getZ());
+        return aFuture.get();
     }
 
-    public ChunkDTO create(Chunk chunk, boolean isClaimable) {
+    public ChunkDTO create(Chunk chunk, boolean isClaimable) throws ExecutionException, InterruptedException {
         ChunkDTO newChunkDTO = new ChunkDTO();
         newChunkDTO.setClaimable(isClaimable);
         newChunkDTO.setX(chunk.getX());
         newChunkDTO.setZ(chunk.getZ());
-        return fetch.create(newChunkDTO);
+        CompletableFuture<ChunkDTO> aFuture = fetch.create(newChunkDTO);
+        return aFuture.get();
     }
 
-    public ChunkDTO update(Chunk chunk, UpdateChunkDTO updates) {
+    public ChunkDTO update(Chunk chunk, UpdateChunkDTO updates) throws ExecutionException, InterruptedException {
         Vector2 vector2 = new Vector2(chunk.getX(), chunk.getZ());
-        return fetch.update(vector2, updates);
+        CompletableFuture<ChunkDTO> aFuture = fetch.update(vector2.getX() + "/" + vector2.getY(), updates);
+        return aFuture.get();
     }
 
     public boolean claim(Chunk chunk, String landId, boolean canExpire, DateTime expirationDate) {
@@ -61,7 +66,8 @@ public class ChunkAPI extends ClientAPI<FetchChunk, RedisChunk, String, ChunkDTO
         updateChunkDTO.setCanExpire(canExpire);
         updateChunkDTO.setExpirationDate(expirationDate);
 
-        return update(chunk, updateChunkDTO) != null;
+        CompletableFuture<ChunkDTO> aFuture = fetch.update(chunk.getX() + "/" + chunk.getZ(), updateChunkDTO);
+        return ! aFuture.isDone() && aFuture.isCompletedExceptionally();
     }
 
     public boolean expire(Chunk chunk) {
@@ -70,10 +76,11 @@ public class ChunkAPI extends ClientAPI<FetchChunk, RedisChunk, String, ChunkDTO
         updateChunkDTO.setCanExpire(false);
         updateChunkDTO.setResetExpirationDate(true);
 
-        return update(chunk, updateChunkDTO) != null;
+        CompletableFuture<ChunkDTO> aFuture = fetch.update(chunk.getX() + "/" + chunk.getZ(), updateChunkDTO);
+        return ! aFuture.isDone() && aFuture.isCompletedExceptionally();
     }
 
-    public boolean extend(Chunk chunk, int days) {
+    public boolean extend(Chunk chunk, int days) throws ExecutionException, InterruptedException {
         ChunkDTO chunkDTO = get(chunk);
         if(chunkDTO == null) return false;
 
@@ -85,7 +92,9 @@ public class ChunkAPI extends ClientAPI<FetchChunk, RedisChunk, String, ChunkDTO
         UpdateChunkDTO updateChunkDTO = new UpdateChunkDTO();
         updateChunkDTO.setCanExpire(true);
         updateChunkDTO.setExpirationDate(newExpirationDate);
-        return update(chunk, updateChunkDTO) != null;
+
+        CompletableFuture<ChunkDTO> aFuture = fetch.update(chunk.getX() + "/" + chunk.getZ(), updateChunkDTO);
+        return ! aFuture.isDone() && aFuture.isCompletedExceptionally();
     }
 
 
