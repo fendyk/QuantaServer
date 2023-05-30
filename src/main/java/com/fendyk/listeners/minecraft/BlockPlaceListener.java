@@ -48,8 +48,13 @@ public class BlockPlaceListener implements Listener {
         // If material is supported.
         if(config.getMaterialEarnings().containsKey(material)) {
 
+            player.sendMessage(ChatColor.RED + "Placing " + material.name() + " is currently disabled until we found a good solution to prevent $QTA generation. Stay tuned :)");
+            event.setCancelled(true);
+            return;
+
             // If we're not in the 'normal world', disable block place at ALL times
             // Cannot earn
+            /*
             if(!player.getWorld().getName().equalsIgnoreCase(server.getServerConfig().getWorldName())) {
                 player.sendMessage("You're only allowed to place ore blocks in the world.");
                 event.setCancelled(true);
@@ -84,6 +89,7 @@ public class BlockPlaceListener implements Listener {
                     player.sendMessage(e.getMessage());
                 }
             });
+             */
 
         }
     }

@@ -82,6 +82,7 @@ public abstract class FetchAPI<DTO, UpdateDTO> {
             try {
                 Request request = requestBuilder
                         .url(url + finalUrl)
+                        .get()
                         .build();
                 CompletableFuture<JsonElement> aFetch = fetch(request);
                 if(aFetch == null) throw new Exception("Fetching failed with GET: " + finalUrl);
@@ -124,7 +125,7 @@ public abstract class FetchAPI<DTO, UpdateDTO> {
             try {
                 Request request = requestBuilder
                         .url(url + finalUrl)
-                        .post(body)
+                        .patch(body)
                         .build();
                 CompletableFuture<JsonElement> aFetch = fetch(request);
                 if(aFetch == null) throw new Exception("Fetching failed with UPDATE: " + finalUrl);
