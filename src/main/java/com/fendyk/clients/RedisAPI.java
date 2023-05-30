@@ -15,7 +15,9 @@ import org.bukkit.Bukkit;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 public abstract class RedisAPI<DTO> {
     static Main main = Main.getInstance();
@@ -52,14 +54,15 @@ public abstract class RedisAPI<DTO> {
                     Log.info("");
                 }
 
-                if(data == null) throw new Exception("Redis data is null");
+                if(data == null) return null;
 
                 JsonElement jsonElement = data.length() < 1 ? JsonNull.INSTANCE.getAsJsonNull() :
                         JsonParser.parseString(data).getAsJsonObject();
 
                 return Main.gson.fromJson(jsonElement, dtoType);
             } catch (Exception e) {
-                return null;
+                Log.error("Error in get REDIS: " + e.getMessage());
+                throw new CompletionException(e);
             }
         });
     }

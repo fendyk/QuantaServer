@@ -100,7 +100,7 @@ public final class WorldguardSyncManager {
         /* If it's cached, we're going to do stuff with it. */
         if(chunkDTO == null) {
             /* To avoid unnecessary calls to the api, first check if we already CACHED the chunk  */
-            boolean isCached = main.getApi().getChunkAPI().getRedis().exists(new Vector2(chunk.getX(), chunk.getZ()));
+            boolean isCached = main.getApi().getChunkAPI().exists(chunk);
             if(!isCached) return;
             chunkDTO = main.getApi().getChunkAPI().get(chunk);
             if(chunkDTO == null) return; // Could not find so no need for check
@@ -108,7 +108,7 @@ public final class WorldguardSyncManager {
 
         /* Find the land by landID */
         if(landDTO == null) {
-            landDTO = main.getApi().getLandAPI().getRedis().getMin(chunkDTO.getLandId());
+            landDTO = main.getApi().getLandAPI().get(chunkDTO.getLandId());
             if(landDTO == null) return;
         }
 

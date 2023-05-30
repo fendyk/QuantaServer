@@ -5,10 +5,13 @@ import com.fendyk.DTOs.ChunkDTO;
 import com.fendyk.DTOs.LandDTO;
 import com.fendyk.DTOs.MinecraftUserDTO;
 import com.fendyk.DTOs.TaggedLocationDTO;
+import com.fendyk.DTOs.updates.UpdateChunkDTO;
+import com.fendyk.DTOs.updates.UpdateLandDTO;
 import com.fendyk.Main;
 import com.fendyk.clients.ClientAPI;
 import com.fendyk.clients.fetch.FetchLand;
 import com.fendyk.clients.redis.RedisLand;
+import com.fendyk.utilities.Vector2;
 import net.luckperms.api.model.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -24,8 +27,8 @@ import java.util.concurrent.ExecutionException;
 
 public class LandAPI extends ClientAPI<FetchLand, RedisLand, String, LandDTO> {
 
-    public LandAPI(API api, FetchLand fetch, RedisLand redis) {
-        super(api, fetch, redis);
+    public LandAPI(FetchLand fetch, RedisLand redis) {
+        super(fetch, redis);
     }
 
     /**
@@ -69,7 +72,7 @@ public class LandAPI extends ClientAPI<FetchLand, RedisLand, String, LandDTO> {
         landDTO.getHomes().add(taggedLocationDTO);
 
         CompletableFuture<LandDTO> aFuture = fetch.create(landDTO);
-        landDTO = aFuture.get();
+        landDTO = aFuture.join();
 
         if(landDTO == null) throw new Exception("Could not create land");
 
@@ -92,10 +95,16 @@ public class LandAPI extends ClientAPI<FetchLand, RedisLand, String, LandDTO> {
      * @param id
      * @return LandDTO or null if not found
      */
-    public LandDTO get(String id) throws ExecutionException, InterruptedException {
-        CompletableFuture<LandDTO> dto = redis.get(id);
-        cachedRecords.put(id, dto.get());
-        return dto.get();
+    public LandDTO get(String id) {
+        CompletableFuture<LandDTO> aFuture = redis.get(id);
+        LandDTO landDTO = aFuture.join();
+        cachedRecords.put(id, landDTO);
+        return landDTO;
+    }
+
+    public LandDTO update(String landId, UpdateLandDTO updates) {
+        CompletableFuture<LandDTO> aFuture = fetch.update(landId, updates);
+        return aFuture.join();
     }
 
     /**
@@ -103,10 +112,11 @@ public class LandAPI extends ClientAPI<FetchLand, RedisLand, String, LandDTO> {
      * @param player
      * @return LandDTO or null if not found
      */
-    public LandDTO get(UUID player) throws ExecutionException, InterruptedException {
-        CompletableFuture<LandDTO> dto = redis.get(player.toString());
-        cachedRecords.put(player.toString(), dto.get());
-        return dto.get();
+    public LandDTO get(UUID player) {
+        CompletableFuture<LandDTO> aFuture = redis.get(player.toString());
+        LandDTO landDTO = aFuture.join();
+        cachedRecords.put(player.toString(), landDTO);
+        return landDTO;
     }
 
 }

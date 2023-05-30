@@ -9,19 +9,21 @@ import org.bukkit.World;
 
 import java.util.List;
 
-public class ServerConfig {
-
-    Toml config;
+public class ServerConfig extends Config {
     World overworld;
-    final String worldName;
-    final boolean inDebugMode;
-    final String redisUrl;
-    final String apiUrl;
-    final String jwtToken;
-    final Location spawnLocation;
+    String worldName;
+    boolean inDebugMode;
+    String redisUrl;
+    String apiUrl;
+    String jwtToken;
+    Location spawnLocation;
     int blacklistedChunkRadius;
 
     public ServerConfig() {
+        super("config");
+    }
+
+    public void initialize() {
         config = new Toml("config", "plugins/QuantaServer");
         this.inDebugMode = config.getOrSetDefault("isInDebugMode", false);
         this.worldName = config.getOrSetDefault("worldName", "world");
@@ -39,10 +41,6 @@ public class ServerConfig {
 
         // Times 16 for chunks (chunk = 16x16)
         this.blacklistedChunkRadius = config.getOrSetDefault("blacklistedChunkRadius", 32);
-    }
-
-    public Toml getConfig() {
-        return config;
     }
 
     public Location getSpawnLocation() {

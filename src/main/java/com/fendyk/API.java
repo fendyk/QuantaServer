@@ -1,6 +1,7 @@
 package com.fendyk;
 
 import com.fendyk.DTOs.MinecraftUserDTO;
+import com.fendyk.clients.ClientAPI;
 import com.fendyk.clients.FetchAPI;
 import com.fendyk.clients.RedisAPI;
 import com.fendyk.clients.apis.*;
@@ -52,35 +53,46 @@ public class API {
         RedisAPI.setListeners(listeners);
         RedisAPI.setSubscriptions(subscriptions);
 
+        ClientAPI.setApi(this); // Set the API to self
+
         if(!RedisAPI.getConnection().isOpen()) {
             Log.error("Could not connect to redis, is the server offline?");
         }
         Log.success("Connection to the redis server has been successful!");
 
         activitiesAPI = new ActivitiesAPI(
-                this,
                 new FetchActivities("/activities"),
                 new RedisActivities("activities:")
         );
 
         minecraftUserAPI = new MinecraftUserAPI(
-                this,
                 new FetchMinecraftUser("/minecraftusers"),
                 new RedisMinecraftUser("minecraftuser:")
         );
 
         landAPI = new LandAPI(
-                this,
                 new FetchLand("/lands"),
                 new RedisLand("land:")
         );
 
         chunkAPI = new ChunkAPI(
-                this,
                 new FetchChunk("/chunks"),
                 new RedisChunk("chunk:")
         );
 
+    }
+
+    public void reconnect() {
+        ServerConfig serverConfig = main.getServerConfig();
+        String redisUrl = serverConfig.getRedisUrl();
+        String apiUrl = serverConfig.getApiUrl();
+        String jwtToken = serverConfig.getJwtToken();
+
+        // Connect to the REST api
+        FetchAPI.connect(apiUrl, jwtToken);
+
+        // Make the connection to redis
+        RedisAPI.connect(redisUrl);
     }
 
     public ActivitiesAPI getActivitiesAPI() {return activitiesAPI;}

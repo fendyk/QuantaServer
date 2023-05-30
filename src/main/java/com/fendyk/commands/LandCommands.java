@@ -147,7 +147,7 @@ public class LandCommands {
                                         return;
                                     }
 
-                                    LandDTO landDTO = api.getLandAPI().getRedis().get(player.getUniqueId().toString());
+                                    LandDTO landDTO = api.getLandAPI().get(player.getUniqueId().toString());
                                     if (landDTO == null) {
                                         player.sendMessage("You currently dont have a land. To create one, type /land create <name>");
                                         return;
@@ -167,7 +167,7 @@ public class LandCommands {
                                     ValidateCommand.Builder builder = validateCommand.getBuilder();
                                     RankConfiguration rankConfiguration = builder.getRankConfiguration();
                                     MinecraftUserDTO minecraftUserDTO = builder.getMinecraftUserDTO();
-                                    ChunkDTO chunkDTO = api.getChunkAPI().getRedis().get(new Vector2(chunk.getX(), chunk.getZ()));
+                                    ChunkDTO chunkDTO = api.getChunkAPI().get(chunk);
 
                                     if (chunkDTO == null) {
                                         chunkDTO = api.getChunkAPI().create(chunk, true);
@@ -194,7 +194,7 @@ public class LandCommands {
                                     // Find out if there is a neighbour.
                                     List<Chunk> neighbours = ChunkUtils.getNeighboringChunks(chunk);
                                     long countNeighbours = neighbours.stream().filter(neighbour -> {
-                                        ChunkDTO neighbourChunkDTO = api.getChunkAPI().getRedis().get(new Vector2(neighbour.getX(), neighbour.getZ()));
+                                        ChunkDTO neighbourChunkDTO = api.getChunkAPI().get(neighbour);
                                         return neighbourChunkDTO != null && neighbourChunkDTO.getLandId() != null && neighbourChunkDTO.getLandId().equals(landDTO.getId());
                                     }).count();
 
@@ -260,7 +260,7 @@ public class LandCommands {
                                         return;
                                     }
 
-                                    LandDTO landDTO = api.getLandAPI().getRedis().get(player.getUniqueId().toString());
+                                    LandDTO landDTO = api.getLandAPI().get(player.getUniqueId().toString());
                                     if (landDTO == null) {
                                         player.sendMessage("You currently dont have a land. To create one, type /land create <name>");
                                         return;
@@ -280,7 +280,7 @@ public class LandCommands {
                                     ValidateCommand.Builder builder = validateCommand.getBuilder();
                                     RankConfiguration rankConfiguration = builder.getRankConfiguration();
                                     MinecraftUserDTO minecraftUserDTO = builder.getMinecraftUserDTO();
-                                    ChunkDTO chunkDTO = api.getChunkAPI().getRedis().get(new Vector2(chunk.getX(), chunk.getZ()));
+                                    ChunkDTO chunkDTO = api.getChunkAPI().get(chunk);
 
                                     if (chunkDTO == null) {
                                         chunkDTO = api.getChunkAPI().create(chunk, true);
@@ -307,7 +307,7 @@ public class LandCommands {
                                     // Find out if there is a neighbour.
                                     List<Chunk> neighbours = ChunkUtils.getNeighboringChunks(chunk);
                                     long countNeighbours = neighbours.stream().filter(neighbour -> {
-                                        ChunkDTO neighbourChunkDTO = api.getChunkAPI().getRedis().get(new Vector2(neighbour.getX(), neighbour.getZ()));
+                                        ChunkDTO neighbourChunkDTO = api.getChunkAPI().get(chunk);
                                         return neighbourChunkDTO != null && neighbourChunkDTO.getLandId() != null && neighbourChunkDTO.getLandId().equals(landDTO.getId());
                                     }).count();
 
@@ -355,7 +355,7 @@ public class LandCommands {
                             UUID uuid = player.getUniqueId();
                             World world = main.getServerConfig().getOverworld();
 
-                            LandDTO landDTO = api.getLandAPI().getRedis().get(uuid.toString());
+                            LandDTO landDTO = api.getLandAPI().get(uuid.toString());
                             if (landDTO == null) {
                                 player.sendMessage("Could not find your land");
                                 return;
@@ -419,7 +419,7 @@ public class LandCommands {
                                 return;
                             }
 
-                            ChunkDTO chunkDTO = api.getChunkAPI().getRedis().get(new Vector2(chunk.getX(), chunk.getZ()));
+                            ChunkDTO chunkDTO = api.getChunkAPI().get(chunk);
 
                             if (chunkDTO == null || chunkDTO.getLandId() == null) {
                                 WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(16, 185, 129, 15));
@@ -433,13 +433,13 @@ public class LandCommands {
                                 return;
                             }
 
-                            LandDTO landDTO = api.getLandAPI().getRedis().get(chunkDTO.getLandId());
+                            LandDTO landDTO = api.getLandAPI().get(chunkDTO.getLandId());
                             if (landDTO == null) {
                                 player.sendMessage("Could not find land at current chunk.");
                                 return;
                             }
 
-                            MinecraftUserDTO minecraftUserDTO = api.getMinecraftUserAPI().getRedis().get(UUID.fromString(landDTO.getOwnerId()));
+                            MinecraftUserDTO minecraftUserDTO = api.getMinecraftUserAPI().get(UUID.fromString(landDTO.getOwnerId()));
                             if (minecraftUserDTO == null) {
                                 player.sendMessage("Error when trying to find the land owner.");
                                 return;
@@ -465,7 +465,7 @@ public class LandCommands {
                         .executesPlayer((player, args) -> {
                             UUID uuid = player.getUniqueId();
 
-                            LandDTO landDTO = api.getLandAPI().getRedis().get(uuid.toString());
+                            LandDTO landDTO = api.getLandAPI().get(uuid);
                             if (landDTO == null) {
                                 player.sendMessage("Could not find your land");
                                 return;
@@ -491,7 +491,7 @@ public class LandCommands {
                                     UUID uuid = player.getUniqueId();
                                     World world = main.getServerConfig().getOverworld();
 
-                                    LandDTO landDTO = api.getLandAPI().getRedis().get(uuid.toString());
+                                    LandDTO landDTO = api.getLandAPI().get(uuid);
                                     if (landDTO == null) {
                                         player.sendMessage("Could not find your land");
                                         return;
@@ -550,7 +550,7 @@ public class LandCommands {
                                     }
 
                                     UpdateLandDTO updateLandDTO = new UpdateLandDTO();
-                                    LandDTO landDTO = api.getLandAPI().getRedis().get(uuid.toString());
+                                    LandDTO landDTO = api.getLandAPI().get(uuid);
                                     if (landDTO == null) {
                                         player.sendMessage("Could not find your land");
                                         return;
@@ -597,7 +597,7 @@ public class LandCommands {
                                     taggedLocationDTO.setLocation(locationDTO);
 
                                     updateLandDTO.getPushHomes().add(taggedLocationDTO);
-                                    LandDTO result = api.getLandAPI().getFetch().update(landDTO.getId(), updateLandDTO);
+                                    LandDTO result = api.getLandAPI().update(landDTO.getId(), updateLandDTO);
 
                                     if (result == null) {
                                         player.sendMessage("Could not update your land's home.");
@@ -615,7 +615,7 @@ public class LandCommands {
                                     UUID uuid = player.getUniqueId();
 
                                     UpdateLandDTO updateLandDTO = new UpdateLandDTO();
-                                    LandDTO landDTO = api.getLandAPI().getRedis().get(uuid.toString());
+                                    LandDTO landDTO = api.getLandAPI().get(uuid);
                                     if (landDTO == null) {
                                         player.sendMessage("Could not find your land");
                                         return;
@@ -625,7 +625,7 @@ public class LandCommands {
                                     }
 
                                     updateLandDTO.getSpliceHomes().add(name);
-                                    LandDTO result = api.getLandAPI().getFetch().update(landDTO.getId(), updateLandDTO);
+                                    LandDTO result = api.getLandAPI().update(landDTO.getId(), updateLandDTO);
 
                                     if (result == null) {
                                         player.sendMessage("Could not update your land's home.");
@@ -641,7 +641,7 @@ public class LandCommands {
                         .executesPlayer((player, args) -> {
                             UUID uuid = player.getUniqueId();
 
-                            LandDTO landDTO = api.getLandAPI().getRedis().get(uuid.toString());
+                            LandDTO landDTO = api.getLandAPI().get(uuid);
                             if (landDTO == null) {
                                 player.sendMessage("Could not find your land");
                                 return;
@@ -668,7 +668,7 @@ public class LandCommands {
                                     UUID memberUuid = newMember.getUniqueId();
 
                                     UpdateLandDTO updateLandDTO = new UpdateLandDTO();
-                                    LandDTO landDTO = api.getLandAPI().getRedis().get(uuid.toString());
+                                    LandDTO landDTO = api.getLandAPI().get(uuid);
                                     if (landDTO == null) {
                                         player.sendMessage("Could not find your land");
                                         return;
@@ -710,7 +710,7 @@ public class LandCommands {
                                     }
 
                                     updateLandDTO.getConnectMembers().add(new UpdateLandDTO.MemberDTO(memberUuid.toString()));
-                                    LandDTO result = api.getLandAPI().getFetch().update(landDTO.getId(), updateLandDTO);
+                                    LandDTO result = api.getLandAPI().update(landDTO.getId(), updateLandDTO);
 
                                     if (result == null) {
                                         player.sendMessage("Could not update your land member.");
@@ -729,7 +729,7 @@ public class LandCommands {
                                     UUID memberUuid = oldMember.getUniqueId();
 
                                     UpdateLandDTO updateLandDTO = new UpdateLandDTO();
-                                    LandDTO landDTO = api.getLandAPI().getRedis().get(uuid.toString());
+                                    LandDTO landDTO = api.getLandAPI().get(uuid);
                                     if (landDTO == null) {
                                         player.sendMessage("Could not find your land");
                                         return;
@@ -739,7 +739,7 @@ public class LandCommands {
                                     }
 
                                     updateLandDTO.getDisconnectMembers().add(new UpdateLandDTO.MemberDTO(memberUuid.toString()));
-                                    LandDTO result = api.getLandAPI().getFetch().update(landDTO.getId(), updateLandDTO);
+                                    LandDTO result = api.getLandAPI().update(landDTO.getId(), updateLandDTO);
 
                                     if (result == null) {
                                         player.sendMessage("Could not update your land member.");
@@ -778,68 +778,71 @@ public class LandCommands {
                 // ### /land extend ###
                 .withSubcommand(new CommandAPICommand("extend")
                         .executesPlayer((player, args) -> {
-                            Chunk chunk = player.getChunk();
+                            try {
+                                Chunk chunk = player.getChunk();
 
-                            // Only continue if we're in the overworld
-                            if(!chunk.getWorld().equals(main.getServerConfig().getOverworld())) {
-                                player.sendMessage("You can only extend chunks in the overworld.");
-                                return;
+                                // Only continue if we're in the overworld
+                                if(!chunk.getWorld().equals(main.getServerConfig().getOverworld())) {
+                                    player.sendMessage("You can only extend chunks in the overworld.");
+                                    return;
+                                }
+
+                                // Check if the player is within the blacklisted chunk radius
+                                if(main.getServerConfig().isWithinBlacklistedChunkRadius(player.getLocation())) {
+                                    player.sendMessage("The chunk you're currently standing on is considered 'blacklisted' and not claimable.");
+                                    return;
+                                }
+
+                                ChunkDTO chunkDTO = main.getApi().getChunkAPI().get(chunk);
+                                if (chunkDTO == null || !ChunkAPI.isClaimable(chunkDTO)) {
+                                    player.sendMessage("The chunk you're standing on is either non-claimable or not found. Maybe try to claim it first?");
+                                    return;
+                                }
+
+                                if(!chunkDTO.canExpire()) {
+                                    player.sendMessage("This chunk is permanent and cannot be extended. Hooray ;)");
+                                    return;
+                                }
+
+                                // TODO: Fix extend
+
+                                ValidateCommand validateCommand = new ValidateCommand.Builder(player)
+                                        .checkPrimaryGroup()
+                                        .checkRankConfiguration()
+                                        .build();
+
+                                if(!validateCommand.passed()) {
+                                    player.sendMessage("We could not pass the validation of the command.");
+                                    return;
+                                }
+                                ValidateCommand.Builder builder = validateCommand.getBuilder();
+                                RankConfiguration rankConfiguration = builder.getRankConfiguration();
+
+                                if (!ConfirmCommandManager.isConfirmed(player)) {
+                                    ConfirmCommandManager.requestCommandConfirmation(player,
+                                            new PayableCommand(
+                                                    "/land extend",
+                                                    new ArrayList<>(),
+                                                    2000,
+                                                    30L,
+                                                    rankConfiguration.getDiscountPercentage()
+                                            )
+                                    );
+                                    return;
+                                }
+
+                                boolean isExtended = main.getApi().getChunkAPI().extend(chunk, 7);
+
+                                if(!isExtended) {
+                                    player.sendMessage("Oops, Could not extend your land.");
+                                    return;
+                                }
+
+                                player.sendMessage("We've extended your chunk with another 7 days. Do keep in mind that only counts for the chunk you're standing on.");
+
+                            } catch (Exception e) {
+                                player.sendMessage(ChatColor.RED + e.getMessage());
                             }
-
-                            // Check if the player is within the blacklisted chunk radius
-                            if(main.getServerConfig().isWithinBlacklistedChunkRadius(player.getLocation())) {
-                                player.sendMessage("The chunk you're currently standing on is considered 'blacklisted' and not claimable.");
-                                return;
-                            }
-
-                            ChunkDTO chunkDTO = main.getApi().getChunkAPI().get(chunk);
-                            if (chunkDTO == null || !ChunkAPI.isClaimable(chunkDTO)) {
-                                player.sendMessage("The chunk you're standing on is either non-claimable or not found. Maybe try to claim it first?");
-                                return;
-                            }
-
-                            if(!chunkDTO.canExpire()) {
-                                player.sendMessage("This chunk is permanent and cannot be extended. Hooray ;)");
-                                return;
-                            }
-
-                            // TODO: Fix extend
-                            LandDTO landDTO =
-
-                            ValidateCommand validateCommand = new ValidateCommand.Builder(player)
-                                    .checkPrimaryGroup()
-                                    .checkRankConfiguration()
-                                    .build();
-
-                            if(!validateCommand.passed()) {
-                                player.sendMessage("We could not pass the validation of the command.");
-                                return;
-                            }
-                            ValidateCommand.Builder builder = validateCommand.getBuilder();
-                            RankConfiguration rankConfiguration = builder.getRankConfiguration();
-
-                            if (!ConfirmCommandManager.isConfirmed(player)) {
-                                ConfirmCommandManager.requestCommandConfirmation(player,
-                                        new PayableCommand(
-                                                "/land extend",
-                                                new ArrayList<>(),
-                                                2000,
-                                                30L,
-                                                rankConfiguration.getDiscountPercentage()
-                                        )
-                                );
-                                return;
-                            }
-
-                            boolean isExtended = main.getApi().getChunkAPI().extend(chunk, 7);
-
-                            if(!isExtended) {
-                                player.sendMessage("Oops, Could not extend your land.");
-                                return;
-                            }
-
-                            player.sendMessage("We've extended your chunk with another 7 days. Do keep in mind that only counts for the chunk you're standing on.");
-
                         })
                 )
                 .withSubcommand(new CommandAPICommand("debug")

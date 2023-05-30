@@ -69,56 +69,50 @@ public class BlockBreakListener implements Listener {
         // Check if Material is supported
         if(!config.getMaterialEarnings().containsKey(material)) return;
 
-        CompletableFuture.runAsync(() -> {
-            try {
-                ChunkDTO chunkDTO = server.getApi().getChunkAPI().get(chunk);
+        ChunkDTO chunkDTO = server.getApi().getChunkAPI().get(chunk);
 
-                if (chunkDTO != null) {
-                    if (ChunkAPI.isBlacklistedBlock(chunkDTO, block)) {
-                        UpdateChunkDTO update = new UpdateChunkDTO();
-                        update.getSpliceBlacklistedBlocks().add(new BlacklistedBlockDTO(block));
-                        server.getApi().getChunkAPI().update(chunk, update);
-                        return;
-                    }
-                }
-
-                ActivitiesDTO activitiesDTO = server.getApi().getActivitiesAPI().get(player);
-                double amount;
-
-                if (activitiesDTO == null) {
-                    amount = ActivityEarnings.getEarningsFromMining(material, 1, 1);
-                } else {
-                    Optional<ActivityDTO> pvpActivity = activitiesDTO.getMining().stream().filter(activity1 -> activity1.getName().equals(material.name())).findFirst();
-                    amount = pvpActivity.map(activityDTO -> ActivityEarnings.getEarningsFromMining(material, (int) activityDTO.getQuantity() + 1, 1))
-                            .orElseGet(() -> ActivityEarnings.getEarningsFromMining(material, 1, 1));
-                }
-
-                UpdateActivitiesDTO updateActivitiesDTO = new UpdateActivitiesDTO();
-                ArrayList<ActivityDTO> activities = new ArrayList<>();
-                ActivityDTO activity = new ActivityDTO();
-                activity.setName(material.name());
-                activity.setEarnings(new BigDecimal(amount).floatValue());
-                activity.setQuantity(1);
-                activities.add(activity);
-                updateActivitiesDTO.setMining(activities);
-
-                api.getMinecraftUserAPI().depositBalance(player, new BigDecimal(amount));
-                ActivitiesDTO updatedActivities = api.getActivitiesAPI().update(player, updateActivitiesDTO);
-
-                player.sendActionBar(
-                        Component.text("+" + String.format("%.8f", amount) + " $QTA")
-                                .color(NamedTextColor.GREEN)
-                );
-
-                if (updatedActivities != null) {
-                    Optional<ActivityDTO> optional = updatedActivities.getMining().stream().filter(item -> item.getName().equalsIgnoreCase(material.name())).findFirst();
-                    optional.ifPresent(activityDTO -> ActivityBossBarManager.showBossBar(player, activityDTO, ActivityBossBarManager.Type.MINING));
-                }
-                ActivitySoundManager.play(player);
-            } catch (Exception e) {
-                player.sendMessage(e.getMessage());
+        if (chunkDTO != null) {
+            if (ChunkAPI.isBlacklistedBlock(chunkDTO, block)) {
+                UpdateChunkDTO update = new UpdateChunkDTO();
+                update.getSpliceBlacklistedBlocks().add(new BlacklistedBlockDTO(block));
+                server.getApi().getChunkAPI().update(chunk, update);
+                return;
             }
-        });
+        }
+
+        ActivitiesDTO activitiesDTO = server.getApi().getActivitiesAPI().get(player);
+        double amount;
+
+        if (activitiesDTO == null) {
+            amount = ActivityEarnings.getEarningsFromMining(material, 1, 1);
+        } else {
+            Optional<ActivityDTO> pvpActivity = activitiesDTO.getMining().stream().filter(activity1 -> activity1.getName().equals(material.name())).findFirst();
+            amount = pvpActivity.map(activityDTO -> ActivityEarnings.getEarningsFromMining(material, (int) activityDTO.getQuantity() + 1, 1))
+                    .orElseGet(() -> ActivityEarnings.getEarningsFromMining(material, 1, 1));
+        }
+
+        UpdateActivitiesDTO updateActivitiesDTO = new UpdateActivitiesDTO();
+        ArrayList<ActivityDTO> activities = new ArrayList<>();
+        ActivityDTO activity = new ActivityDTO();
+        activity.setName(material.name());
+        activity.setEarnings(new BigDecimal(amount).floatValue());
+        activity.setQuantity(1);
+        activities.add(activity);
+        updateActivitiesDTO.setMining(activities);
+
+        api.getMinecraftUserAPI().depositBalance(player, new BigDecimal(amount));
+        ActivitiesDTO updatedActivities = api.getActivitiesAPI().update(player, updateActivitiesDTO);
+
+        player.sendActionBar(
+                Component.text("+" + String.format("%.8f", amount) + " $QTA")
+                        .color(NamedTextColor.GREEN)
+        );
+
+        if (updatedActivities != null) {
+            Optional<ActivityDTO> optional = updatedActivities.getMining().stream().filter(item -> item.getName().equalsIgnoreCase(material.name())).findFirst();
+            optional.ifPresent(activityDTO -> ActivityBossBarManager.showBossBar(player, activityDTO, ActivityBossBarManager.Type.MINING));
+        }
+        ActivitySoundManager.play(player);
     }
 
 }

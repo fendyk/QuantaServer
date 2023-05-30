@@ -5,17 +5,17 @@ import com.fendyk.API;
 import java.util.HashMap;
 
 public abstract class ClientAPI<FetchAPI, RedisAPI, Key, DTO> {
-    protected API api;
+    protected static API api;
     protected FetchAPI fetch;
     protected RedisAPI redis;
 
     protected HashMap<Key, DTO> cachedRecords = new HashMap<>();
 
-    public ClientAPI(API api, FetchAPI fetch, RedisAPI redis) {
-        this.api = api;
+    public ClientAPI(FetchAPI fetch, RedisAPI redis) {
         this.fetch = fetch;
         this.redis = redis;
     }
+
     public FetchAPI getFetch() {
         return fetch;
     }
@@ -34,4 +34,7 @@ public abstract class ClientAPI<FetchAPI, RedisAPI, Key, DTO> {
         return cachedRecords.get(key);
     }
 
+    public static void setApi(API api) {
+        ClientAPI.api = api;
+    }
 }

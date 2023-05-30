@@ -60,7 +60,7 @@ public class ValidateCommand {
             if (minecraftUserDTO != null) {
                 return;
             }
-            this.minecraftUserDTO = main.getApi().getMinecraftUserAPI().getRedis().get(player.getUniqueId());
+            this.minecraftUserDTO = main.getApi().getMinecraftUserAPI().get(player.getUniqueId());
             if (minecraftUserDTO == null) {
                 passed = false;
                 player.sendMessage("We could not determine your minecraft account data");

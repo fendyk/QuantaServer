@@ -19,12 +19,11 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class FetchAPI<DTO, UpdateDTO> {
     static Main main = Main.getInstance();
-    protected OkHttpClient client = new OkHttpClient.Builder()
+    protected static OkHttpClient client = new OkHttpClient.Builder()
             .readTimeout(30, TimeUnit.SECONDS)
             .connectTimeout(30, TimeUnit.SECONDS)
             .build();
     protected static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    protected final static String authHeader = "Authorization";
     protected static Request.Builder requestBuilder;
     private static String url;
 
@@ -44,13 +43,12 @@ public abstract class FetchAPI<DTO, UpdateDTO> {
      * @return
      */
     @Nullable
-    protected CompletableFuture<JsonElement> fetch(Request request, String name) {
+    protected CompletableFuture<JsonElement> fetch(Request request) {
         final boolean inDebugMode = main.getServerConfig().isInDebugMode();
         return CompletableFuture.supplyAsync(() -> {
             try (Response response = client.newCall(request).execute()) {
                 if (inDebugMode) {
                     Log.info("");
-                    Log.info("FETCH: fetchFromApi is called at: " + name);
                     Log.info("Request URL: " + request.url());
                     Log.info("Response Code: " + response.code());
                     Log.info("Response Message: " + response.message());
@@ -58,7 +56,7 @@ public abstract class FetchAPI<DTO, UpdateDTO> {
                 }
 
                 if (!response.isSuccessful()) {
-                    throw new IOException("Unexpected response code: " + response.code());
+                    throw new IOException("Unexpected response code: " + response.code() + response.message());
                 }
 
                 try (ResponseBody body = response.body()) {
@@ -70,7 +68,8 @@ public abstract class FetchAPI<DTO, UpdateDTO> {
                     return JsonParser.parseString(json);
                 }
             } catch (IOException e) {
-                Log.error("Error in fetchFromApi: " + e.getMessage());
+                Log.error("Fetch error: " + e.getMessage());
+                Log.error("Request url: " + request.url());
                 Log.error("Stacktrace: " + Arrays.toString(e.getStackTrace()));
                 return null;
             }
@@ -84,10 +83,10 @@ public abstract class FetchAPI<DTO, UpdateDTO> {
                 Request request = requestBuilder
                         .url(url + finalUrl)
                         .build();
-                CompletableFuture<JsonElement> aFetch = fetch(request, "GET is called from: " + finalUrl);
+                CompletableFuture<JsonElement> aFetch = fetch(request);
                 if(aFetch == null) throw new Exception("Fetching failed with GET: " + finalUrl);
                 return Main.gson.fromJson(
-                        aFetch.get(),
+                        aFetch.join(),
                         dtoType
                 );
             }
@@ -105,10 +104,10 @@ public abstract class FetchAPI<DTO, UpdateDTO> {
                         .url(url + endpointUrl)
                         .post(body)
                         .build();
-                CompletableFuture<JsonElement> aFetch = fetch(request, "CREATE is called from: " + endpointUrl);
+                CompletableFuture<JsonElement> aFetch = fetch(request);
                 if(aFetch == null) throw new Exception("Fetching failed with CREATE: " + endpointUrl);
                 return Main.gson.fromJson(
-                        aFetch.get(),
+                        aFetch.join(),
                         dtoType
                 );
             }
@@ -127,10 +126,10 @@ public abstract class FetchAPI<DTO, UpdateDTO> {
                         .url(url + finalUrl)
                         .post(body)
                         .build();
-                CompletableFuture<JsonElement> aFetch = fetch(request, "UPDATE is called from: " + finalUrl);
+                CompletableFuture<JsonElement> aFetch = fetch(request);
                 if(aFetch == null) throw new Exception("Fetching failed with UPDATE: " + finalUrl);
                 return Main.gson.fromJson(
-                        aFetch.get(),
+                        aFetch.join(),
                         dtoType
                 );
             }
@@ -148,10 +147,10 @@ public abstract class FetchAPI<DTO, UpdateDTO> {
                         .url(url + finalUrl)
                         .delete()
                         .build();
-                CompletableFuture<JsonElement> aFetch = fetch(request, "DELETE is called from: " + finalUrl);
+                CompletableFuture<JsonElement> aFetch = fetch(request);
                 if(aFetch == null) throw new Exception("Fetching failed with DELETE" + finalUrl);
                 return Main.gson.fromJson(
-                        aFetch.get(),
+                        aFetch.join(),
                         dtoType
                 );
             }
@@ -164,7 +163,7 @@ public abstract class FetchAPI<DTO, UpdateDTO> {
     public static void connect(String url, String jwtKey) {
         FetchAPI.url = url;
         FetchAPI.requestBuilder = new Request.Builder()
-                .addHeader(authHeader, "Bearer " + jwtKey);
+                .addHeader("Authorization", "Bearer " + jwtKey);
     }
 
 }

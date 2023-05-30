@@ -71,13 +71,11 @@ public class ChunkLoadListener implements Listener {
             }
 
             // Run the sync task
-            Bukkit.getScheduler().runTask(server, () -> {
-                try {
-                    WorldguardSyncManager.syncChunkWithRegion(chunk, null, null);
-                } catch (StorageException e) {
-                    Bukkit.getLogger().severe("StorageException occurred while syncing chunk with region: " + e.getMessage());
-                }
-            });
+            try {
+                WorldguardSyncManager.syncChunkWithRegion(chunk, null, null);
+            } catch (StorageException e) {
+                Bukkit.getLogger().severe("StorageException occurred while syncing chunk with region: " + e.getMessage());
+            }
         });
     }
 
