@@ -550,12 +550,16 @@ public class LandCommands {
 
                             for (TaggedLocationDTO home : landDTO.getHomes()) {
                                 LocationDTO loc = home.getLocation();
+                                int x = (int) Math.floor(loc.getX());
+                                int y = (int) Math.floor(loc.getY());
+                                int z = (int) Math.floor(loc.getZ());
                                 player.sendMessage(Component.text()
                                         .append(Component.text("You've marked a special place here called ", NamedTextColor.YELLOW))
                                         .append(Component.text(home.getName(), NamedTextColor.WHITE, TextDecoration.BOLD))
                                         .append(Component.text(". You can find it at these coordinates: ", NamedTextColor.YELLOW))
-                                        .append(Component.text("(" + loc.getX() + "," + loc.getY() + "," + loc.getZ() + ")", NamedTextColor.WHITE, TextDecoration.BOLD))
+                                        .append(Component.text("(" + x + "," + y + "," + z + ")", NamedTextColor.WHITE, TextDecoration.BOLD))
                                         .build());
+
                             }
                         })
                 )

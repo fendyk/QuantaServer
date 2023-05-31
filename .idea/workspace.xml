@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Improve user friendly messages for land commands">
+    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Hotfix null check for land command">
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -280,14 +280,7 @@
       <workItem from="1685264225926" duration="2469000" />
       <workItem from="1685381546471" duration="10147000" />
       <workItem from="1685434497024" duration="16611000" />
-      <workItem from="1685555504513" duration="3225000" />
-    </task>
-    <task id="LOCAL-00014" summary="fix: Reduces redis">
-      <created>1677375324479</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1677375324479</updated>
+      <workItem from="1685555504513" duration="3387000" />
     </task>
     <task id="LOCAL-00015" summary="feat: new worldguard sync">
       <created>1677419982045</created>
@@ -625,7 +618,14 @@
       <option name="project" value="LOCAL" />
       <updated>1685569703806</updated>
     </task>
-    <option name="localTasksCounter" value="63" />
+    <task id="LOCAL-00063" summary="Hotfix null check for land command">
+      <created>1685569800171</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1685569800171</updated>
+    </task>
+    <option name="localTasksCounter" value="64" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -655,7 +655,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add only citizen or higher can build in the world" />
     <MESSAGE value="Add expirable chunk, messages config and new particle effect method" />
     <MESSAGE value="Fix rewards now claimable" />
     <MESSAGE value="Update /land commands" />
@@ -680,6 +679,7 @@
     <MESSAGE value="Hotfix you can now remove an offline player from your land" />
     <MESSAGE value="Add new command to view regions border within a fixed range" />
     <MESSAGE value="Improve user friendly messages for land commands" />
-    <option name="LAST_COMMIT_MESSAGE" value="Improve user friendly messages for land commands" />
+    <MESSAGE value="Hotfix null check for land command" />
+    <option name="LAST_COMMIT_MESSAGE" value="Hotfix null check for land command" />
   </component>
 </project>
