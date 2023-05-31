@@ -731,6 +731,10 @@ public class LandCommands {
 
                             for (String member : landDTO.getMemberIDs()) {
                                 String memberName = Bukkit.getOfflinePlayer(UUID.fromString(member)).getName();
+                                if(memberName == null) {
+                                    player.sendMessage(Component.text("An unknown player is part of your team", NamedTextColor.RED));
+                                    return;
+                                }
                                 player.sendMessage(Component.text()
                                         .append(Component.text(memberName, NamedTextColor.WHITE, TextDecoration.BOLD))
                                         .append(Component.text(" is part of your adventurous team exploring ", NamedTextColor.YELLOW))

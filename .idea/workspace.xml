@@ -4,8 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Add new command to view regions border within a fixed range">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Improve user friendly messages for land commands">
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -44,6 +43,12 @@
                 <item name="QuantaServer" type="f1a62948:ProjectNode" />
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
                 <item name="shadow" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="QuantaServer" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="verification" type="c8890929:TasksNode$1" />
               </path>
             </expand>
             <select />
@@ -275,14 +280,7 @@
       <workItem from="1685264225926" duration="2469000" />
       <workItem from="1685381546471" duration="10147000" />
       <workItem from="1685434497024" duration="16611000" />
-      <workItem from="1685555504513" duration="3136000" />
-    </task>
-    <task id="LOCAL-00013" summary="fix: land working">
-      <created>1677281835394</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1677281835394</updated>
+      <workItem from="1685555504513" duration="3225000" />
     </task>
     <task id="LOCAL-00014" summary="fix: Reduces redis">
       <created>1677375324479</created>
@@ -620,7 +618,14 @@
       <option name="project" value="LOCAL" />
       <updated>1685569254057</updated>
     </task>
-    <option name="localTasksCounter" value="62" />
+    <task id="LOCAL-00062" summary="Improve user friendly messages for land commands">
+      <created>1685569703806</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1685569703806</updated>
+    </task>
+    <option name="localTasksCounter" value="63" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -650,7 +655,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add customizable payable commands" />
     <MESSAGE value="Add only citizen or higher can build in the world" />
     <MESSAGE value="Add expirable chunk, messages config and new particle effect method" />
     <MESSAGE value="Fix rewards now claimable" />
@@ -675,6 +679,7 @@
     <MESSAGE value="Hotfix wrong boolean check" />
     <MESSAGE value="Hotfix you can now remove an offline player from your land" />
     <MESSAGE value="Add new command to view regions border within a fixed range" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add new command to view regions border within a fixed range" />
+    <MESSAGE value="Improve user friendly messages for land commands" />
+    <option name="LAST_COMMIT_MESSAGE" value="Improve user friendly messages for land commands" />
   </component>
 </project>
