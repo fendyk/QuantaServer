@@ -722,7 +722,7 @@ public class LandCommands {
                         )
                         // ### /land member remove <name> ###
                         .withSubcommand(new CommandAPICommand("remove")
-                                .withArguments(new PlayerArgument("name"))
+                                .withArguments(new OfflinePlayerArgument("name"))
                                 .executesPlayer((player, args) -> {
                                     OfflinePlayer oldMember = (OfflinePlayer) args[0];
                                     UUID uuid = player.getUniqueId();
