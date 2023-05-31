@@ -307,7 +307,7 @@ public class LandCommands {
                                     // Find out if there is a neighbour.
                                     List<Chunk> neighbours = ChunkUtils.getNeighboringChunks(chunk);
                                     long countNeighbours = neighbours.stream().filter(neighbour -> {
-                                        ChunkDTO neighbourChunkDTO = api.getChunkAPI().get(chunk);
+                                        ChunkDTO neighbourChunkDTO = api.getChunkAPI().get(neighbour);
                                         return neighbourChunkDTO != null && neighbourChunkDTO.getLandId() != null && neighbourChunkDTO.getLandId().equals(landDTO.getId());
                                     }).count();
 

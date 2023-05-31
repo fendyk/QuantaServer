@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Add changes from api's to the files">
+    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Fix for FetchAPI not connecting">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/FetchAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/FetchAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/BlockPlaceListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/BlockPlaceListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -275,14 +274,8 @@
       <workItem from="1685213965151" duration="2127000" />
       <workItem from="1685264225926" duration="2469000" />
       <workItem from="1685381546471" duration="10147000" />
-      <workItem from="1685434497024" duration="15961000" />
-    </task>
-    <task id="LOCAL-00008" summary="feat: added more functionality">
-      <created>1676223628792</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1676223628792</updated>
+      <workItem from="1685434497024" duration="16611000" />
+      <workItem from="1685555504513" duration="167000" />
     </task>
     <task id="LOCAL-00009" summary="feat: better error handling and overhaul (again) to the api">
       <created>1676389840312</created>
@@ -620,7 +613,14 @@
       <option name="project" value="LOCAL" />
       <updated>1685482540524</updated>
     </task>
-    <option name="localTasksCounter" value="57" />
+    <task id="LOCAL-00057" summary="Fix for FetchAPI not connecting">
+      <created>1685483845105</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1685483845106</updated>
+    </task>
+    <option name="localTasksCounter" value="58" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -650,7 +650,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add PlaceholderAPI support" />
     <MESSAGE value="Add new stuff and fix for earnings manager" />
     <MESSAGE value="Add log changes" />
     <MESSAGE value="Add cached option for minecraft user api for visualisation purposes" />
@@ -675,6 +674,7 @@
     <MESSAGE value="Add clamps for activity earnings and improved type safety from float to decimal with DB and scripts" />
     <MESSAGE value="Improve API's, code cleanup and performance improvements to fetching from the REST api and redis" />
     <MESSAGE value="Add changes from api's to the files" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add changes from api's to the files" />
+    <MESSAGE value="Fix for FetchAPI not connecting" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix for FetchAPI not connecting" />
   </component>
 </project>
