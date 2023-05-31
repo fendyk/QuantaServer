@@ -16,12 +16,15 @@ import dev.jorel.commandapi.arguments.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.luckperms.api.model.user.User;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.ServerOperator;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import xyz.xenondevs.particle.ParticleEffect;
 import xyz.xenondevs.particle.data.color.DustData;
 
@@ -451,12 +454,30 @@ public class LandCommands {
                                 WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(59, 130, 246, 15));
                             }
 
-                            player.sendMessage("You're currently standing at:");
-                            player.sendMessage("Chunk: " + chunkDTO.getX() + "/" + chunkDTO.getZ());
-                            player.sendMessage("Land:" + landDTO.getName());
-                            player.sendMessage("Owned by player: " + Objects.requireNonNull(Bukkit.getPlayer(UUID.fromString(minecraftUserDTO.getId()))).getName());
+                            player.sendMessage(Component.text()
+                                    .append(Component.text("Hey there! ", NamedTextColor.GREEN))
+                                    .append(Component.text("You're currently exploring the world of Minecraft at chunk: ", NamedTextColor.YELLOW))
+                                    .append(Component.text(chunkDTO.getX() + "/" + chunkDTO.getZ(), NamedTextColor.WHITE, TextDecoration.BOLD))
+                                    .build());
+
+                            player.sendMessage(Component.text()
+                                    .append(Component.text("This beautiful land is known as ", NamedTextColor.YELLOW))
+                                    .append(Component.text(landDTO.getName(), NamedTextColor.WHITE, TextDecoration.BOLD))
+                                    .build());
+
+                            Player owner = Bukkit.getPlayer(UUID.fromString(minecraftUserDTO.getId()));
+                            player.sendMessage(Component.text()
+                                    .append(Component.text("It's currently owned by ", NamedTextColor.YELLOW))
+                                    .append(Component.text(owner != null ? owner.getName() : "an unknown player", NamedTextColor.WHITE, TextDecoration.BOLD))
+                                    .build());
+
                             if (chunkDTO.canExpire()) {
-                                player.sendMessage("Expiration date:" + chunkDTO.getExpirationDate());
+                                DateTimeFormatter formatter = DateTimeFormat.forPattern("MMMM dd, yyyy 'at' hh:mm a");
+                                String expirationDate = formatter.print(chunkDTO.getExpirationDate());
+                                player.sendMessage(Component.text()
+                                        .append(Component.text("Be careful! This chunk is set to vanish into thin air on ", NamedTextColor.YELLOW))
+                                        .append(Component.text(expirationDate, NamedTextColor.WHITE, TextDecoration.BOLD))
+                                        .build());
                             }
                         })
                 )
@@ -529,7 +550,12 @@ public class LandCommands {
 
                             for (TaggedLocationDTO home : landDTO.getHomes()) {
                                 LocationDTO loc = home.getLocation();
-                                player.sendMessage(home.getName() + ": (" + loc.getX() + "," + loc.getY() + "," + loc.getZ() + ")");
+                                player.sendMessage(Component.text()
+                                        .append(Component.text("You've marked a special place here called ", NamedTextColor.YELLOW))
+                                        .append(Component.text(home.getName(), NamedTextColor.WHITE, TextDecoration.BOLD))
+                                        .append(Component.text(". You can find it at these coordinates: ", NamedTextColor.YELLOW))
+                                        .append(Component.text("(" + loc.getX() + "," + loc.getY() + "," + loc.getZ() + ")", NamedTextColor.WHITE, TextDecoration.BOLD))
+                                        .build());
                             }
                         })
                 )
@@ -704,7 +730,13 @@ public class LandCommands {
                             }
 
                             for (String member : landDTO.getMemberIDs()) {
-                                player.sendMessage(Bukkit.getOfflinePlayer(UUID.fromString(member)).getName() + " is a member of your land");
+                                String memberName = Bukkit.getOfflinePlayer(UUID.fromString(member)).getName();
+                                player.sendMessage(Component.text()
+                                        .append(Component.text(memberName, NamedTextColor.WHITE, TextDecoration.BOLD))
+                                        .append(Component.text(" is part of your adventurous team exploring ", NamedTextColor.YELLOW))
+                                        .append(Component.text(landDTO.getName(), NamedTextColor.WHITE, TextDecoration.BOLD))
+                                        .append(Component.text(". Stick together!", NamedTextColor.YELLOW))
+                                        .build());
                             }
                         })
                 )
