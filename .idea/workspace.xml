@@ -4,7 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Hotfix null check for land command">
+    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Add rounding of numbers for better readably coordinates">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -280,14 +281,7 @@
       <workItem from="1685264225926" duration="2469000" />
       <workItem from="1685381546471" duration="10147000" />
       <workItem from="1685434497024" duration="16611000" />
-      <workItem from="1685555504513" duration="3387000" />
-    </task>
-    <task id="LOCAL-00015" summary="feat: new worldguard sync">
-      <created>1677419982045</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1677419982045</updated>
+      <workItem from="1685555504513" duration="3498000" />
     </task>
     <task id="LOCAL-00016" summary="feat: worldguard now syncing with redis">
       <created>1677538568794</created>
@@ -625,7 +619,14 @@
       <option name="project" value="LOCAL" />
       <updated>1685569800171</updated>
     </task>
-    <option name="localTasksCounter" value="64" />
+    <task id="LOCAL-00064" summary="Add rounding of numbers for better readably coordinates">
+      <created>1685569964385</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1685569964385</updated>
+    </task>
+    <option name="localTasksCounter" value="65" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -655,7 +656,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add expirable chunk, messages config and new particle effect method" />
     <MESSAGE value="Fix rewards now claimable" />
     <MESSAGE value="Update /land commands" />
     <MESSAGE value="Add builder for command validation" />
@@ -680,6 +680,7 @@
     <MESSAGE value="Add new command to view regions border within a fixed range" />
     <MESSAGE value="Improve user friendly messages for land commands" />
     <MESSAGE value="Hotfix null check for land command" />
-    <option name="LAST_COMMIT_MESSAGE" value="Hotfix null check for land command" />
+    <MESSAGE value="Add rounding of numbers for better readably coordinates" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add rounding of numbers for better readably coordinates" />
   </component>
 </project>

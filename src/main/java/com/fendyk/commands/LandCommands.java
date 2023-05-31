@@ -484,17 +484,15 @@ public class LandCommands {
                 // ### /land borders ###
                 .withSubcommand(new CommandAPICommand("borders")
                         .executesPlayer((player, args) -> {
-                            Chunk chunk = player.getChunk();
-                            List<Chunk> chunksInRange = ChunkUtils.getChunksInRange(chunk, 3);
+                            List<Chunk> chunksInRange = ChunkUtils.getChunksInRange(player.getChunk(), 3);
 
-                            // Only continue if we're in the overworld
-                            if(!chunk.getWorld().equals(main.getServerConfig().getOverworld())) {
-                                player.sendMessage("You can only see information about a chunk in the overworld");
-                                return;
-                            }
+                            for(Chunk chunk : chunksInRange) {
 
+                                if(!chunk.getWorld().equals(main.getServerConfig().getOverworld())) {
+                                    player.sendMessage("You can only see information about a chunk in the overworld");
+                                    return;
+                                }
 
-                            for(Chunk chunk1 : chunksInRange) {
                                 ChunkDTO chunkDTO = api.getChunkAPI().get(chunk);
 
                                 // Chunk is not claimed yet and available
