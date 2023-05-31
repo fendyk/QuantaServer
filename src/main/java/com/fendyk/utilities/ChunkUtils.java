@@ -117,5 +117,30 @@ public class ChunkUtils {
         return bounds;
     }
 
+    /**
+     * Gets a list of chunks within a specified range of a center chunk in the world.
+     * The range is specified in terms of chunks. The center chunk is also included in the list.
+     *
+     * @param center The chunk from which to measure the range.
+     * @param radius The range, in chunks, from the center chunk to include in the list.
+     *               For example, a radius of 1 would include only the center chunk and its immediate neighbors.
+     *               Note that this range specifies a square, not a circle.
+     * @return A list of chunks within the specified range of the center chunk, including the center chunk itself.
+     */
+    public static List<Chunk> getChunksInRange(Chunk center, int radius) {
+        List<Chunk> chunks = new ArrayList<>();
+        World world = center.getWorld();
+
+        int centerChunkX = center.getX();
+        int centerChunkZ = center.getZ();
+
+        for (int dx = -radius; dx <= radius; dx++) {
+            for (int dz = -radius; dz <= radius; dz++) {
+                chunks.add(world.getChunkAt(centerChunkX + dx, centerChunkZ + dz));
+            }
+        }
+        return chunks;
+    }
+
 
 }

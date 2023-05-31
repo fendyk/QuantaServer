@@ -460,6 +460,57 @@ public class LandCommands {
                             }
                         })
                 )
+                // ### /land borders ###
+                .withSubcommand(new CommandAPICommand("borders")
+                        .executesPlayer((player, args) -> {
+                            Chunk chunk = player.getChunk();
+                            List<Chunk> chunksInRange = ChunkUtils.getChunksInRange(chunk, 3);
+
+                            // Only continue if we're in the overworld
+                            if(!chunk.getWorld().equals(main.getServerConfig().getOverworld())) {
+                                player.sendMessage("You can only see information about a chunk in the overworld");
+                                return;
+                            }
+
+
+                            for(Chunk chunk1 : chunksInRange) {
+                                ChunkDTO chunkDTO = api.getChunkAPI().get(chunk);
+
+                                // Chunk is not claimed yet and available
+                                if (chunkDTO == null || chunkDTO.getLandId() == null) {
+                                    WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(16, 185, 129, 15));
+                                    return;
+                                }
+
+
+                                // Chunk is not claimable
+                                if (!chunkDTO.isClaimable()) {
+                                    WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(252, 211, 77, 15));
+                                    return;
+                                }
+
+                                LandDTO landDTO = api.getLandAPI().get(chunkDTO.getLandId());
+                                if (landDTO == null) {
+                                    player.sendMessage(ChatColor.RED + "Could not find land at current chunk.");
+                                    return;
+                                }
+
+                                MinecraftUserDTO minecraftUserDTO = api.getMinecraftUserAPI().get(UUID.fromString(landDTO.getOwnerId()));
+                                if (minecraftUserDTO == null) {
+                                    player.sendMessage(ChatColor.RED + "Error when trying to find the land owner.");
+                                    return;
+                                }
+
+                                // Is claimed by itself
+                                if (!landDTO.getOwnerId().equalsIgnoreCase(player.getUniqueId().toString())) {
+                                    WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(239, 68, 68, 15));
+                                } else {
+                                    WorldguardSyncManager.showParticleEffectAtChunk(chunk, player.getLocation(), new DustData(59, 130, 246, 15));
+                                }
+
+                            }
+                        })
+                )
                 /* HOMES COMMAND */
                 .withSubcommand(new CommandAPICommand("homes")
                         .executesPlayer((player, args) -> {

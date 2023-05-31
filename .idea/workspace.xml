@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Hotfix wrong boolean check">
+    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Hotfix you can now remove an offline player from your land">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/ChunkUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/ChunkUtils.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -275,14 +276,7 @@
       <workItem from="1685264225926" duration="2469000" />
       <workItem from="1685381546471" duration="10147000" />
       <workItem from="1685434497024" duration="16611000" />
-      <workItem from="1685555504513" duration="1713000" />
-    </task>
-    <task id="LOCAL-00011" summary="fix: naming change for Main for consistency">
-      <created>1677193806172</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1677193806172</updated>
+      <workItem from="1685555504513" duration="2680000" />
     </task>
     <task id="LOCAL-00012" summary="fix: small fixes">
       <created>1677269888016</created>
@@ -620,7 +614,14 @@
       <option name="project" value="LOCAL" />
       <updated>1685567576692</updated>
     </task>
-    <option name="localTasksCounter" value="60" />
+    <task id="LOCAL-00060" summary="Hotfix you can now remove an offline player from your land">
+      <created>1685568327868</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1685568327868</updated>
+    </task>
+    <option name="localTasksCounter" value="61" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -650,7 +651,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add cached option for minecraft user api for visualisation purposes" />
     <MESSAGE value="Add payable commands" />
     <MESSAGE value="Add customizable payable commands" />
     <MESSAGE value="Add only citizen or higher can build in the world" />
@@ -675,6 +675,7 @@
     <MESSAGE value="Fix for FetchAPI not connecting" />
     <MESSAGE value="Hotfix for neighbour chunks filtering wrongly" />
     <MESSAGE value="Hotfix wrong boolean check" />
-    <option name="LAST_COMMIT_MESSAGE" value="Hotfix wrong boolean check" />
+    <MESSAGE value="Hotfix you can now remove an offline player from your land" />
+    <option name="LAST_COMMIT_MESSAGE" value="Hotfix you can now remove an offline player from your land" />
   </component>
 </project>
