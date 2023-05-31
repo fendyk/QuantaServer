@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Fix for FetchAPI not connecting">
+    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Hotfix for neighbour chunks filtering wrongly">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/ChunkAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/ChunkAPI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -275,14 +275,7 @@
       <workItem from="1685264225926" duration="2469000" />
       <workItem from="1685381546471" duration="10147000" />
       <workItem from="1685434497024" duration="16611000" />
-      <workItem from="1685555504513" duration="167000" />
-    </task>
-    <task id="LOCAL-00009" summary="feat: better error handling and overhaul (again) to the api">
-      <created>1676389840312</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1676389840312</updated>
+      <workItem from="1685555504513" duration="982000" />
     </task>
     <task id="LOCAL-00010" summary="feat: DTO implementation">
       <created>1677191889419</created>
@@ -620,7 +613,14 @@
       <option name="project" value="LOCAL" />
       <updated>1685483845106</updated>
     </task>
-    <option name="localTasksCounter" value="58" />
+    <task id="LOCAL-00058" summary="Hotfix for neighbour chunks filtering wrongly">
+      <created>1685555710807</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1685555710807</updated>
+    </task>
+    <option name="localTasksCounter" value="59" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -650,7 +650,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add new stuff and fix for earnings manager" />
     <MESSAGE value="Add log changes" />
     <MESSAGE value="Add cached option for minecraft user api for visualisation purposes" />
     <MESSAGE value="Add payable commands" />
@@ -675,6 +674,7 @@
     <MESSAGE value="Improve API's, code cleanup and performance improvements to fetching from the REST api and redis" />
     <MESSAGE value="Add changes from api's to the files" />
     <MESSAGE value="Fix for FetchAPI not connecting" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix for FetchAPI not connecting" />
+    <MESSAGE value="Hotfix for neighbour chunks filtering wrongly" />
+    <option name="LAST_COMMIT_MESSAGE" value="Hotfix for neighbour chunks filtering wrongly" />
   </component>
 </project>

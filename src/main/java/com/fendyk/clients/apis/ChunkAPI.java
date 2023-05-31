@@ -71,7 +71,7 @@ public class ChunkAPI extends ClientAPI<FetchChunk, RedisChunk, String, ChunkDTO
         updateChunkDTO.setExpirationDate(expirationDate);
 
         CompletableFuture<ChunkDTO> aFuture = fetch.update(chunk.getX() + "/" + chunk.getZ(), updateChunkDTO);
-        return ! aFuture.isDone() && aFuture.isCompletedExceptionally();
+        return !aFuture.isCompletedExceptionally();
     }
 
     public boolean expire(Chunk chunk) {
@@ -81,7 +81,7 @@ public class ChunkAPI extends ClientAPI<FetchChunk, RedisChunk, String, ChunkDTO
         updateChunkDTO.setResetExpirationDate(true);
 
         CompletableFuture<ChunkDTO> aFuture = fetch.update(chunk.getX() + "/" + chunk.getZ(), updateChunkDTO);
-        return ! aFuture.isDone() && aFuture.isCompletedExceptionally();
+        return !aFuture.isCompletedExceptionally();
     }
 
     public boolean extend(Chunk chunk, int days) {
@@ -98,7 +98,7 @@ public class ChunkAPI extends ClientAPI<FetchChunk, RedisChunk, String, ChunkDTO
         updateChunkDTO.setExpirationDate(newExpirationDate);
 
         CompletableFuture<ChunkDTO> aFuture = fetch.update(chunk.getX() + "/" + chunk.getZ(), updateChunkDTO);
-        return ! aFuture.isDone() && aFuture.isCompletedExceptionally();
+        return !aFuture.isCompletedExceptionally();
     }
 
 
