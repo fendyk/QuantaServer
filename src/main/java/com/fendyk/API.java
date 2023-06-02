@@ -29,6 +29,8 @@ public class API {
     LandAPI landAPI;
     ChunkAPI chunkAPI;
 
+    TeleportAPI teleportAPI;
+
     public API(Main server) {
         ServerConfig serverConfig = main.getServerConfig();
         String redisUrl = serverConfig.getRedisUrl();
@@ -80,6 +82,10 @@ public class API {
                 new RedisChunk("chunk:")
         );
 
+        teleportAPI = new TeleportAPI(
+                new RedisTeleport("teleport:")
+        );
+
     }
 
     public void reconnect() {
@@ -99,5 +105,6 @@ public class API {
     public MinecraftUserAPI getMinecraftUserAPI() {return this.minecraftUserAPI;}
     public LandAPI getLandAPI() {return this.landAPI;}
     public ChunkAPI getChunkAPI() {return this.chunkAPI;}
+    public TeleportAPI getTeleportAPI() {return this.teleportAPI;}
 
 }

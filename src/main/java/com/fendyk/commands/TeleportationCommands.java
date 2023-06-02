@@ -2,6 +2,7 @@ package com.fendyk.commands;
 
 import com.fendyk.DTOs.LocationDTO;
 import com.fendyk.DTOs.MinecraftUserDTO;
+import com.fendyk.DTOs.TeleportDTO;
 import com.fendyk.Main;
 import com.fendyk.managers.ConfirmCommandManager;
 import com.fendyk.utilities.PayableCommand;
@@ -9,10 +10,12 @@ import com.fendyk.utilities.RankConfiguration;
 import com.fendyk.utilities.extentions.LuckPermsExtension;
 import de.leonhard.storage.util.Valid;
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.arguments.PlayerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 import net.luckperms.api.model.user.User;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -125,9 +128,9 @@ public class TeleportationCommands {
                 })
                 .register();
         new CommandAPICommand("tpr")
-                .withArguments(new StringArgument("name"))
+                .withArguments(new PlayerArgument("name"))
                 .executesPlayer((player, args) -> {
-                    String name = (String) args[0];
+                    Player targetPlayer = (Player) args[0];
 
 
                     ValidateCommand validateCommand = new ValidateCommand.Builder(player)
@@ -154,7 +157,7 @@ public class TeleportationCommands {
                         if (!ConfirmCommandManager.isConfirmed(player)) {
                             ConfirmCommandManager.requestCommandConfirmation(player,
                                     new PayableCommand(
-                                            "/spawn",
+                                            "/tpr" + targetPlayer.getName(),
                                             new ArrayList<>(),
                                             price,
                                             30L,
@@ -171,19 +174,46 @@ public class TeleportationCommands {
                             return;
                         }
 
-                        player.teleport(targetLocation);
-                        player.sendMessage(ChatColor.GREEN + "You've been teleported to your latest .");
+                        boolean isSent = main.getApi().getTeleportAPI().createRequestAsSender(player, targetPlayer);
+
+                        if(!isSent) {
+                            player.sendMessage(ChatColor.RED + "Could not sent your teleport request.");
+                            return;
+                        }
+
+                        player.sendMessage(ChatColor.GREEN + "Your request has been send to the player. Wait until the player has accepted your request.");
 
                     }
 
                 })
                 .withSubcommand(new CommandAPICommand("accept")
-                        .withArguments(new StringArgument("name"))
+                        .withArguments(new PlayerArgument("name"))
                         .executesPlayer((player, args) -> {
-                            String name = (String) args[0];
+                            Player targetPlayer = (Player) args[0];
 
                             String rankName = LuckPermsExtension.getHighestGroup(player);
                             RankConfiguration configuration = main.getRanksConfig().getRankConfiguration(rankName);
+
+                            // Get the player from the list
+                            // Verify if it's in there
+                            // Retrieve the player by name and teleport them to your location
+
+                            TeleportDTO teleportDTO = main.getApi().getTeleportAPI().getRequest(targetPlayer, targetPlayer);
+
+                            if(teleportDTO == null) {
+                                player.sendMessage(ChatColor.RED + "Could not accept teleport, as there is none with that given name.");
+                                return;
+                            }
+
+                            boolean isAccepted = main.getApi().getTeleportAPI().acceptRequestAsReceiver(targetPlayer, player);
+
+                            if(!isAccepted) {
+                                player.sendMessage(ChatColor.RED + "Could not accept. It might be already expired or not requested at all.");
+                                return;
+                            }
+
+                            targetPlayer.teleport(player);
+
                         })
                 )
                 .register();

@@ -67,6 +67,26 @@ public abstract class RedisAPI<DTO> {
         });
     }
 
+    public CompletableFuture<Boolean> del(String key) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                final boolean inDebugMode = main.getServerConfig().isInDebugMode();
+                long data = syncCommands.del(redisKey + key);
+                if (inDebugMode) {
+                    Log.info("");
+                    Log.info("REDIS: DEL is called with key: " + key);
+                    Log.info("Data: " + data);
+                    Log.info("");
+                }
+
+                return data > 0;
+            } catch (Exception e) {
+                Log.error("Error Redis DEL: " + e.getMessage());
+                throw new CompletionException(e);
+            }
+        });
+    }
+
     public CompletableFuture<Boolean> set(String key, DTO data) {
         return CompletableFuture.supplyAsync(() -> {
             try {
@@ -84,6 +104,25 @@ public abstract class RedisAPI<DTO> {
             }
         });
     }
+
+    public CompletableFuture<Boolean> setEx(String key, DTO data, long expireTimeInSeconds) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                final boolean inDebugMode = main.getServerConfig().isInDebugMode();
+                final String result = syncCommands.setex(redisKey + key, expireTimeInSeconds, Main.gson.toJson(data));
+                if (inDebugMode) {
+                    Log.info("");
+                    Log.info("REDIS: setCache is called with key: " + key);
+                    Log.info("Result: " + (result.length() > 250 ? result.substring(0, 250) + "... (+" + (result.length() - 250) + " lines)" : result));
+                    Log.info("");
+                }
+                return result.equals("OK");
+            } catch (Exception e) {
+                return false;
+            }
+        });
+    }
+
 
     public CompletableFuture<Boolean> exists(String key) {
         return CompletableFuture.supplyAsync(() -> {

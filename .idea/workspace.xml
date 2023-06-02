@@ -4,9 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Add rounding of numbers for better readably coordinates">
+    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Fix using wrong chunk in /land borders">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/DTOs/TeleportDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/apis/TeleportAPI.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/redis/RedisTeleport.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/PlayerTeleportListener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/LandCommands.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/API.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/API.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/RedisAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/clients/RedisAPI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/TeleportationCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/TeleportationCommands.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -281,14 +288,8 @@
       <workItem from="1685264225926" duration="2469000" />
       <workItem from="1685381546471" duration="10147000" />
       <workItem from="1685434497024" duration="16611000" />
-      <workItem from="1685555504513" duration="3498000" />
-    </task>
-    <task id="LOCAL-00016" summary="feat: worldguard now syncing with redis">
-      <created>1677538568794</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1677538568794</updated>
+      <workItem from="1685555504513" duration="5185000" />
+      <workItem from="1685700769176" duration="7514000" />
     </task>
     <task id="LOCAL-00017" summary="feat: activities">
       <created>1677613259200</created>
@@ -626,7 +627,14 @@
       <option name="project" value="LOCAL" />
       <updated>1685569964385</updated>
     </task>
-    <option name="localTasksCounter" value="65" />
+    <task id="LOCAL-00065" summary="Fix using wrong chunk in /land borders">
+      <created>1685570075362</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1685570075362</updated>
+    </task>
+    <option name="localTasksCounter" value="66" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -656,7 +664,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fix rewards now claimable" />
     <MESSAGE value="Update /land commands" />
     <MESSAGE value="Add builder for command validation" />
     <MESSAGE value="Add earnings to reload command" />
@@ -681,6 +688,7 @@
     <MESSAGE value="Improve user friendly messages for land commands" />
     <MESSAGE value="Hotfix null check for land command" />
     <MESSAGE value="Add rounding of numbers for better readably coordinates" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add rounding of numbers for better readably coordinates" />
+    <MESSAGE value="Fix using wrong chunk in /land borders" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix using wrong chunk in /land borders" />
   </component>
 </project>

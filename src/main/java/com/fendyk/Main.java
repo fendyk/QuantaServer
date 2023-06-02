@@ -100,6 +100,7 @@ public class Main extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new BlockBreakListener(this), this);
         getServer().getPluginManager().registerEvents(new BlockPlaceListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerCommandListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerTeleportListener(), this);
         //getServer().getPluginManager().registerEvents(new RedStoneListener(), this);
 
         // PlaceholderAPI expansion
