@@ -157,7 +157,7 @@ public class TeleportationCommands {
                         if (!ConfirmCommandManager.isConfirmed(player)) {
                             ConfirmCommandManager.requestCommandConfirmation(player,
                                     new PayableCommand(
-                                            "/tpr" + targetPlayer.getName(),
+                                            "/tpr " + targetPlayer.getName(),
                                             new ArrayList<>(),
                                             price,
                                             30L,
@@ -191,13 +191,6 @@ public class TeleportationCommands {
                         .executesPlayer((player, args) -> {
                             Player targetPlayer = (Player) args[0];
 
-                            String rankName = LuckPermsExtension.getHighestGroup(player);
-                            RankConfiguration configuration = main.getRanksConfig().getRankConfiguration(rankName);
-
-                            // Get the player from the list
-                            // Verify if it's in there
-                            // Retrieve the player by name and teleport them to your location
-
                             TeleportDTO teleportDTO = main.getApi().getTeleportAPI().getRequest(targetPlayer, targetPlayer);
 
                             if(teleportDTO == null) {
@@ -212,6 +205,8 @@ public class TeleportationCommands {
                                 return;
                             }
 
+                            player.sendMessage(ChatColor.GREEN + "You've accepted the request successfully");
+                            targetPlayer.sendMessage(ChatColor.GREEN + "You have been teleported!");
                             targetPlayer.teleport(player);
 
                         })
