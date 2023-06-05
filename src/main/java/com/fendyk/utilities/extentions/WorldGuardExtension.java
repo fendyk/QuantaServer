@@ -21,6 +21,11 @@ public class WorldGuardExtension {
     static Main main = Main.getInstance();
 
     public static boolean hasPermissionToBuildAtGlobalLocation(Player player, Location location) {
+        // If the player is an operator, they can build
+        if (player.isOp()) {
+            return true;
+        }
+
         User user = main.getLuckPermsApi().getUserManager().getUser(player.getUniqueId());
 
         LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(player);

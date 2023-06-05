@@ -95,7 +95,8 @@ public final class WorldguardSyncManager {
     }
 
     public static void syncChunkWithRegion(Chunk chunk, @Nullable ChunkDTO chunkDTO, @Nullable LandDTO landDTO) throws StorageException {
-        Log.info(chunk.getX() + "/" + chunk.getZ() + " is trying to sync with region");
+        boolean hasLand = true;
+        Log.info(chunk.getX() + ":" + chunk.getZ() + " is trying to sync with region");
 
         /* If it's cached, we're going to do stuff with it. */
         if(chunkDTO == null) {
@@ -109,7 +110,9 @@ public final class WorldguardSyncManager {
         /* Find the land by landID */
         if(landDTO == null) {
             landDTO = main.getApi().getLandAPI().get(chunkDTO.getLandId());
-            if(landDTO == null) return;
+
+            // If we cannot find the land, we still have to reset ownerships.
+            if(landDTO == null) hasLand = false;
         }
 
         /* Find the region */
@@ -123,13 +126,13 @@ public final class WorldguardSyncManager {
         DateTime expireDate = chunkDTO.getExpirationDate();
         boolean hasExpired = expireDate != null && expireDate.isBeforeNow();
 
-        // If the chunk can expire, keep track of it
+        // # If the chunk can expire, keep track of it
         if(chunkDTO.canExpire() && expireDate != null) {
             Log.info("We've detected a expirable chunk : " + expireDate);
             ChunkManager.getExpirableChunks().put(expireDate, chunk);
         }
 
-        /* If we cannot find the region but the land has a landOwnerId, we need to sync */
+        // # If we cannot find the region, create one
         if(set.size() < 1) {
             Location topLeft = chunk.getBlock(0,-64,0).getLocation();
             Location bottomRight = chunk.getBlock(15,320,15).getLocation();
@@ -140,13 +143,13 @@ public final class WorldguardSyncManager {
 
             if(!hasExpired) {
                 WorldguardSyncManager.setRegionMembersAndOwner(region,
-                        landDTO.getOwnerId(),
-                        landDTO.getMemberIDs()
+                        hasLand ? landDTO.getOwnerId() : null,
+                        hasLand ? landDTO.getMemberIDs() : null
                 );
             }
-            main.getOverworldRegionManager().addRegion(region); // Dont forget to save the region
+            main.getOverworldRegionManager().addRegion(region); // Don't forget to save the region
         }
-        else {
+        else { // Or we simply update the existing region.
             @Nullable ChunkDTO finalChunkDTO = chunkDTO;
 
             List<ProtectedRegion> regions = set.stream().filter(r -> !r.getId().equalsIgnoreCase(finalChunkDTO.getId())).toList();
@@ -165,8 +168,8 @@ public final class WorldguardSyncManager {
             region = optionalRegion.get();
 
             WorldguardSyncManager.setRegionMembersAndOwner(region,
-                    !hasExpired ? landDTO.getOwnerId() : null,
-                    !hasExpired ? landDTO.getMemberIDs() : null
+                    !hasExpired && hasLand ? landDTO.getOwnerId() : null,
+                    !hasExpired && hasLand ? landDTO.getMemberIDs() : null
             ); // Updates the region
         }
 
@@ -174,7 +177,7 @@ public final class WorldguardSyncManager {
         region.setFlag(Main.BARBARIAN_BUILD, StateFlag.State.ALLOW); // Allow barbarians to build on regions of players
 
         main.getOverworldRegionManager().save(); // Don't forget to save the region
-        Log.success(chunk.getX() + "/" + chunk.getZ() + " is synced");
+        Log.success(chunk.getX() + ":" + chunk.getZ() + " is synced");
     }
 
     public static void resetRegionFlags(ProtectedRegion region) {

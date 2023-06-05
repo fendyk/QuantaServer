@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Add Teleport API with teleport request methods">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/minecraft/PlayerRespawnListener.java" afterDir="false" />
+    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Add player respawn event">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/TeleportationCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/commands/TeleportationCommands.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/managers/WorldguardSyncManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/managers/WorldguardSyncManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/extentions/WorldGuardExtension.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/utilities/extentions/WorldGuardExtension.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -284,13 +284,8 @@
       <workItem from="1685434497024" duration="16611000" />
       <workItem from="1685555504513" duration="5185000" />
       <workItem from="1685700769176" duration="9357000" />
-    </task>
-    <task id="LOCAL-00018" summary="Update activities now working as intended">
-      <created>1677703387448</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1677703387448</updated>
+      <workItem from="1685790486746" duration="111000" />
+      <workItem from="1685999474380" duration="2295000" />
     </task>
     <task id="LOCAL-00019" summary="Update activities (not really working yet)">
       <created>1677710078866</created>
@@ -628,7 +623,14 @@
       <option name="project" value="LOCAL" />
       <updated>1685713226253</updated>
     </task>
-    <option name="localTasksCounter" value="67" />
+    <task id="LOCAL-00067" summary="Add player respawn event">
+      <created>1685790501616</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1685790501616</updated>
+    </task>
+    <option name="localTasksCounter" value="68" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -658,7 +660,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add builder for command validation" />
     <MESSAGE value="Add earnings to reload command" />
     <MESSAGE value="Fix for all commands and validations" />
     <MESSAGE value="Hotfix for extend command" />
@@ -683,6 +684,7 @@
     <MESSAGE value="Add rounding of numbers for better readably coordinates" />
     <MESSAGE value="Fix using wrong chunk in /land borders" />
     <MESSAGE value="Add Teleport API with teleport request methods" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add Teleport API with teleport request methods" />
+    <MESSAGE value="Add player respawn event" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add player respawn event" />
   </component>
 </project>
