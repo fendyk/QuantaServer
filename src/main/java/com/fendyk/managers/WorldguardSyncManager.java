@@ -188,10 +188,12 @@ public final class WorldguardSyncManager {
     }
 
     public static void showParticleEffectAtChunk(Chunk chunk, Location location, ParticleData particleData) {
+        // TODO: add a delay to prevent players from using it to often.
         List<Location> bounds = ChunkUtils.getChunkBounds(chunk, location.getY() + 1.5);
         List<Object> packets = new ArrayList<>();
         ParticleBuilder particle = new ParticleBuilder(ParticleEffect.DUST_COLOR_TRANSITION)
                 .setParticleData(particleData);
+
         for(Location l : bounds) {
             packets.add(particle.setLocation(l).toPacket());
         }
@@ -203,7 +205,7 @@ public final class WorldguardSyncManager {
         }, 600L); // 30 seconds
     }
     
-    public static void showParticleEffectAtChunk(Chunk chunk, Location location, ChunkAPI.ChunkState chunkState) {
+    public static void showParticleEffectAtChunk(Chunk chunk, Location location, ChunkDTO.State chunkState) {
         ParticleData particleData;
         switch (chunkState) {
             case BLACKLISTED -> {

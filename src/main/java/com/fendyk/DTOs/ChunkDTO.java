@@ -6,6 +6,14 @@ import java.util.ArrayList;
 
 public class ChunkDTO {
 
+    public static enum State {
+        BLACKLISTED,
+        UNCLAIMABLE,
+        UNCLAIMED,
+        CLAIMED_EXPIRABLE,
+        CLAIMED_PERMANENT,
+    }
+
     String id;
 
     Boolean isClaimable;

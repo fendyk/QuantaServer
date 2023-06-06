@@ -29,15 +29,6 @@ public class ChunkAPI extends ClientAPI<FetchChunk, RedisChunk, String, ChunkDTO
         super(fetch, redis);
     }
 
-    public static enum ChunkState {
-        BLACKLISTED,
-        UNCLAIMABLE,
-        UNCLAIMED,
-        CLAIMED_EXPIRABLE,
-        CLAIMED_PERMANENT,
-    }
-
-
     @Nullable
     public ChunkDTO get(Chunk chunk) {
         CompletableFuture<ChunkDTO> aFuture = redis.get(chunk.getX() + ":" + chunk.getZ());
