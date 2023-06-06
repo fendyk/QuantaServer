@@ -8,11 +8,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Optimise code in listeners">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/API.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/API.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/redis/ChunkListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/redis/ChunkListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/redis/LandListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/listeners/redis/LandListener.java" afterDir="false" />
+    <list default="true" id="feaa780e-c935-4959-8f56-2a0136104659" name="Changes" comment="Fix main static references">
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fendyk/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fendyk/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -293,14 +290,7 @@
       <workItem from="1685790486746" duration="111000" />
       <workItem from="1685999474380" duration="2295000" />
       <workItem from="1686050070862" duration="592000" />
-      <workItem from="1686068925302" duration="1555000" />
-    </task>
-    <task id="LOCAL-00020" summary="Update Now working as intended">
-      <created>1677804021945</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1677804021945</updated>
+      <workItem from="1686068925302" duration="1677000" />
     </task>
     <task id="LOCAL-00021" summary="Fix land not creating">
       <created>1677964758539</created>
@@ -638,7 +628,14 @@
       <option name="project" value="LOCAL" />
       <updated>1686072110711</updated>
     </task>
-    <option name="localTasksCounter" value="69" />
+    <task id="LOCAL-00069" summary="Fix main static references">
+      <created>1686072269772</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1686072269772</updated>
+    </task>
+    <option name="localTasksCounter" value="70" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -668,7 +665,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fix for all commands and validations" />
     <MESSAGE value="Hotfix for extend command" />
     <MESSAGE value="Fix all commands now working with payable" />
     <MESSAGE value="Fix general stuff and set length max for logging to prevent lag" />
@@ -693,6 +689,7 @@
     <MESSAGE value="Add Teleport API with teleport request methods" />
     <MESSAGE value="Add player respawn event" />
     <MESSAGE value="Optimise code in listeners" />
-    <option name="LAST_COMMIT_MESSAGE" value="Optimise code in listeners" />
+    <MESSAGE value="Fix main static references" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix main static references" />
   </component>
 </project>

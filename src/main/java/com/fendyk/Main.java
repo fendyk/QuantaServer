@@ -73,7 +73,7 @@ public class Main extends JavaPlugin implements Listener {
         ranksConfig= new RanksConfig();
 
         // Instantiate api
-        api = new API(this);
+        api = new API();
 
         // Commands
         new GeneralCommands();
