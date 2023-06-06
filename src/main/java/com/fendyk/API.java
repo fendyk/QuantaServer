@@ -27,16 +27,16 @@ public class API {
 
     TeleportAPI teleportAPI;
 
-    public API(Main server) {
+    public API() {
         ServerConfig serverConfig = main.getServerConfig();
         String redisUrl = serverConfig.getRedisUrl();
         String apiUrl = serverConfig.getApiUrl();
         String jwtToken = serverConfig.getJwtToken();
 
         ArrayList<RedisPubSubListener<String, String>> listeners = new ArrayList<>();
-        listeners.add(new AuthenticationListener(server));
-        listeners.add(new ChunkListener(server));
-        listeners.add(new LandListener(server));
+        listeners.add(new AuthenticationListener());
+        listeners.add(new ChunkListener());
+        listeners.add(new LandListener());
 
         ArrayList<String> subscriptions = new ArrayList<>();
         subscriptions.add("authentication");

@@ -17,11 +17,7 @@ import java.util.logging.Level;
 
 public class ChunkListener implements RedisPubSubListener<String, String> {
 
-    Main server;
-
-    public ChunkListener(Main server) {
-        this.server = server;
-    }
+    Main main;
 
     @Override
     public void message(String channel, String message) {
@@ -32,7 +28,7 @@ public class ChunkListener implements RedisPubSubListener<String, String> {
         Bukkit.getLogger().info("Chunk");
         Bukkit.getLogger().info(channel + ", " + message);
 
-        World world = Bukkit.getWorld(server.getServerConfig().getWorldName());
+        World world = Bukkit.getWorld(main.getServerConfig().getWorldName());
         JsonObject data = JsonParser.parseString(message).getAsJsonObject();
         String eventName = data.get("event").getAsString();
         JsonObject chunkObject = data.getAsJsonObject("chunk");
@@ -40,7 +36,7 @@ public class ChunkListener implements RedisPubSubListener<String, String> {
 
         if (chunkDTO != null && world != null) {
             Chunk chunk = world.getChunkAt(chunkDTO.getX(), chunkDTO.getZ());
-            Bukkit.getScheduler().runTask(server, () -> {
+            Bukkit.getScheduler().runTask(main, () -> {
                 try {
                     WorldguardSyncManager.syncChunkWithRegion(chunk, chunkDTO, null);
                 } catch (StorageException e) {

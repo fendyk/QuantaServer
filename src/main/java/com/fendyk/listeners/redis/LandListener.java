@@ -21,12 +21,7 @@ import java.util.logging.Level;
 
 public class LandListener implements RedisPubSubListener<String, String> {
 
-    Main server;
-
-    public LandListener(Main server) {
-        this.server = server;
-    }
-
+    Main main = Main.getInstance();
 
     @Override
     public void message(String channel, String message) {
@@ -39,7 +34,7 @@ public class LandListener implements RedisPubSubListener<String, String> {
 
         JsonObject data = JsonParser.parseString(message).getAsJsonObject();
         String eventName = data.get("event").getAsString();
-        String worldName = server.getServerConfig().getWorldName();
+        String worldName = main.getServerConfig().getWorldName();
         JsonArray chunksObject = data.getAsJsonArray("chunks");
         JsonObject landObject = data.getAsJsonObject("land");
 
@@ -51,7 +46,7 @@ public class LandListener implements RedisPubSubListener<String, String> {
         }
 
         for (ChunkDTO chunkDTO : chunks) {
-            Bukkit.getScheduler().runTask(server, () -> {
+            Bukkit.getScheduler().runTask(main, () -> {
                 Chunk chunk = Objects.requireNonNull(Bukkit.getWorld(worldName))
                         .getChunkAt(chunkDTO.getX(), chunkDTO.getZ());
                 try {
