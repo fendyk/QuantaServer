@@ -16,7 +16,6 @@ public class PlayerRespawnListener implements Listener {
         Player player = event.getPlayer();
 
         LandDTO landDTO = main.getApi().getLandAPI().get(player.getUniqueId());
-
-        // If has land, respawn the player on it's home land
+        // TODO: If has land, respawn the player on it's home land
     }
 }

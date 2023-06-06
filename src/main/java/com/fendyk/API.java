@@ -1,6 +1,5 @@
 package com.fendyk;
 
-import com.fendyk.DTOs.MinecraftUserDTO;
 import com.fendyk.clients.ClientAPI;
 import com.fendyk.clients.FetchAPI;
 import com.fendyk.clients.RedisAPI;
@@ -11,14 +10,11 @@ import com.fendyk.clients.fetch.FetchLand;
 import com.fendyk.clients.fetch.FetchMinecraftUser;
 import com.fendyk.clients.redis.*;
 import com.fendyk.configs.ServerConfig;
-import com.fendyk.listeners.AuthenticationListener;
-import com.fendyk.listeners.ChunkListener;
-import com.fendyk.listeners.LandListener;
+import com.fendyk.listeners.redis.AuthenticationListener;
+import com.fendyk.listeners.redis.ChunkListener;
+import com.fendyk.listeners.redis.LandListener;
 import com.fendyk.utilities.Log;
-import de.leonhard.storage.Toml;
-import io.lettuce.core.RedisClient;
 import io.lettuce.core.pubsub.RedisPubSubListener;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 

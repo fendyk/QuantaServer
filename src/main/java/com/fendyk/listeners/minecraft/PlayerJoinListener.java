@@ -9,7 +9,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
-import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
@@ -19,42 +18,30 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
-
-import java.util.Collection;
 import java.util.List;
 
 public class PlayerJoinListener implements Listener {
 
     Main main = Main.getInstance();
-    Main server;
-    public PlayerJoinListener(Main server) {
-        this.server = server;
-    }
 
     @EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        World world = Bukkit.getWorld(server.getServerConfig().getWorldName());
-        Audience audience = server.adventure().player(player);
-        User luckPermsUser = server.getLuckPermsApi().getPlayerAdapter(Player.class).getUser(player);
+        World world = Bukkit.getWorld(main.getServerConfig().getWorldName());
+        Audience audience = main.adventure().player(player);
+        User luckPermsUser = main.getLuckPermsApi().getPlayerAdapter(Player.class).getUser(player);
         String primaryGroup = luckPermsUser.getPrimaryGroup();
-
-        // Give the player a starterpack
-        if(!player.hasPlayedBefore()) {
-            giveStarterKit(player);
-            player.sendMessage(ChatColor.GREEN + "We've given you some starter items to start your adventure!");
-        }
 
         if(primaryGroup.equalsIgnoreCase("default") && !player.isOp()) {
             player.teleport(main.getServerConfig().getSpawnLocation());
-            server.getFrozenPlayers().add(player.getUniqueId());
-            player.sendMessage("You've been frozen because you're not authorized to the server.");
+            main.getFrozenPlayers().add(player.getUniqueId());
+            player.sendMessage("You've been frozen because you're not authorized to the main.");
         }
         else {
-            server.getFrozenPlayers().remove(player.getUniqueId());
+            main.getFrozenPlayers().remove(player.getUniqueId());
         }
 
-        MinecraftUserDTO minecraftUserDTO = server.getApi().getMinecraftUserAPI().get(player.getUniqueId());
+        MinecraftUserDTO minecraftUserDTO = main.getApi().getMinecraftUserAPI().get(player.getUniqueId());
 
         // Verify if user still has a reward that needs to be claimed
         if(minecraftUserDTO != null) {
@@ -67,8 +54,13 @@ public class PlayerJoinListener implements Listener {
             }
         }
 
-        // If player joins first time
+        // Player joins for the first time
         if(!player.hasPlayedBefore()) {
+
+            // Give the player a starterpack
+            giveStarterKit(player);
+            player.sendMessage(ChatColor.GREEN + "We've given you some starter items to start your adventure!");
+
             // Finally show a title saying welcome!
             final Component mainTitle = Component.text("Welcome to QuantumCity,", NamedTextColor.AQUA);
             final Component subtitle = Component.text(player.getName(), NamedTextColor.WHITE);
@@ -101,7 +93,7 @@ public class PlayerJoinListener implements Listener {
             // Set join message
             final TextComponent msg = Component.text()
                     .color(NamedTextColor.GRAY)
-                    .append(Component.text(player.getName() + " -> has joined the server."))
+                    .append(Component.text(player.getName() + " -> has joined the main."))
                     .build();
 
             event.joinMessage(msg);
@@ -120,7 +112,7 @@ public class PlayerJoinListener implements Listener {
 
     }
 
-    public void giveStarterKit(Player player) {
+    private void giveStarterKit(Player player) {
         // Enchanted stone sword
         ItemStack stoneSword = new ItemStack(Material.STONE_SWORD);
         stoneSword.addEnchantment(Enchantment.DURABILITY, 3);

@@ -91,17 +91,15 @@ public class Main extends JavaPlugin implements Listener {
         luckPermsApi = LuckPermsProvider.get();
 
         // Listeners
-        getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
-        getServer().getPluginManager().registerEvents(new PlayerQuitListener(this), this);
-        getServer().getPluginManager().registerEvents(new PlayerMoveListener(this), this);
-        getServer().getPluginManager().registerEvents(this, this);
-        getServer().getPluginManager().registerEvents(new EntityDeathListener(this), this);
-        getServer().getPluginManager().registerEvents(new ChunkLoadListener(this), this);
-        getServer().getPluginManager().registerEvents(new BlockBreakListener(this), this);
-        getServer().getPluginManager().registerEvents(new BlockPlaceListener(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerMoveListener(), this);
+        getServer().getPluginManager().registerEvents(new EntityDeathListener(), this);
+        getServer().getPluginManager().registerEvents(new ChunkLoadListener(), this);
+        getServer().getPluginManager().registerEvents(new BlockBreakListener(), this);
+        getServer().getPluginManager().registerEvents(new BlockPlaceListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerCommandListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerTeleportListener(), this);
-        //getServer().getPluginManager().registerEvents(new RedStoneListener(), this);
 
         // PlaceholderAPI expansion
         new QuantaExpansion().register();
@@ -124,7 +122,7 @@ public class Main extends JavaPlugin implements Listener {
         registry.register(BARBARIAN_BUILD);
     }
 
-        @Override
+    @Override
     public void onDisable() {
         if(this.adventure != null) {
             this.adventure.close();

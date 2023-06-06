@@ -23,22 +23,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public class BlockBreakListener implements Listener {
-
-    Main server;
     Main main = Main.getInstance();
-
-    public BlockBreakListener(Main server) {
-        this.server = server;
-    }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
@@ -49,8 +39,8 @@ public class BlockBreakListener implements Listener {
         Chunk chunk = block.getChunk();
         Material material = block.getType();
         ItemStack itemStack = player.getInventory().getItemInMainHand();
-        API api = server.getApi();
-        EarningsConfig config = server.getEarningsConfig();
+        API api = main.getApi();
+        EarningsConfig config = main.getEarningsConfig();
 
         // If the current user is either barbarian or default, verify the flag.
         if(!WorldGuardExtension.hasPermissionToBuildAtGlobalLocation(player, block.getLocation())) {
@@ -69,18 +59,18 @@ public class BlockBreakListener implements Listener {
         // Check if Material is supported
         if(!config.getMaterialEarnings().containsKey(material)) return;
 
-        ChunkDTO chunkDTO = server.getApi().getChunkAPI().get(chunk);
+        ChunkDTO chunkDTO = main.getApi().getChunkAPI().get(chunk);
 
         if (chunkDTO != null) {
             if (ChunkAPI.isBlacklistedBlock(chunkDTO, block)) {
                 UpdateChunkDTO update = new UpdateChunkDTO();
                 update.getSpliceBlacklistedBlocks().add(new BlacklistedBlockDTO(block));
-                server.getApi().getChunkAPI().update(chunk, update);
+                main.getApi().getChunkAPI().update(chunk, update);
                 return;
             }
         }
 
-        ActivitiesDTO activitiesDTO = server.getApi().getActivitiesAPI().get(player);
+        ActivitiesDTO activitiesDTO = main.getApi().getActivitiesAPI().get(player);
         double amount;
 
         if (activitiesDTO == null) {

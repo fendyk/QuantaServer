@@ -1,10 +1,8 @@
-package com.fendyk.listeners;
+package com.fendyk.listeners.redis;
 
 import com.fendyk.DTOs.ChunkDTO;
-import com.fendyk.DTOs.LandDTO;
 import com.fendyk.Main;
 import com.fendyk.managers.WorldguardSyncManager;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -13,49 +11,38 @@ import io.lettuce.core.pubsub.RedisPubSubListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 
 import java.util.Objects;
-import java.util.UUID;
 import java.util.logging.Level;
 
-public class LandListener implements RedisPubSubListener<String, String> {
+public class ChunkListener implements RedisPubSubListener<String, String> {
 
     Main server;
 
-    public LandListener(Main server) {
+    public ChunkListener(Main server) {
         this.server = server;
     }
 
-
     @Override
     public void message(String channel, String message) {
-        if (!channel.equals("land")) {
+        if (!channel.equals("chunk")) {
             return;
         }
 
-        Bukkit.getLogger().info("Land");
+        Bukkit.getLogger().info("Chunk");
         Bukkit.getLogger().info(channel + ", " + message);
 
+        World world = Bukkit.getWorld(server.getServerConfig().getWorldName());
         JsonObject data = JsonParser.parseString(message).getAsJsonObject();
         String eventName = data.get("event").getAsString();
-        String worldName = server.getServerConfig().getWorldName();
-        JsonArray chunksObject = data.getAsJsonArray("chunks");
-        JsonObject landObject = data.getAsJsonObject("land");
+        JsonObject chunkObject = data.getAsJsonObject("chunk");
+        ChunkDTO chunkDTO = Main.gson.fromJson(chunkObject, ChunkDTO.class);
 
-        LandDTO land = Main.gson.fromJson(landObject, LandDTO.class);
-        ChunkDTO[] chunks = Main.gson.fromJson(chunksObject, ChunkDTO[].class);
-
-        if (chunks == null || chunks.length < 1 || land == null) {
-            return;
-        }
-
-        for (ChunkDTO chunkDTO : chunks) {
+        if (chunkDTO != null && world != null) {
+            Chunk chunk = world.getChunkAt(chunkDTO.getX(), chunkDTO.getZ());
             Bukkit.getScheduler().runTask(server, () -> {
-                Chunk chunk = Objects.requireNonNull(Bukkit.getWorld(worldName))
-                        .getChunkAt(chunkDTO.getX(), chunkDTO.getZ());
                 try {
-                    WorldguardSyncManager.syncChunkWithRegion(chunk, chunkDTO, land);
+                    WorldguardSyncManager.syncChunkWithRegion(chunk, chunkDTO, null);
                 } catch (StorageException e) {
                     throw new RuntimeException(e);
                 }
@@ -65,6 +52,7 @@ public class LandListener implements RedisPubSubListener<String, String> {
 
     @Override
     public void message(String pattern, String channel, String message) {
+
     }
 
     @Override

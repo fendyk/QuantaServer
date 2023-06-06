@@ -7,8 +7,8 @@ import com.fendyk.DTOs.updates.UpdateActivitiesDTO;
 import com.fendyk.Main;
 import com.fendyk.configs.EarningsConfig;
 import com.fendyk.managers.ActivityBossBarManager;
-import com.fendyk.utilities.ActivityEarnings;
 import com.fendyk.managers.ActivitySoundManager;
+import com.fendyk.utilities.ActivityEarnings;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -21,33 +21,27 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 public class EntityDeathListener implements Listener {
-
-    Main server;
-
-    public EntityDeathListener(Main server) {
-        this.server = server;
-    }
+    Main main = Main.getInstance();
 
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
         Entity killed = event.getEntity();
         Player killer = event.getEntity().getKiller();
 
-        EarningsConfig config = server.getEarningsConfig();
-        API api = server.getApi();
+        EarningsConfig config = main.getEarningsConfig();
+        API api = main.getApi();
 
         if(killer == null) return;
 
-        Bukkit.getScheduler().runTaskAsynchronously(server, () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(main, () -> {
             UpdateActivitiesDTO updateActivitiesDTO = new UpdateActivitiesDTO();
             ArrayList<ActivityDTO> activities = new ArrayList<>();
             ActivityDTO activity = new ActivityDTO();
 
             if(killed instanceof Player) {
-                ActivitiesDTO activitiesDTO = server.getApi().getActivitiesAPI().get(killer);
+                ActivitiesDTO activitiesDTO = main.getApi().getActivitiesAPI().get(killer);
                 double amount = 0;
                 if(activitiesDTO != null) {
                     Optional<ActivityDTO> pvpActivity = activitiesDTO.getPvp().stream().filter(activity1 -> activity1.getName().equals(killed.getUniqueId().toString())).findFirst();
@@ -86,7 +80,7 @@ public class EntityDeathListener implements Listener {
                 }
             }
             else if(config.getEntityEarnings().containsKey(killed.getType())) {
-                ActivitiesDTO activitiesDTO = server.getApi().getActivitiesAPI().get(killer);
+                ActivitiesDTO activitiesDTO = main.getApi().getActivitiesAPI().get(killer);
                 double amount = 0;
                 if(activitiesDTO != null) {
                     Optional<ActivityDTO> pvpActivity = activitiesDTO.getPve().stream().filter(item -> item.getName().equalsIgnoreCase(killed.getType().name())).findFirst();

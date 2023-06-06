@@ -1,42 +1,26 @@
 package com.fendyk.listeners.minecraft;
 
-import com.fendyk.DTOs.ChunkDTO;
-import com.fendyk.DTOs.LandDTO;
 import com.fendyk.Main;
 import com.fendyk.managers.WorldguardSyncManager;
 import com.fendyk.utilities.ChunkUtils;
-import com.fendyk.utilities.Log;
-import com.fendyk.utilities.Vector2;
-import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldguard.domains.DefaultDomain;
 import com.sk89q.worldguard.protection.managers.storage.StorageException;
-import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import io.papermc.paper.event.packet.PlayerChunkLoadEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
-import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
-import java.util.UUID;
 
 public class ChunkLoadListener implements Listener {
 
     Main main = Main.getInstance();
     HashMap<String, Chunk> checkedChunks;
-    Main server;
-
     String worldName;
 
-    public ChunkLoadListener(Main server) {
-        this.server = server;
+    public ChunkLoadListener() {
         this.checkedChunks = new HashMap<>();
-
-        this.worldName = server.getServerConfig().getWorldName();
+        this.worldName = main.getServerConfig().getWorldName();
     }
 
     /**
@@ -60,7 +44,7 @@ public class ChunkLoadListener implements Listener {
         if (checkedChunks.containsKey(key)) return;
 
         // Run the async task
-        Bukkit.getScheduler().runTaskAsynchronously(server, () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(main, () -> {
             Bukkit.getLogger().info(chunk.getX() + "/" + chunk.getZ() + " loaded");
             checkedChunks.put(key, chunk);
 

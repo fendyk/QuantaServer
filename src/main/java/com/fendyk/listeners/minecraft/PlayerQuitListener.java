@@ -10,15 +10,13 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import java.util.UUID;
 
 public class PlayerQuitListener implements Listener {
-    Main server;
-    public PlayerQuitListener(Main server) {
-        this.server = server;
-    }
+    Main main = Main.getInstance();
+
     @EventHandler
     public void onPlayerQuitEvent(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
-        server.getFrozenPlayers().remove(player.getUniqueId());
+        main.getFrozenPlayers().remove(player.getUniqueId());
 
         ActivityBossBarManager.getBossBars().remove(uuid);
         ActivityBossBarManager.getBossBarsExpiresInSeconds().remove(uuid);
