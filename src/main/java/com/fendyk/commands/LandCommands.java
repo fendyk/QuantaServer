@@ -481,7 +481,7 @@ public class LandCommands {
                             }
                         })
                 )
-                // ### /land borders ###
+                // ### /land borders ### TODO This command is broken.
                 .withSubcommand(new CommandAPICommand("borders")
                         .executesPlayer((player, args) -> {
                             List<Chunk> chunksInRange = ChunkUtils.getChunksInRange(player.getChunk(), 3);

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+// TODO: Messages should be expanded
 public class MessagesConfig {
     Toml config;
 
